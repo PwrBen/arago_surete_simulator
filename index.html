@@ -74,7 +74,7 @@
         .choice-btn.correct { background-color: #d4edda; border-color: #27ae60; color: #155724; }
         .choice-btn.wrong { background-color: #f8d7da; border-color: #c0392b; color: #721c24; }
         
-        /* Mod 1 (Dual QCM) */
+        /* Mod 1 & 4 (Dual QCM) */
         #dual-qcm-container { display: none; grid-template-columns: 1fr 1fr; gap: 20px; }
         .column-title { text-align: center; color: #2c3e50; font-size: 1.1em; border-bottom: 2px solid #bdc3c7; padding-bottom: 10px; margin-bottom: 15px;}
         
@@ -207,10 +207,10 @@
             
             <div id="question-text" style="font-size: 1.1em; margin-bottom: 20px; font-weight: 500; background: #fdfefe; padding: 15px; border-left: 4px solid #34495e;"></div>
             
-            <!-- CONTENEUR QCM SIMPLE (Modules 4 à 5) -->
+            <!-- CONTENEUR QCM SIMPLE -->
             <div id="options-container" style="display:none;"></div>
             
-            <!-- CONTENEUR QCM DOUBLE (Module 1) -->
+            <!-- CONTENEUR QCM DOUBLE (Module 1 & 4) -->
             <div id="dual-qcm-container">
                 <div>
                     <div class="column-title">1. Action à entreprendre</div>
@@ -521,7 +521,72 @@
                     }
                 ]
             },
-            juridique: { title: "4. L'Arène Juridique", type: "single", questions: [{ q: "En construction", options: ["1"], correct: 0, explanation: "" }] },
+            juridique: {
+                title: "4. L'Arène Juridique",
+                type: "dual",
+                questions: [
+                    {
+                        q: "Un client glisse une bouteille d'alcool dans son sac et passe la ligne de caisse sans payer. Vous l'interceptez.",
+                        optionsAction: ["L'appréhender avec une force proportionnée et appeler la police.", "Le fouiller de force pour récupérer la bouteille.", "Lui donner une amende de 135 euros."], correctAction: 0,
+                        optionsJustif: ["Légitime défense des biens.", "Article L613-3 du CSI (Palpation).", "Article 73 du CPP (Délit flagrant puni d'emprisonnement)."], correctJustif: 2,
+                        explanation: "Le vol simple est un délit flagrant. L'Article 73 du CPP autorise l'appréhension avec une force strictement nécessaire dans le but de remettre l'auteur à l'OPJ."
+                    },
+                    {
+                        q: "Un intrus armé d'un couteau se jette sur vous lors d'une ronde de nuit. Vous le neutralisez par une percussion qui lui fracture la mâchoire.",
+                        optionsAction: ["L'action de neutralisation physique est justifiée.", "Vous êtes en tort pour violences volontaires graves.", "Vous deviez impérativement fuir sans vous défendre."], correctAction: 0,
+                        optionsJustif: ["Article 122-5 du CP (Légitime défense des personnes).", "Article 73 du CPP (Appréhension).", "État de nécessité (Article 122-7 du CP)."], correctJustif: 0,
+                        explanation: "La riposte face à une attaque au couteau avec une technique de percussion est immédiate, nécessaire et proportionnée à la menace vitale (Légitime défense)."
+                    },
+                    {
+                        q: "Dans le cadre du plan Vigipirate, un visiteur refuse l'inspection visuelle de son sac à dos à l'entrée du site.",
+                        optionsAction: ["Refuser l'accès à l'établissement.", "Forcer l'ouverture du sac pour garantir la sécurité.", "Le retenir de force en attendant la police."], correctAction: 0,
+                        optionsJustif: ["Le plan Vigipirate annule le besoin de consentement.", "L'inspection nécessite le consentement exprès (Art L613-2 CSI).", "Article 73 du CPP."], correctJustif: 1,
+                        explanation: "Le refus de contrôle n'est pas un délit, on ne peut pas forcer ni retenir la personne. La seule sanction est l'interdiction d'accès au site."
+                    },
+                    {
+                        q: "Fin de service, vous voyez une personne s'effondrer en détresse respiratoire sur le parking public. Pressé, vous ne vous arrêtez pas.",
+                        optionsAction: ["L'agent est dans son droit car il a fini son service.", "L'agent n'est responsable que dans l'enceinte de son site.", "L'agent commet une infraction pénale grave."], correctAction: 2,
+                        optionsJustif: ["Déontologie professionnelle.", "Article 223-6 du CP (Non-assistance à personne en danger).", "Article 1240 du Code civil."], correctJustif: 1,
+                        explanation: "L'omission de porter secours (Art 223-6) s'applique à tout citoyen pouvant aider (ex: appeler le 15) sans risque pour lui-même, peu importe ses horaires."
+                    },
+                    {
+                        q: "Un tagueur fuit. Vous le rattrapez, le plaquez violemment et le menottez de force alors qu'il est soumis et ne se débat pas.",
+                        optionsAction: ["L'intervention est légale et justifiée.", "L'intervention est illégale et abusive.", "Le menottage est obligatoire pour tout délit."], correctAction: 1,
+                        optionsJustif: ["Article 53 du CPP (Flagrance).", "Légitime défense des biens.", "Violences volontaires : la force doit être proportionnée (Art 73) et le menottage (Art 803) exige un risque actif."], correctJustif: 2,
+                        explanation: "Appréhender oui (Art 73), mais plaquer et menotter un individu soumis qui ne présente pas de dangerosité ou de risque de fuite actif est une violence illégitime."
+                    },
+                    {
+                        q: "Vous séparez deux clients qui se battent. Vous exigez de photographier leurs cartes d'identité avec votre téléphone pour votre rapport.",
+                        optionsAction: ["Vous êtes en tort, vous ne pouvez pas exiger ni photographier leurs papiers.", "Vous êtes dans votre droit pour prouver les faits dans la main courante.", "Vous devez les retenir 4h maximum au PCS."], correctAction: 0,
+                        optionsJustif: ["Article 78-2 du CPP : Le contrôle d'identité est réservé aux OPJ/APJ.", "Article 73 du CPP.", "Code de déontologie de la sécurité privée."], correctJustif: 0,
+                        explanation: "L'agent privé n'a pas le pouvoir de contrôle d'identité coercitif. Prendre en photo des documents officiels avec un téléphone personnel est illégal (atteinte vie privée/RGPD)."
+                    },
+                    {
+                        q: "Lors d'une palpation consentie, vous sentez une arme à feu à la ceinture du visiteur.",
+                        optionsAction: ["Saisir l'arme et le laisser partir du site.", "Maintenir l'individu, geler la situation et alerter immédiatement l'OPJ.", "Le désarmer et confisquer l'arme à l'accueil."], correctAction: 1,
+                        optionsJustif: ["Article 122-5 du CP.", "Article L613-3 du CSI.", "Article 73 du CPP (Délit continu de port d'arme illégal)."], correctJustif: 2,
+                        explanation: "Le port d'arme illégal est un délit flagrant. On appréhende (Art 73) et on alerte. On ne saisit pas l'arme soi-même (sauf urgence vitale) pour préserver les traces pour l'OPJ."
+                    },
+                    {
+                        q: "Un cynophile lâche son chien mordant sans sommation sur des voleurs de cuivre. Un voleur est gravement mordu.",
+                        optionsAction: ["L'agent est dans son droit absolu de protéger le site.", "L'action est valide car le vol de cuivre coûte très cher.", "L'agent commet des violences volontaires aggravées (arme par destination)."], correctAction: 2,
+                        optionsJustif: ["Article 122-5 al. 2 (Défense des biens) : interdit l'homicide ou les blessures graves.", "Article 122-7 (État de nécessité).", "Article 73 du CPP."], correctJustif: 0,
+                        explanation: "On ne peut pas justifier des blessures graves par morsure canine (assimilé à l'usage d'une arme) pour protéger de simples biens matériels. Il y a disproportion manifeste."
+                    },
+                    {
+                        q: "Un individu déchire légèrement une affiche (simple contravention de dégradation). Vous le ceinturez et l'enfermez au PCS.",
+                        optionsAction: ["Vous agissez légalement en attendant la police.", "Vous commettez une séquestration et des violences volontaires.", "Vous devez juste le menotter sur place et non au PCS."], correctAction: 1,
+                        optionsJustif: ["L'Article 73 du CPP ne s'applique qu'aux crimes et délits punis d'emprisonnement, pas aux contraventions.", "Article 53 du CPP (Flagrance).", "Article 122-5 du CP."], correctJustif: 0,
+                        explanation: "Pour une contravention, l'agent n'a aucun pouvoir coercitif. S'il retient la personne de force, c'est une privation illégale de liberté (séquestration)."
+                    },
+                    {
+                        q: "Vous surprenez un jeune de 13 ans en train de fracturer une portière de voiture (délit de vol à la roulotte).",
+                        optionsAction: ["Le laisser partir car il est mineur.", "Appeler ses parents pour régler ça à l'amiable sans la police.", "Appréhender le mineur et appeler immédiatement les forces de l'ordre."], correctAction: 2,
+                        optionsJustif: ["Article L511-1 du CSI (Police municipale).", "Article 122-6 du CP (Légitime défense présumée).", "L'Article 73 du CPP s'applique à 'toute personne' face à un délit flagrant, sans limite d'âge."], correctJustif: 2,
+                        explanation: "La minorité n'empêche pas l'appréhension physique par un agent privé lors d'un délit flagrant. C'est l'OPJ qui gérera ensuite la procédure spécifique aux mineurs."
+                    }
+                ]
+            },
             rapport: { title: "5. Chrono-Rapport", type: "single", questions: [{ q: "En construction", options: ["1"], correct: 0, explanation: "" }] }
         };
 
@@ -583,7 +648,7 @@
             document.getElementById('radio-builder-container').style.display = 'none';
             
             if (module.type === "dual") {
-                // MOD 1
+                // MOD 1 & 4 (Dual QCM)
                 document.getElementById('dual-qcm-container').style.display = 'grid';
                 document.getElementById('validate-btn').style.display = 'block';
                 document.getElementById('validate-btn').disabled = true;
@@ -696,7 +761,7 @@
             }
         }
 
-        /* --- MOD 1 --- */
+        /* --- MOD 1 & 4 (DUAL) --- */
         function selectDual(type, isCorrect, btn) {
             const container = document.getElementById(type === 'action' ? 'options-action' : 'options-justif');
             const btns = container.querySelectorAll('.choice-btn');
@@ -751,7 +816,7 @@
                 fb.innerHTML = `<strong>⚠ ANALYSE PARTIELLE (+0.5 pt)</strong><br>Une partie de votre analyse est inexacte.<br><br><em>Rappel :</em> ${qData.explanation}`;
             } else {
                 fb.classList.add('active', 'error');
-                fb.innerHTML = `<strong>✗ ÉCHEC TACTIQUE</strong><br>${qData.explanation}`;
+                fb.innerHTML = `<strong>✗ ÉCHEC JURIDIQUE / TACTIQUE</strong><br>${qData.explanation}`;
             }
             updateLiveScore();
             setupNextButton();
@@ -953,15 +1018,17 @@
                 scoreMessage.innerText = "Opérationnel. Votre instinct est bon, mais quelques failles persistent.";
             } else {
                 scoreDisplay.style.color = "#c0392b";
-                scoreMessage.innerText = "Vos erreurs engagent votre responsabilité. Reprenez vos manuels.";
+                scoreMessage.innerText = "Vos erreurs engagent votre responsabilité juridique. Reprenez vos manuels.";
             }
 
             // GENERATION DU DEBRIEFING 
             const debriefContainer = document.getElementById('debriefing-container');
             debriefContainer.innerHTML = '';
             
-            if (currentModuleId === 'vidocq' && userAnswers.length > 0) {
-                let html = "<h4 style='font-size: 1.3em; color: #2c3e50; border-bottom: 2px solid #34495e; padding-bottom: 10px;'>Rapport détaillé de vos observations :</h4>";
+            if ((currentModuleId === 'vidocq' || currentModuleId === 'juridique') && userAnswers.length > 0) {
+                let titleText = currentModuleId === 'vidocq' ? 'Rapport détaillé de vos observations :' : 'Rapport détaillé de vos décisions juridiques :';
+                let html = `<h4 style='font-size: 1.3em; color: #2c3e50; border-bottom: 2px solid #34495e; padding-bottom: 10px;'>${titleText}</h4>`;
+                
                 userAnswers.forEach((ans, idx) => {
                     html += `
                     <div class="debrief-item">
@@ -973,7 +1040,12 @@
                         <p style="margin-top: 10px; background-color: #f4f6f7; padding: 10px; border-radius: 4px;"><em>${ans.explanation}</em></p>
                     </div>`;
                 });
-                html += `<div class="debrief-advice"><h4>Conseils de l'Instructeur :</h4><p>Relisez la <strong>FICHE 30 - La méthode VIDOCQ</strong>.</p></div>`;
+                
+                let adviceHTML = currentModuleId === 'vidocq' 
+                    ? `<div class="debrief-advice"><h4>Conseils de l'Instructeur :</h4><p>Relisez la <strong>FICHE 30 - La méthode VIDOCQ</strong>.</p></div>`
+                    : `<div class="debrief-advice"><h4>Conseils de l'Instructeur :</h4><p>Le droit est votre bouclier. Relisez attentivement les chapitres sur le <strong>Cadre Légal (Articles 53, 73, 803 du CPP, 122-5 du CP)</strong> et les fiches mémo Appréhension/Flagrance de votre manuel.</p></div>`;
+                
+                html += adviceHTML;
                 debriefContainer.innerHTML = html;
                 debriefContainer.style.display = 'block';
 
