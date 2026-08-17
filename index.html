@@ -77,6 +77,15 @@
         #dual-qcm-container { display: none; grid-template-columns: 1fr 1fr; gap: 20px; }
         .column-title { text-align: center; color: #2c3e50; font-size: 1.1em; border-bottom: 2px solid #bdc3c7; padding-bottom: 10px; margin-bottom: 15px;}
         
+        /* Styles Module 2 DESC Builder */
+        #desc-builder-container { display: none; flex-direction: column; gap: 15px; }
+        .desc-step { border: 2px solid #bdc3c7; border-radius: 8px; padding: 15px; }
+        .desc-step.D { background-color: #f4f6f7; border-left: 5px solid #3498db; }
+        .desc-step.E { background-color: #e8f8f5; border-left: 5px solid #1abc9c; }
+        .desc-step.S { background-color: #fef9e7; border-left: 5px solid #f1c40f; }
+        .desc-step.C { background-color: #fdedec; border-left: 5px solid #e74c3c; }
+        .desc-step h4 { margin-top: 0; color: #2c3e50; margin-bottom: 10px; }
+        
         #validate-btn { background-color: #f39c12; color: white; width: 100%; margin-top: 20px; display: none; font-weight: bold;}
         #validate-btn:hover { background-color: #e67e22; }
 
@@ -130,11 +139,7 @@
         .next-btn:hover { background-color: #3498db; }
         .score-display { font-size: 1.5em; text-align: center; margin: 20px 0; padding: 20px; background: #ecf0f1; border-radius: 8px; }
 
-        /* Styles spécifiques pour le débriefing */
-        #debriefing-container {
-            margin-top: 30px;
-            display: none;
-        }
+        #debriefing-container { margin-top: 30px; display: none; }
         .debrief-item {
             background-color: #fdfefe;
             border-left: 4px solid #34495e;
@@ -192,7 +197,7 @@
             
             <div id="question-text" style="font-size: 1.1em; margin-bottom: 20px; font-weight: 500; background: #fdfefe; padding: 15px; border-left: 4px solid #34495e;"></div>
             
-            <!-- CONTENEUR QCM SIMPLE (Modules 2 à 5) -->
+            <!-- CONTENEUR QCM SIMPLE (Modules 3 à 5) -->
             <div id="options-container" style="display:none;"></div>
             
             <!-- CONTENEUR QCM DOUBLE (Module 1) -->
@@ -206,8 +211,28 @@
                     <div id="options-justif"></div>
                 </div>
             </div>
+
+            <!-- CONTENEUR DESC BUILDER (Module 2) -->
+            <div id="desc-builder-container">
+                <div class="desc-step D">
+                    <h4>Étape D : Décrire les faits (Objectivité)</h4>
+                    <div id="desc-options-d"></div>
+                </div>
+                <div class="desc-step E">
+                    <h4>Étape E : Exprimer les conséquences (Clarté)</h4>
+                    <div id="desc-options-e"></div>
+                </div>
+                <div class="desc-step S">
+                    <h4>Étape S : Spécifier une solution (Action attendue)</h4>
+                    <div id="desc-options-s"></div>
+                </div>
+                <div class="desc-step C">
+                    <h4>Étape C : Conclure (Conséquences finales)</h4>
+                    <div id="desc-options-c"></div>
+                </div>
+            </div>
             
-            <button id="validate-btn" onclick="validateDual()">Valider ma décision</button>
+            <button id="validate-btn" onclick="validateAnswer()">Valider ma décision</button>
             <div id="feedback-area" class="feedback"></div>
             <button id="next-btn" class="next-btn" onclick="nextQuestion()">Situation suivante</button>
             <button class="back-btn" onclick="goHome()">Quitter le module</button>
@@ -239,7 +264,7 @@
                         correctAction: 1, 
                         optionsJustif: ["C'est la responsabilité exclusive des agents d'entretien.", "C'est un outil facilitant l'intrusion par escalade.", "Le site est un point sensible nécessitant une inspection visuelle interne."], 
                         correctJustif: 1, 
-                        explanation: "Méthode Vidocq : La poubelle sert de marchepied (faille environnementale). Il faut la replacer immédiatement et le signaler pour éviter l'approche." 
+                        explanation: "Méthode Vidocq : La poubelle sert de marchepied (faille environnementale). Il faut la replacer immédiatement et le signaler." 
                     },
                     { 
                         q: "La porte du TGBT (Tableau Général Basse Tension) est ouverte sans présence technique.", 
@@ -255,7 +280,7 @@
                         correctAction: 1, 
                         optionsJustif: ["C'est un stationnement sur voie publique.", "C'est une entrave à l'évacuation incendie et un repérage possible.", "Le véhicule doit être mis en fourrière immédiatement."], 
                         correctJustif: 1, 
-                        explanation: "Un véhicule ventouse bloque la sécurité incendie et peut servir de moyen de fuite ou de repérage pour une équipe de malfaiteurs." 
+                        explanation: "Un véhicule ventouse bloque la sécurité incendie et peut servir de moyen de fuite ou de repérage." 
                     },
                     { 
                         q: "Vous constatez que le grillage ouest est nettement découpé à la pince.", 
@@ -317,32 +342,253 @@
             },
             desc: {
                 title: "2. Simulateur DESC",
-                type: "single",
+                type: "desc_builder",
                 questions: [
-                    { q: "Un visiteur force le passage sans badge. (En cours d'optimisation)", options: ["L'insulter", "Appliquer le DESC"], correct: 1, explanation: "Rappel des règles." }
+                    {
+                        q: "Situation 1 : À l'entrée d'un concert, le terminal indique que le billet d'un visiteur est une contrefaçon. Le visiteur s'énerve et bloque la file.",
+                        optionsD: [
+                            "Vous êtes un faussaire, votre billet est faux.",
+                            "Monsieur, je viens de scanner votre billet et le terminal indique qu'il s'agit d'une contrefaçon.",
+                            "Je constate que vous essayez de frauder l'entrée."
+                        ], correctD: 1,
+                        optionsE: [
+                            "Ce titre n'étant pas reconnu, je ne peux pas vous laisser entrer et votre insistance bloque le passage.",
+                            "Vous m'énervez à forcer le passage, vous allez créer une émeute.",
+                            "Si vous entrez, mon chef va me crier dessus."
+                        ], correctE: 0,
+                        optionsS: [
+                            "Allez-vous-en ou je vous frappe.",
+                            "Je vous demande de libérer l'accès. Vous pouvez vous rendre au guichet litiges à l'extérieur.",
+                            "Restez là en attendant la police."
+                        ], correctS: 1,
+                        optionsC: [
+                            "Si vous persistez à bloquer l'accès, je serai contraint de solliciter les OPJ présents pour une interpellation.",
+                            "Si vous restez, je vous casse la figure.",
+                            "Si vous continuez, je vous laisse entrer mais vous vous cachez."
+                        ], correctC: 0,
+                        explanation: "Le DESC face à un titre frauduleux doit rester objectif. L'agent ne juge pas (il ne dit pas 'vous êtes un voleur') mais constate le refus de la machine et donne une alternative claire (guichet litige)."
+                    },
+                    {
+                        q: "Situation 2 : Un spectateur fume une cigarette dans une tribune classée zone non-fumeur.",
+                        optionsD: [
+                            "Vous ne savez pas lire les panneaux 'Interdit de fumer' ?",
+                            "Monsieur, je constate que vous fumez dans cette zone.",
+                            "Éteignez ça tout de suite, c'est interdit."
+                        ], correctD: 1,
+                        optionsE: [
+                            "Votre fumée incommode les autres spectateurs et crée un risque d'incendie.",
+                            "La fumée me donne mal à la tête.",
+                            "C'est comme ça et pas autrement, c'est le règlement."
+                        ], correctE: 0,
+                        optionsS: [
+                            "Donnez-moi votre paquet de cigarettes.",
+                            "Sortez du stade immédiatement.",
+                            "Je vous demande d'éteindre votre cigarette ou de vous rendre dans la zone fumeur à l'extérieur."
+                        ], correctS: 2,
+                        optionsC: [
+                            "Dans le cas contraire, je devrai demander votre exclusion du stade à ma hiérarchie.",
+                            "Si vous continuez, je vous vide mon extincteur dessus.",
+                            "Sinon, je vous mets une amende de 135 euros."
+                        ], correctC: 0,
+                        explanation: "L'agent de sûreté n'est pas policier municipal, il ne met pas d'amende (sauf assermentation très spécifique). Il doit proposer l'alternative de la zone fumeur avant l'exclusion."
+                    },
+                    {
+                        q: "Situation 3 : Lors d'un filtrage (Art. L613-3), un visiteur se présente avec une bouteille en verre. Il refuse de s'en séparer.",
+                        optionsD: [
+                            "Monsieur, vous avez une arme par destination dans votre sac.",
+                            "Monsieur, vous avez certainement une bonne raison de l'amener, mais je constate que vous portez une bouteille en verre.",
+                            "C'est interdit les bouteilles, vous êtes idiot ?"
+                        ], correctD: 1,
+                        optionsE: [
+                            "Cet objet est interdit car il représente un risque de blessure ou de jet dans l'enceinte.",
+                            "Je ne veux pas avoir de problèmes avec mon patron.",
+                            "Si vous la gardez, vous allez vous saouler."
+                        ], correctE: 0,
+                        optionsS: [
+                            "Je vous invite à la jeter dans cette poubelle ou à la ramener dans votre véhicule.",
+                            "Donnez-la moi, je vais la boire.",
+                            "Je vous la confisque de force."
+                        ], correctS: 0,
+                        optionsC: [
+                            "Sinon, je vous tape.",
+                            "Si vous refusez de vous en séparer, le règlement m'oblige à vous interdire l'accès au site.",
+                            "Si vous refusez, je vous arrête pour vol."
+                        ], correctC: 1,
+                        explanation: "L'empathie en introduction ('vous avez certainement une bonne raison') est parfaite pour désamorcer. Confisquer de force un objet non délictuel est du vol."
+                    },
+                    {
+                        q: "Situation 4 : Un individu refuse de se soumettre à la palpation de sécurité obligatoire à l'entrée d'un événement.",
+                        optionsD: [
+                            "Vous cachez une arme, c'est sûr.",
+                            "Je vois bien que vous refusez de vous faire palper.",
+                            "Monsieur, je constate que vous refusez la palpation de sécurité."
+                        ], correctD: 2,
+                        optionsE: [
+                            "Sans ce contrôle, je ne peux pas garantir l'absence d'objets dangereux et assurer la sécurité du site.",
+                            "Vous m'empêchez de faire mon travail correctement.",
+                            "Si je ne vous palpe pas, on va tous mourir."
+                        ], correctE: 0,
+                        optionsS: [
+                            "Laissez-moi vous fouiller de force.",
+                            "Je vous invite soit à accepter ce contrôle, soit à quitter la file d'attente.",
+                            "Appelez votre avocat si vous n'êtes pas content."
+                        ], correctS: 1,
+                        optionsC: [
+                            "Si vous refusez, je vous enferme dans le local de sécurité.",
+                            "Si vous persistez dans votre refus, je devrai vous refuser définitivement l'accès.",
+                            "Si vous restez, je vous passe les menottes."
+                        ], correctC: 1,
+                        explanation: "Le refus de palpation n'est pas un délit (donc pas d'entrave, pas de force). La seule conséquence légale est l'interdiction d'accès."
+                    },
+                    {
+                        q: "Situation 5 : Vol à l'étalage. Vous avez intercepté une personne après les caisses. Dans le local, vous commencez le dialogue.",
+                        optionsD: [
+                            "Vous êtes un voleur, je vous ai vu sur les caméras.",
+                            "Monsieur, j'ai constaté que vous avez passé les caisses sans régler l'article dissimulé dans votre veste.",
+                            "Je sais que vous avez volé, avouez-le !"
+                        ], correctD: 1,
+                        optionsE: [
+                            "Cela m'énerve que les gens volent dans ce magasin.",
+                            "Vous allez aller en prison pour ça.",
+                            "Ceci constitue un vol, ce qui pose un préjudice financier à l'entreprise."
+                        ], correctE: 2,
+                        optionsS: [
+                            "Je vous propose de régler l'article immédiatement en caisse centrale pour réparer le dommage.",
+                            "Rendez-moi l'article et donnez-moi 50 euros en plus.",
+                            "Laissez votre carte d'identité en garantie."
+                        ], correctS: 0,
+                        optionsC: [
+                            "Si vous payez, l'incident est clos. Sinon, je ferai appel à la police pour une procédure judiciaire.",
+                            "Si vous refusez, je vous frappe.",
+                            "Dans le cas contraire, je vous séquestre ici toute la nuit."
+                        ], correctC: 0,
+                        explanation: "Dans le cadre d'un règlement à l'amiable toléré par l'enseigne, l'agent reste factuel sur le délit de vol, propose la réparation civile (paiement) et rappelle la conséquence pénale (OPJ)."
+                    },
+                    {
+                        q: "Situation 6 : Un apprenti du lycée refuse de vous présenter son badge à l'entrée de manière insolente.",
+                        optionsD: [
+                            "Tu es mal élevé, montre ton badge.",
+                            "Jeune homme, je constate que tu refuses de me présenter ton badge d'accès.",
+                            "Tu te prends pour qui pour me parler comme ça ?"
+                        ], correctD: 1,
+                        optionsE: [
+                            "Sans ce badge, je ne peux pas vérifier ton identité et garantir que tu es bien élève ici.",
+                            "Ton comportement m'insupporte et je vais te punir.",
+                            "Tu vas avoir des problèmes avec la direction."
+                        ], correctE: 0,
+                        optionsS: [
+                            "Repars chez toi immédiatement.",
+                            "Je te demande de le chercher dans ton sac ou de passer par l'accueil de la vie scolaire.",
+                            "Donne-moi ton sac que je cherche moi-même."
+                        ], correctS: 1,
+                        optionsC: [
+                            "Si tu t'obstines, tu resteras à l'extérieur et l'administration sera prévenue.",
+                            "Sinon, je t'emmène de force au commissariat.",
+                            "Dans le cas contraire, je te confisque ton téléphone."
+                        ], correctC: 0,
+                        explanation: "L'agent ne doit pas se laisser gagner par l'émotion face à l'insolence. Il rappelle la règle objective (vérification d'identité pour l'accès) et donne la solution standard (vie scolaire)."
+                    },
+                    {
+                        q: "Situation 7 : Lors d'une ronde sur un parking privé, un véhicule se gare sur une place handicapée sans macaron.",
+                        optionsD: [
+                            "Vous n'êtes pas handicapé, bougez votre voiture.",
+                            "Monsieur, je constate que vous êtes stationné sur une place réservée aux personnes à mobilité réduite sans macaron visible.",
+                            "Vous n'avez pas honte de vous garer là ?"
+                        ], correctD: 1,
+                        optionsE: [
+                            "Cela bloque l'accès à une personne qui en a réellement besoin.",
+                            "Je déteste les gens comme vous.",
+                            "C'est une infraction qui va vous coûter cher."
+                        ], correctE: 0,
+                        optionsS: [
+                            "Je vous demande de déplacer votre véhicule immédiatement sur une place standard.",
+                            "Donnez-moi vos clés, je vais la garer.",
+                            "Quittez le parking."
+                        ], correctS: 0,
+                        optionsC: [
+                            "Sinon, je crève vos pneus.",
+                            "Si vous refusez, je devrai rédiger un signalement et demander l'enlèvement du véhicule.",
+                            "Si vous la laissez, je vous bloque avec ma voiture."
+                        ], correctC: 1,
+                        explanation: "Même face à un manque de civisme flagrant, l'agent garde le contrôle de sa communication. L'enlèvement est la conséquence légale sur un site privé."
+                    },
+                    {
+                        q: "Situation 8 : Un usager s'énerve à l'accueil et commence à vous insulter violemment (Outrage).",
+                        optionsD: [
+                            "Monsieur, vous venez de prononcer des insultes à mon encontre dans l'exercice de mes fonctions.",
+                            "Vous êtes complètement fou de m'insulter.",
+                            "Répétez ça pour voir ?"
+                        ], correctD: 0,
+                        optionsE: [
+                            "Vos propos me blessent personnellement.",
+                            "Ces propos constituent un délit d'outrage et troublent la tranquillité du site.",
+                            "Vous allez regretter d'avoir dit ça."
+                        ], correctE: 1,
+                        optionsS: [
+                            "Battez-vous avec moi dehors.",
+                            "Je vous demande de vous calmer et de cesser immédiatement ces insultes.",
+                            "Taisez-vous ou je vous frappe."
+                        ], correctS: 1,
+                        optionsC: [
+                            "Si vous continuez, je serai contraint de vous appréhender et de vous remettre à la Police.",
+                            "Si vous n'arrêtez pas, je vous insulte en retour.",
+                            "Dans le cas contraire, je refuse de vous parler."
+                        ], correctC: 0,
+                        explanation: "Face à un outrage (délit), l'agent doit formuler une sommation claire. S'il y a récidive ou violence, l'appréhension (Art. 73) devient légitime."
+                    },
+                    {
+                        q: "Situation 9 : Un livreur décharge ses cartons en bloquant totalement une issue de secours.",
+                        optionsD: [
+                            "Vous bloquez la porte, dégagez ça.",
+                            "Monsieur, je constate que vous déposez vos cartons devant l'issue de secours.",
+                            "C'est interdit de livrer ici, lisez les panneaux."
+                        ], correctD: 1,
+                        optionsE: [
+                            "Cet encombrement bloque l'évacuation en cas d'incendie et met tout le monde en danger.",
+                            "C'est pénible, je dois passer par là pour ma ronde.",
+                            "Vous allez vous prendre une amende par l'inspection du travail."
+                        ], correctE: 0,
+                        optionsS: [
+                            "Je vous demande de décaler votre livraison vers la zone dédiée à quelques mètres.",
+                            "Remballez tout et annulez la livraison.",
+                            "Je vais jeter vos cartons."
+                        ], correctS: 0,
+                        optionsC: [
+                            "Si vous refusez, je devrai stopper votre réception et informer votre direction.",
+                            "Sinon, je préviens la police.",
+                            "Dans le cas contraire, je ferme la porte à clé."
+                        ], correctC: 0,
+                        explanation: "Le livreur est un professionnel, il faut lui rappeler le risque sécurité (évacuation) et l'impact professionnel (remontée à sa hiérarchie) pour obtenir sa coopération."
+                    },
+                    {
+                        q: "Situation 10 : Un individu visiblement alcoolisé refuse de sortir du hall d'un bâtiment privé à la fermeture.",
+                        optionsD: [
+                            "Vous êtes complètement ivre, dehors !",
+                            "Tu as trop bu, il faut partir maintenant.",
+                            "Monsieur, je constate que vous refusez de quitter le bâtiment alors que nous fermons."
+                        ], correctD: 2,
+                        optionsE: [
+                            "Vous me faites perdre mon temps.",
+                            "Votre présence non autorisée après l'heure empêche la mise sous alarme du site.",
+                            "Vous sentez l'alcool et vous dérangez."
+                        ], correctE: 1,
+                        optionsS: [
+                            "Je vous demande de vous diriger calmement vers la sortie principale.",
+                            "Sortez en courant.",
+                            "Je vais vous porter jusqu'à la sortie."
+                        ], correctS: 0,
+                        optionsC: [
+                            "Si vous ne sortez pas, je vais vous pousser dehors.",
+                            "Si vous restez, je serai obligé de faire intervenir les forces de l'ordre pour intrusion.",
+                            "Sinon, je vous laisse enfermé ici toute la nuit."
+                        ], correctC: 1,
+                        explanation: "Face à une personne alcoolisée, on évite absolument le jugement ('vous êtes ivre') qui génère de la violence. On reste sur le fait objectif : le refus de quitter les lieux à la fermeture."
+                    }
                 ]
             },
-            radio: {
-                title: "3. Radio Express",
-                type: "single",
-                questions: [
-                    { q: "Comment dire 5 en radio ? (En cours d'optimisation)", options: ["Cinq", "3 et 2"], correct: 1, explanation: "Code chiffré." }
-                ]
-            },
-            juridique: {
-                title: "4. L'Arène Juridique",
-                type: "single",
-                questions: [
-                    { q: "L'article 73 concerne : (En cours d'optimisation)", options: ["La palpation", "L'appréhension"], correct: 1, explanation: "Délit flagrant." }
-                ]
-            },
-            rapport: {
-                title: "5. Chrono-Rapport",
-                type: "single",
-                questions: [
-                    { q: "Un rapport doit être : (En cours d'optimisation)", options: ["Imaginatif", "Factuel"], correct: 1, explanation: "Les faits bruts." }
-                ]
-            }
+            radio: { title: "3. Radio Express", type: "single", questions: [{ q: "En construction", options: ["1"], correct: 0, explanation: "" }] },
+            juridique: { title: "4. L'Arène Juridique", type: "single", questions: [{ q: "En construction", options: ["1"], correct: 0, explanation: "" }] },
+            rapport: { title: "5. Chrono-Rapport", type: "single", questions: [{ q: "En construction", options: ["1"], correct: 0, explanation: "" }] }
         };
 
         // VARIABLES GLOBALES
@@ -351,8 +597,9 @@
         let score = 0;
         let userAnswers = []; // Mémoire des réponses pour le débriefing
         let selectionDual = { actionCorrect: false, justifCorrect: false, actionBtn: null, justifBtn: null };
+        let selectionDesc = { d: null, e: null, s: null, c: null }; // Pour le module DESC
 
-        // FONCTION DE MELANGE ALEATOIRE (Fisher-Yates)
+        // FONCTION DE MELANGE ALEATOIRE
         function shuffleArray(array) {
             const arr = [...array];
             for (let i = arr.length - 1; i > 0; i--) {
@@ -371,7 +618,7 @@
             currentModuleId = moduleId;
             currentQuestionIndex = 0;
             score = 0;
-            userAnswers = []; // Réinitialiser le débriefing
+            userAnswers = [];
             
             document.getElementById('menu').classList.remove('active');
             document.getElementById('result').classList.remove('active');
@@ -397,24 +644,24 @@
             // Réinitialiser UI
             document.getElementById('feedback-area').classList.remove('active', 'success', 'error', 'partial');
             document.getElementById('next-btn').classList.remove('active');
+            document.getElementById('validate-btn').style.display = 'none';
+            document.getElementById('options-container').style.display = 'none';
+            document.getElementById('dual-qcm-container').style.display = 'none';
+            document.getElementById('desc-builder-container').style.display = 'none';
             
             if (module.type === "dual") {
-                document.getElementById('options-container').style.display = 'none';
+                // Logique Mod 1 (Vidocq)
                 document.getElementById('dual-qcm-container').style.display = 'grid';
                 document.getElementById('validate-btn').style.display = 'block';
                 document.getElementById('validate-btn').disabled = true;
                 document.getElementById('validate-btn').style.opacity = '0.5';
+                document.getElementById('validate-btn').onclick = validateDual;
                 
                 selectionDual = { actionCorrect: null, justifCorrect: null, actionBtn: null, justifBtn: null };
                 
-                // Préparation mélangée des Actions
-                const actionsShuffled = qData.optionsAction.map((text, idx) => ({
-                    text: text,
-                    isCorrect: (idx === qData.correctAction)
-                }));
-                const randomActions = shuffleArray(actionsShuffled);
-
                 // Remplir Colonne Action
+                const actionsShuffled = qData.optionsAction.map((text, idx) => ({ text: text, isCorrect: (idx === qData.correctAction) }));
+                const randomActions = shuffleArray(actionsShuffled);
                 const actionContainer = document.getElementById('options-action');
                 actionContainer.innerHTML = '';
                 randomActions.forEach((item) => {
@@ -426,14 +673,9 @@
                     actionContainer.appendChild(btn);
                 });
                 
-                // Préparation mélangée des Justifications
-                const justifsShuffled = qData.optionsJustif.map((text, idx) => ({
-                    text: text,
-                    isCorrect: (idx === qData.correctJustif)
-                }));
-                const randomJustifs = shuffleArray(justifsShuffled);
-
                 // Remplir Colonne Justification
+                const justifsShuffled = qData.optionsJustif.map((text, idx) => ({ text: text, isCorrect: (idx === qData.correctJustif) }));
+                const randomJustifs = shuffleArray(justifsShuffled);
                 const justifContainer = document.getElementById('options-justif');
                 justifContainer.innerHTML = '';
                 randomJustifs.forEach((item) => {
@@ -445,12 +687,40 @@
                     justifContainer.appendChild(btn);
                 });
                 
-            } else {
-                // Logique pour les QCM simples (Modules 2 à 5)
-                document.getElementById('options-container').style.display = 'block';
-                document.getElementById('dual-qcm-container').style.display = 'none';
-                document.getElementById('validate-btn').style.display = 'none';
+            } else if (module.type === "desc_builder") {
+                // Logique Mod 2 (DESC)
+                document.getElementById('desc-builder-container').style.display = 'flex';
+                document.getElementById('validate-btn').style.display = 'block';
+                document.getElementById('validate-btn').disabled = true;
+                document.getElementById('validate-btn').style.opacity = '0.5';
+                document.getElementById('validate-btn').innerText = "Valider ma méthode DESC";
+                document.getElementById('validate-btn').onclick = validateDesc;
                 
+                selectionDesc = { d: null, e: null, s: null, c: null };
+                
+                const steps = ['d', 'e', 's', 'c'];
+                steps.forEach(step => {
+                    const optKey = 'options' + step.toUpperCase();
+                    const correctKey = 'correct' + step.toUpperCase();
+                    
+                    const shuffled = qData[optKey].map((text, idx) => ({ text: text, isCorrect: (idx === qData[correctKey]) }));
+                    const randomOpts = shuffleArray(shuffled);
+                    
+                    const container = document.getElementById('desc-options-' + step);
+                    container.innerHTML = '';
+                    randomOpts.forEach(item => {
+                        const btn = document.createElement('button');
+                        btn.className = 'choice-btn';
+                        btn.innerText = item.text;
+                        btn.dataset.correct = item.isCorrect;
+                        btn.onclick = () => selectDesc(step, item.isCorrect, btn);
+                        container.appendChild(btn);
+                    });
+                });
+                
+            } else {
+                // Logique pour les QCM simples (Modules 3 à 5)
+                document.getElementById('options-container').style.display = 'block';
                 const optionsContainer = document.getElementById('options-container');
                 optionsContainer.innerHTML = '';
                 qData.options.forEach((optText, index) => {
@@ -463,16 +733,15 @@
             }
         }
 
+        /* --- FONCTIONS MODULE 1 (DUAL) --- */
         function selectDual(type, isCorrect, btn) {
             const container = document.getElementById(type === 'action' ? 'options-action' : 'options-justif');
             const btns = container.querySelectorAll('.choice-btn');
             btns.forEach(b => b.classList.remove('selected'));
-            
             btn.classList.add('selected');
             selectionDual[type + 'Correct'] = isCorrect;
             selectionDual[type + 'Btn'] = btn;
             
-            // Activer le bouton de validation si les deux sont choisis
             if (selectionDual.actionCorrect !== null && selectionDual.justifCorrect !== null) {
                 document.getElementById('validate-btn').disabled = false;
                 document.getElementById('validate-btn').style.opacity = '1';
@@ -483,35 +752,29 @@
             document.getElementById('validate-btn').style.display = 'none';
             const module = db[currentModuleId];
             const qData = module.questions[currentQuestionIndex];
-            
             const isActionCorrect = (selectionDual.actionCorrect === true);
             const isJustifCorrect = (selectionDual.justifCorrect === true);
             
-            // Sauvegarder pour le débriefing
             userAnswers.push({
                 q: qData.q,
-                userAction: selectionDual.actionBtn ? selectionDual.actionBtn.innerText : "Non répondu",
+                userAction: selectionDual.actionBtn ? selectionDual.actionBtn.innerText : "",
                 isActionCorrect: isActionCorrect,
                 correctAction: qData.optionsAction[qData.correctAction],
-                userJustif: selectionDual.justifBtn ? selectionDual.justifBtn.innerText : "Non répondu",
+                userJustif: selectionDual.justifBtn ? selectionDual.justifBtn.innerText : "",
                 isJustifCorrect: isJustifCorrect,
                 correctJustif: qData.optionsJustif[qData.correctJustif],
                 explanation: qData.explanation
             });
 
-            // Bloquer les boutons et révéler les réponses
             const allBtns = document.querySelectorAll('#dual-qcm-container .choice-btn');
             allBtns.forEach(b => {
                 b.disabled = true;
-                if (b.dataset.correct === "true") {
-                    b.classList.add('correct');
-                }
+                if (b.dataset.correct === "true") b.classList.add('correct');
             });
 
             if (!isActionCorrect && selectionDual.actionBtn) selectionDual.actionBtn.classList.add('wrong');
             if (!isJustifCorrect && selectionDual.justifBtn) selectionDual.justifBtn.classList.add('wrong');
             
-            // Calcul du score et Feedback immédiat
             const fb = document.getElementById('feedback-area');
             fb.classList.remove('success', 'error', 'partial');
             
@@ -520,18 +783,87 @@
                 fb.classList.add('active', 'success');
                 fb.innerHTML = `<strong>✓ OPÉRATION VALIDÉE</strong><br>${qData.explanation}`;
             } else if (isActionCorrect || isJustifCorrect) {
-                score += 0.5; // Demi-point
+                score += 0.5;
                 fb.classList.add('active', 'partial');
                 fb.innerHTML = `<strong>⚠ ANALYSE PARTIELLE (+0.5 pt)</strong><br>Une partie de votre analyse est inexacte.<br><br><em>Rappel :</em> ${qData.explanation}`;
             } else {
                 fb.classList.add('active', 'error');
                 fb.innerHTML = `<strong>✗ ÉCHEC TACTIQUE</strong><br>${qData.explanation}`;
             }
+            updateLiveScore();
+            setupNextButton();
+        }
+
+        /* --- FONCTIONS MODULE 2 (DESC BUILDER) --- */
+        function selectDesc(step, isCorrect, btn) {
+            const container = document.getElementById('desc-options-' + step);
+            const btns = container.querySelectorAll('.choice-btn');
+            btns.forEach(b => b.classList.remove('selected'));
+            
+            btn.classList.add('selected');
+            selectionDesc[step] = { isCorrect: isCorrect, btn: btn };
+            
+            if (selectionDesc.d !== null && selectionDesc.e !== null && selectionDesc.s !== null && selectionDesc.c !== null) {
+                document.getElementById('validate-btn').disabled = false;
+                document.getElementById('validate-btn').style.opacity = '1';
+            }
+        }
+
+        function validateDesc() {
+            document.getElementById('validate-btn').style.display = 'none';
+            const module = db[currentModuleId];
+            const qData = module.questions[currentQuestionIndex];
+            
+            let pts = 0;
+            const steps = ['d', 'e', 's', 'c'];
+            steps.forEach(s => {
+                if (selectionDesc[s] && selectionDesc[s].isCorrect) pts += 0.25;
+            });
+            
+            // Mémoire pour debrief
+            userAnswers.push({
+                q: qData.q,
+                score: pts,
+                d_user: selectionDesc.d.btn.innerText, d_correct: selectionDesc.d.isCorrect, d_exp: qData.optionsD[qData.correctD],
+                e_user: selectionDesc.e.btn.innerText, e_correct: selectionDesc.e.isCorrect, e_exp: qData.optionsE[qData.correctE],
+                s_user: selectionDesc.s.btn.innerText, s_correct: selectionDesc.s.isCorrect, s_exp: qData.optionsS[qData.correctS],
+                c_user: selectionDesc.c.btn.innerText, c_correct: selectionDesc.c.isCorrect, c_exp: qData.optionsC[qData.correctC],
+                explanation: qData.explanation
+            });
+
+            // Coloration des boutons
+            const allBtns = document.querySelectorAll('#desc-builder-container .choice-btn');
+            allBtns.forEach(b => {
+                b.disabled = true;
+                if (b.dataset.correct === "true") b.classList.add('correct');
+            });
+
+            steps.forEach(s => {
+                if (selectionDesc[s] && !selectionDesc[s].isCorrect) {
+                    selectionDesc[s].btn.classList.add('wrong');
+                }
+            });
+
+            score += pts;
+            
+            const fb = document.getElementById('feedback-area');
+            fb.classList.remove('success', 'error', 'partial');
+            if (pts === 1) {
+                fb.classList.add('active', 'success');
+                fb.innerHTML = `<strong>✓ NÉGOCIATION PARFAITE (1 pt)</strong><br>${qData.explanation}`;
+            } else if (pts > 0) {
+                fb.classList.add('active', 'partial');
+                fb.innerHTML = `<strong>⚠ COMMUNICATION IMPARFAITE (+${pts} pt)</strong><br>Certaines de vos étapes étaient agressives ou non-professionnelles.<br><br><em>Rappel :</em> ${qData.explanation}`;
+            } else {
+                fb.classList.add('active', 'error');
+                fb.innerHTML = `<strong>✗ ÉCHEC TOTAL DU DIALOGUE</strong><br>${qData.explanation}`;
+            }
             
             updateLiveScore();
             setupNextButton();
         }
 
+        /* --- FONCTIONS AUTRES MODULES --- */
         function handleSingleAnswer(selectedIndex, clickedBtn) {
             const module = db[currentModuleId];
             const qData = module.questions[currentQuestionIndex];
@@ -594,44 +926,53 @@
             
             if (score === total) {
                 scoreDisplay.style.color = "#27ae60";
-                scoreMessage.innerText = "Excellent ! Discernement et rigueur juridique parfaits. Vous êtes digne de votre carte professionnelle.";
+                scoreMessage.innerText = "Excellent ! Discernement et communication parfaits. Vous êtes digne de votre carte professionnelle.";
             } else if (score >= total * 0.7) {
                 scoreDisplay.style.color = "#d35400";
                 scoreMessage.innerText = "Opérationnel. Votre instinct est bon, mais quelques failles persistent. Lisez le débriefing ci-dessous.";
             } else {
                 scoreDisplay.style.color = "#c0392b";
-                scoreMessage.innerText = "Vos erreurs tactiques engagent votre responsabilité. Lisez attentivement le débriefing et reprenez vos manuels.";
+                scoreMessage.innerText = "Vos erreurs tactiques ou verbales engagent votre responsabilité. Lisez attentivement le débriefing et reprenez vos manuels.";
             }
 
-            // GENERATION DU DEBRIEFING (Spécifique Module 1)
+            // GENERATION DU DEBRIEFING 
             const debriefContainer = document.getElementById('debriefing-container');
             debriefContainer.innerHTML = '';
             
             if (currentModuleId === 'vidocq' && userAnswers.length > 0) {
-                let html = "<h4 style='font-size: 1.3em; color: #2c3e50; border-bottom: 2px solid #34495e; padding-bottom: 10px;'>Rapport détaillé de vos interventions :</h4>";
-                
+                let html = "<h4 style='font-size: 1.3em; color: #2c3e50; border-bottom: 2px solid #34495e; padding-bottom: 10px;'>Rapport détaillé de vos observations :</h4>";
                 userAnswers.forEach((ans, idx) => {
                     html += `
                     <div class="debrief-item">
                         <p><strong>Situation ${idx + 1} :</strong> ${ans.q}</p>
-                        
                         <p><strong>Votre Action :</strong> <span class="${ans.isActionCorrect ? 'correct-text' : 'wrong-text'}">${ans.userAction}</span></p>
                         ${!ans.isActionCorrect ? `<p><strong>Action attendue :</strong> <span class="expected-text">${ans.correctAction}</span></p>` : ''}
-                        
                         <p><strong>Votre Justification :</strong> <span class="${ans.isJustifCorrect ? 'correct-text' : 'wrong-text'}">${ans.userJustif}</span></p>
                         ${!ans.isJustifCorrect ? `<p><strong>Justification attendue :</strong> <span class="expected-text">${ans.correctJustif}</span></p>` : ''}
-                        
-                        <p style="margin-top: 10px; background-color: #f4f6f7; padding: 10px; border-radius: 4px;"><em>Explication : ${ans.explanation}</em></p>
+                        <p style="margin-top: 10px; background-color: #f4f6f7; padding: 10px; border-radius: 4px;"><em>${ans.explanation}</em></p>
                     </div>`;
                 });
-                
-                html += `
-                <div class="debrief-advice">
-                    <h4>Conseils de l'Instructeur (Basés sur vos manuels) :</h4>
-                    <p><strong>À relire :</strong> Dans votre <em>Manuel de cours (fichier 01)</em>, reprenez la <strong>FICHE 30 - La méthode VIDOCQ</strong> (page 79) et le <strong>Chapitre 05 - Le lieu d'exercice</strong> (page 14).</p>
-                    <p><strong>À pratiquer :</strong> Dans votre <em>Manuel d'exercices (fichier 02)</em>, refaites l'<strong>EXERCICE 3 : La Méthode Vidocq (Analyse d'indices)</strong> (page 22) et l'<strong>EXERCICE 4 : Cartographie Tactique</strong> (page 22).</p>
-                </div>`;
-                
+                html += `<div class="debrief-advice"><h4>Conseils de l'Instructeur :</h4><p>Relisez la <strong>FICHE 30 - La méthode VIDOCQ</strong>.</p></div>`;
+                debriefContainer.innerHTML = html;
+                debriefContainer.style.display = 'block';
+
+            } else if (currentModuleId === 'desc' && userAnswers.length > 0) {
+                let html = "<h4 style='font-size: 1.3em; color: #2c3e50; border-bottom: 2px solid #34495e; padding-bottom: 10px;'>Rapport détaillé de vos négociations :</h4>";
+                userAnswers.forEach((ans, idx) => {
+                    html += `
+                    <div class="debrief-item">
+                        <p><strong>Conflit ${idx + 1} :</strong> ${ans.q}</p>
+                        <p><strong>Score pour ce conflit : ${ans.score} / 1</strong></p>
+                        <ul>
+                            <li><strong>D :</strong> <span class="${ans.d_correct ? 'correct-text' : 'wrong-text'}">${ans.d_user}</span> ${!ans.d_correct ? `<br><span class="expected-text">➔ Attendu : ${ans.d_exp}</span>` : ''}</li>
+                            <li><strong>E :</strong> <span class="${ans.e_correct ? 'correct-text' : 'wrong-text'}">${ans.e_user}</span> ${!ans.e_correct ? `<br><span class="expected-text">➔ Attendu : ${ans.e_exp}</span>` : ''}</li>
+                            <li><strong>S :</strong> <span class="${ans.s_correct ? 'correct-text' : 'wrong-text'}">${ans.s_user}</span> ${!ans.s_correct ? `<br><span class="expected-text">➔ Attendu : ${ans.s_exp}</span>` : ''}</li>
+                            <li><strong>C :</strong> <span class="${ans.c_correct ? 'correct-text' : 'wrong-text'}">${ans.c_user}</span> ${!ans.c_correct ? `<br><span class="expected-text">➔ Attendu : ${ans.c_exp}</span>` : ''}</li>
+                        </ul>
+                        <p style="margin-top: 10px; background-color: #f4f6f7; padding: 10px; border-radius: 4px;"><em>${ans.explanation}</em></p>
+                    </div>`;
+                });
+                html += `<div class="debrief-advice"><h4>Conseils de l'Instructeur :</h4><p>La communication est votre première arme. Relisez le chapitre <strong>03 - La communication verbale</strong> (page 10) et refaites l'<strong>EXERCICE 4 : Analyse de script (Méthode DESC)</strong> (page 16) de votre manuel d'exercices.</p></div>`;
                 debriefContainer.innerHTML = html;
                 debriefContainer.style.display = 'block';
             } else {
