@@ -80,6 +80,23 @@
         #validate-btn { background-color: #f39c12; color: white; width: 100%; margin-top: 20px; display: none; font-weight: bold;}
         #validate-btn:hover { background-color: #e67e22; }
 
+        .module-header-status {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .live-score-badge {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.95em;
+            font-weight: bold;
+            border: 1px solid #34495e;
+        }
+
         #progress-bar {
             width: 100%;
             background-color: #ecf0f1;
@@ -94,7 +111,7 @@
             width: 0%;
             transition: width 0.3s;
         }
-        .progress-text { font-size: 0.9em; color: #7f8c8d; margin-bottom: 10px; font-weight: bold; }
+        .progress-text { font-size: 0.9em; color: #7f8c8d; font-weight: bold; }
         .feedback { 
             margin-top: 15px; 
             padding: 15px; 
@@ -137,8 +154,14 @@
 
         <!-- ECRAN DU MODULE -->
         <div id="module" class="screen">
-            <h3 id="module-title">Titre</h3>
-            <div class="progress-text" id="progress-text">Question 1 / 10</div>
+            <div class="module-header-status">
+                <h3 id="module-title" style="margin: 0;">Titre</h3>
+                <div id="live-score" class="live-score-badge">Score : 0 / 10</div>
+            </div>
+            
+            <div class="module-header-status">
+                <div class="progress-text" id="progress-text">Situation 1 / 10</div>
+            </div>
             <div id="progress-bar"><div id="progress-fill"></div></div>
             
             <div id="question-text" style="font-size: 1.1em; margin-bottom: 20px; font-weight: 500; background: #fdfefe; padding: 15px; border-left: 4px solid #34495e;"></div>
@@ -266,28 +289,28 @@
                 title: "2. Simulateur DESC",
                 type: "single",
                 questions: [
-                    { q: "Un visiteur force le passage sans badge. (Module DESC en cours de révision - Question de test)", options: ["L'insulter", "Appliquer le DESC"], correct: 1, explanation: "Rappel des règles de communication." }
+                    { q: "Un visiteur force le passage sans badge. (Module DESC en cours de révision)", options: ["L'insulter", "Appliquer le DESC"], correct: 1, explanation: "Rappel des règles de communication." }
                 ]
             },
             radio: {
                 title: "3. Radio Express",
                 type: "single",
                 questions: [
-                    { q: "Comment dire 5 en radio ? (Module Radio en cours de révision - Question de test)", options: ["Cinq", "3 et 2"], correct: 1, explanation: "Code chiffré." }
+                    { q: "Comment dire 5 en radio ? (Module Radio en cours de révision)", options: ["Cinq", "3 et 2"], correct: 1, explanation: "Code chiffré." }
                 ]
             },
             juridique: {
                 title: "4. L'Arène Juridique",
                 type: "single",
                 questions: [
-                    { q: "L'article 73 concerne : (Module Juridique en cours de révision - Question de test)", options: ["La palpation", "L'appréhension"], correct: 1, explanation: "Délit flagrant." }
+                    { q: "L'article 73 concerne : (Module Juridique en cours de révision)", options: ["La palpation", "L'appréhension"], correct: 1, explanation: "Délit flagrant." }
                 ]
             },
             rapport: {
                 title: "5. Chrono-Rapport",
                 type: "single",
                 questions: [
-                    { q: "Un rapport doit être : (Module Rapport en cours de révision - Question de test)", options: ["Imaginatif", "Factuel"], correct: 1, explanation: "Les faits, rien que les faits." }
+                    { q: "Un rapport doit être : (Module Rapport en cours de révision)", options: ["Imaginatif", "Factuel"], correct: 1, explanation: "Les faits, rien que les faits." }
                 ]
             }
         };
@@ -296,7 +319,22 @@
         let currentModuleId = "";
         let currentQuestionIndex = 0;
         let score = 0;
-        let selectionDual = { action: null, justif: null, actionBtn: null, justifBtn: null };
+        let selectionDual = { actionCorrect: false, justifCorrect: false, actionBtn: null, justifBtn: null };
+
+        // FONCTION DE MELANGE ALEATOIRE (Fisher-Yates)
+        function shuffleArray(array) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function updateLiveScore() {
+            const total = db[currentModuleId].questions.length;
+            document.getElementById('live-score').innerText = `Score : ${score} / ${total}`;
+        }
 
         function startModule(moduleId) {
             currentModuleId = moduleId;
@@ -308,7 +346,7 @@
             document.getElementById('module').classList.add('active');
             
             document.getElementById('module-title').innerText = db[moduleId].title;
-            
+            updateLiveScore();
             loadQuestion();
         }
 
@@ -335,27 +373,43 @@
                 document.getElementById('validate-btn').disabled = true;
                 document.getElementById('validate-btn').style.opacity = '0.5';
                 
-                selectionDual = { action: null, justif: null, actionBtn: null, justifBtn: null };
+                selectionDual = { actionCorrect: null, justifCorrect: null, actionBtn: null, justifBtn: null };
                 
+                // Préparation mélangée des Actions
+                const actionsShuffled = qData.optionsAction.map((text, idx) => ({
+                    text: text,
+                    isCorrect: (idx === qData.correctAction)
+                }));
+                const randomActions = shuffleArray(actionsShuffled);
+
                 // Remplir Colonne Action
                 const actionContainer = document.getElementById('options-action');
                 actionContainer.innerHTML = '';
-                qData.optionsAction.forEach((optText, index) => {
+                randomActions.forEach((item) => {
                     const btn = document.createElement('button');
                     btn.className = 'choice-btn';
-                    btn.innerText = optText;
-                    btn.onclick = () => selectDual('action', index, btn);
+                    btn.innerText = item.text;
+                    btn.dataset.correct = item.isCorrect;
+                    btn.onclick = () => selectDual('action', item.isCorrect, btn);
                     actionContainer.appendChild(btn);
                 });
                 
+                // Préparation mélangée des Justifications
+                const justifsShuffled = qData.optionsJustif.map((text, idx) => ({
+                    text: text,
+                    isCorrect: (idx === qData.correctJustif)
+                }));
+                const randomJustifs = shuffleArray(justifsShuffled);
+
                 // Remplir Colonne Justification
                 const justifContainer = document.getElementById('options-justif');
                 justifContainer.innerHTML = '';
-                qData.optionsJustif.forEach((optText, index) => {
+                randomJustifs.forEach((item) => {
                     const btn = document.createElement('button');
                     btn.className = 'choice-btn';
-                    btn.innerText = optText;
-                    btn.onclick = () => selectDual('justif', index, btn);
+                    btn.innerText = item.text;
+                    btn.dataset.correct = item.isCorrect;
+                    btn.onclick = () => selectDual('justif', item.isCorrect, btn);
                     justifContainer.appendChild(btn);
                 });
                 
@@ -377,17 +431,17 @@
             }
         }
 
-        function selectDual(type, index, btn) {
+        function selectDual(type, isCorrect, btn) {
             const container = document.getElementById(type === 'action' ? 'options-action' : 'options-justif');
             const btns = container.querySelectorAll('.choice-btn');
             btns.forEach(b => b.classList.remove('selected'));
             
             btn.classList.add('selected');
-            selectionDual[type] = index;
+            selectionDual[type + 'Correct'] = isCorrect;
             selectionDual[type + 'Btn'] = btn;
             
             // Activer le bouton de validation si les deux sont choisis
-            if (selectionDual.action !== null && selectionDual.justif !== null) {
+            if (selectionDual.actionCorrect !== null && selectionDual.justifCorrect !== null) {
                 document.getElementById('validate-btn').disabled = false;
                 document.getElementById('validate-btn').style.opacity = '1';
             }
@@ -398,22 +452,20 @@
             const module = db[currentModuleId];
             const qData = module.questions[currentQuestionIndex];
             
-            const isActionCorrect = (selectionDual.action === qData.correctAction);
-            const isJustifCorrect = (selectionDual.justif === qData.correctJustif);
+            const isActionCorrect = (selectionDual.actionCorrect === true);
+            const isJustifCorrect = (selectionDual.justifCorrect === true);
             
-            // Bloquer les boutons
+            // Bloquer les boutons et révéler les bonnes/mauvaises réponses
             const allBtns = document.querySelectorAll('#dual-qcm-container .choice-btn');
-            allBtns.forEach(b => b.disabled = true);
-            
-            // Coloration Action
-            const actionBtns = document.getElementById('options-action').querySelectorAll('.choice-btn');
-            actionBtns[qData.correctAction].classList.add('correct');
-            if (!isActionCorrect) selectionDual.actionBtn.classList.add('wrong');
-            
-            // Coloration Justification
-            const justifBtns = document.getElementById('options-justif').querySelectorAll('.choice-btn');
-            justifBtns[qData.correctJustif].classList.add('correct');
-            if (!isJustifCorrect) selectionDual.justifBtn.classList.add('wrong');
+            allBtns.forEach(b => {
+                b.disabled = true;
+                if (b.dataset.correct === "true") {
+                    b.classList.add('correct');
+                }
+            });
+
+            if (!isActionCorrect && selectionDual.actionBtn) selectionDual.actionBtn.classList.add('wrong');
+            if (!isJustifCorrect && selectionDual.justifBtn) selectionDual.justifBtn.classList.add('wrong');
             
             // Calcul du score et Feedback
             const fb = document.getElementById('feedback-area');
@@ -424,14 +476,15 @@
                 fb.classList.add('active', 'success');
                 fb.innerHTML = `<strong>✓ OPÉRATION VALIDÉE</strong><br>${qData.explanation}`;
             } else if (isActionCorrect || isJustifCorrect) {
-                score += 0.5; // Demi point
+                score += 0.5; // Demi-point
                 fb.classList.add('active', 'partial');
-                fb.innerHTML = `<strong>⚠ ANALYSE PARTIELLE (0.5 pt)</strong><br>L'action ou la justification était incorrecte. <br><br><em>Rappel :</em> ${qData.explanation}`;
+                fb.innerHTML = `<strong>⚠ ANALYSE PARTIELLE (+0.5 pt)</strong><br>Une partie de votre analyse est inexacte.<br><br><em>Rappel de doctrine :</em> ${qData.explanation}`;
             } else {
                 fb.classList.add('active', 'error');
                 fb.innerHTML = `<strong>✗ ÉCHEC TACTIQUE</strong><br>${qData.explanation}`;
             }
             
+            updateLiveScore();
             setupNextButton();
         }
 
@@ -457,6 +510,7 @@
             fb.classList.add('active', isCorrect ? 'success' : 'error');
             fb.innerHTML = `<strong>${isCorrect ? '✓ CORRECT' : '✗ FAUX'}</strong><br>${qData.explanation}`;
             
+            updateLiveScore();
             setupNextButton();
         }
 
@@ -492,7 +546,7 @@
             const scoreDisplay = document.getElementById('score-display');
             const scoreMessage = document.getElementById('score-message');
             
-            scoreDisplay.innerText = `Évaluation : ${score} / ${total}`;
+            scoreDisplay.innerText = `Évaluation finale : ${score} / ${total}`;
             
             if (score === total) {
                 scoreDisplay.style.color = "#27ae60";
