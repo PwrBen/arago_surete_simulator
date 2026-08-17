@@ -129,6 +129,32 @@
         .next-btn.active { display: block; }
         .next-btn:hover { background-color: #3498db; }
         .score-display { font-size: 1.5em; text-align: center; margin: 20px 0; padding: 20px; background: #ecf0f1; border-radius: 8px; }
+
+        /* Styles spécifiques pour le débriefing */
+        #debriefing-container {
+            margin-top: 30px;
+            display: none;
+        }
+        .debrief-item {
+            background-color: #fdfefe;
+            border-left: 4px solid #34495e;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .debrief-item h4 { margin-top: 0; color: #2c3e50; }
+        .debrief-item p { margin: 5px 0; }
+        .correct-text { color: #27ae60; font-weight: bold; }
+        .wrong-text { color: #c0392b; font-weight: bold; text-decoration: line-through; }
+        .expected-text { color: #2980b9; font-weight: bold; }
+        .debrief-advice {
+            background-color: #e8f8f5;
+            border: 2px dashed #1abc9c;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        .debrief-advice h4 { color: #16a085; margin-top: 0; font-size: 1.2em;}
     </style>
 </head>
 <body>
@@ -187,12 +213,16 @@
             <button class="back-btn" onclick="goHome()">Quitter le module</button>
         </div>
 
-        <!-- ECRAN DES RESULTATS -->
+        <!-- ECRAN DES RESULTATS & DEBRIEFING -->
         <div id="result" class="screen">
-            <h3>Module Terminé !</h3>
+            <h3>Mission Terminée !</h3>
             <div id="score-display" class="score-display"></div>
             <p id="score-message" style="text-align: center; font-weight: bold;"></p>
-            <button class="module-btn" onclick="goHome()">Retour au Menu Principal</button>
+            
+            <!-- ZONE DE DEBRIEFING DYNAMIQUE -->
+            <div id="debriefing-container"></div>
+
+            <button class="module-btn" style="margin-top: 30px;" onclick="goHome()">Retour au Menu Principal</button>
         </div>
     </main>
 
@@ -289,28 +319,28 @@
                 title: "2. Simulateur DESC",
                 type: "single",
                 questions: [
-                    { q: "Un visiteur force le passage sans badge. (Module DESC en cours de révision)", options: ["L'insulter", "Appliquer le DESC"], correct: 1, explanation: "Rappel des règles de communication." }
+                    { q: "Un visiteur force le passage sans badge. (En cours d'optimisation)", options: ["L'insulter", "Appliquer le DESC"], correct: 1, explanation: "Rappel des règles." }
                 ]
             },
             radio: {
                 title: "3. Radio Express",
                 type: "single",
                 questions: [
-                    { q: "Comment dire 5 en radio ? (Module Radio en cours de révision)", options: ["Cinq", "3 et 2"], correct: 1, explanation: "Code chiffré." }
+                    { q: "Comment dire 5 en radio ? (En cours d'optimisation)", options: ["Cinq", "3 et 2"], correct: 1, explanation: "Code chiffré." }
                 ]
             },
             juridique: {
                 title: "4. L'Arène Juridique",
                 type: "single",
                 questions: [
-                    { q: "L'article 73 concerne : (Module Juridique en cours de révision)", options: ["La palpation", "L'appréhension"], correct: 1, explanation: "Délit flagrant." }
+                    { q: "L'article 73 concerne : (En cours d'optimisation)", options: ["La palpation", "L'appréhension"], correct: 1, explanation: "Délit flagrant." }
                 ]
             },
             rapport: {
                 title: "5. Chrono-Rapport",
                 type: "single",
                 questions: [
-                    { q: "Un rapport doit être : (Module Rapport en cours de révision)", options: ["Imaginatif", "Factuel"], correct: 1, explanation: "Les faits, rien que les faits." }
+                    { q: "Un rapport doit être : (En cours d'optimisation)", options: ["Imaginatif", "Factuel"], correct: 1, explanation: "Les faits bruts." }
                 ]
             }
         };
@@ -319,6 +349,7 @@
         let currentModuleId = "";
         let currentQuestionIndex = 0;
         let score = 0;
+        let userAnswers = []; // Mémoire des réponses pour le débriefing
         let selectionDual = { actionCorrect: false, justifCorrect: false, actionBtn: null, justifBtn: null };
 
         // FONCTION DE MELANGE ALEATOIRE (Fisher-Yates)
@@ -340,6 +371,7 @@
             currentModuleId = moduleId;
             currentQuestionIndex = 0;
             score = 0;
+            userAnswers = []; // Réinitialiser le débriefing
             
             document.getElementById('menu').classList.remove('active');
             document.getElementById('result').classList.remove('active');
@@ -455,7 +487,19 @@
             const isActionCorrect = (selectionDual.actionCorrect === true);
             const isJustifCorrect = (selectionDual.justifCorrect === true);
             
-            // Bloquer les boutons et révéler les bonnes/mauvaises réponses
+            // Sauvegarder pour le débriefing
+            userAnswers.push({
+                q: qData.q,
+                userAction: selectionDual.actionBtn ? selectionDual.actionBtn.innerText : "Non répondu",
+                isActionCorrect: isActionCorrect,
+                correctAction: qData.optionsAction[qData.correctAction],
+                userJustif: selectionDual.justifBtn ? selectionDual.justifBtn.innerText : "Non répondu",
+                isJustifCorrect: isJustifCorrect,
+                correctJustif: qData.optionsJustif[qData.correctJustif],
+                explanation: qData.explanation
+            });
+
+            // Bloquer les boutons et révéler les réponses
             const allBtns = document.querySelectorAll('#dual-qcm-container .choice-btn');
             allBtns.forEach(b => {
                 b.disabled = true;
@@ -467,7 +511,7 @@
             if (!isActionCorrect && selectionDual.actionBtn) selectionDual.actionBtn.classList.add('wrong');
             if (!isJustifCorrect && selectionDual.justifBtn) selectionDual.justifBtn.classList.add('wrong');
             
-            // Calcul du score et Feedback
+            // Calcul du score et Feedback immédiat
             const fb = document.getElementById('feedback-area');
             fb.classList.remove('success', 'error', 'partial');
             
@@ -478,7 +522,7 @@
             } else if (isActionCorrect || isJustifCorrect) {
                 score += 0.5; // Demi-point
                 fb.classList.add('active', 'partial');
-                fb.innerHTML = `<strong>⚠ ANALYSE PARTIELLE (+0.5 pt)</strong><br>Une partie de votre analyse est inexacte.<br><br><em>Rappel de doctrine :</em> ${qData.explanation}`;
+                fb.innerHTML = `<strong>⚠ ANALYSE PARTIELLE (+0.5 pt)</strong><br>Une partie de votre analyse est inexacte.<br><br><em>Rappel :</em> ${qData.explanation}`;
             } else {
                 fb.classList.add('active', 'error');
                 fb.innerHTML = `<strong>✗ ÉCHEC TACTIQUE</strong><br>${qData.explanation}`;
@@ -521,7 +565,7 @@
             
             if (currentQuestionIndex === module.questions.length - 1) {
                 document.getElementById('progress-fill').style.width = `100%`;
-                nextBtn.innerText = "Voir le débriefing de mission";
+                nextBtn.innerText = "Aller au débriefing de mission";
             } else {
                 nextBtn.innerText = "Situation suivante";
             }
@@ -553,10 +597,45 @@
                 scoreMessage.innerText = "Excellent ! Discernement et rigueur juridique parfaits. Vous êtes digne de votre carte professionnelle.";
             } else if (score >= total * 0.7) {
                 scoreDisplay.style.color = "#d35400";
-                scoreMessage.innerText = "Opérationnel. Votre instinct est bon, mais quelques failles persistent. Un passage par le manuel s'impose.";
+                scoreMessage.innerText = "Opérationnel. Votre instinct est bon, mais quelques failles persistent. Lisez le débriefing ci-dessous.";
             } else {
                 scoreDisplay.style.color = "#c0392b";
-                scoreMessage.innerText = "Vos erreurs tactiques ou juridiques engagent votre responsabilité. Vous n'êtes pas prêt pour le terrain. Reprenez vos cours depuis le début.";
+                scoreMessage.innerText = "Vos erreurs tactiques engagent votre responsabilité. Lisez attentivement le débriefing et reprenez vos manuels.";
+            }
+
+            // GENERATION DU DEBRIEFING (Spécifique Module 1)
+            const debriefContainer = document.getElementById('debriefing-container');
+            debriefContainer.innerHTML = '';
+            
+            if (currentModuleId === 'vidocq' && userAnswers.length > 0) {
+                let html = "<h4 style='font-size: 1.3em; color: #2c3e50; border-bottom: 2px solid #34495e; padding-bottom: 10px;'>Rapport détaillé de vos interventions :</h4>";
+                
+                userAnswers.forEach((ans, idx) => {
+                    html += `
+                    <div class="debrief-item">
+                        <p><strong>Situation ${idx + 1} :</strong> ${ans.q}</p>
+                        
+                        <p><strong>Votre Action :</strong> <span class="${ans.isActionCorrect ? 'correct-text' : 'wrong-text'}">${ans.userAction}</span></p>
+                        ${!ans.isActionCorrect ? `<p><strong>Action attendue :</strong> <span class="expected-text">${ans.correctAction}</span></p>` : ''}
+                        
+                        <p><strong>Votre Justification :</strong> <span class="${ans.isJustifCorrect ? 'correct-text' : 'wrong-text'}">${ans.userJustif}</span></p>
+                        ${!ans.isJustifCorrect ? `<p><strong>Justification attendue :</strong> <span class="expected-text">${ans.correctJustif}</span></p>` : ''}
+                        
+                        <p style="margin-top: 10px; background-color: #f4f6f7; padding: 10px; border-radius: 4px;"><em>Explication : ${ans.explanation}</em></p>
+                    </div>`;
+                });
+                
+                html += `
+                <div class="debrief-advice">
+                    <h4>Conseils de l'Instructeur (Basés sur vos manuels) :</h4>
+                    <p><strong>À relire :</strong> Dans votre <em>Manuel de cours (fichier 01)</em>, reprenez la <strong>FICHE 30 - La méthode VIDOCQ</strong> (page 79) et le <strong>Chapitre 05 - Le lieu d'exercice</strong> (page 14).</p>
+                    <p><strong>À pratiquer :</strong> Dans votre <em>Manuel d'exercices (fichier 02)</em>, refaites l'<strong>EXERCICE 3 : La Méthode Vidocq (Analyse d'indices)</strong> (page 22) et l'<strong>EXERCICE 4 : Cartographie Tactique</strong> (page 22).</p>
+                </div>`;
+                
+                debriefContainer.innerHTML = html;
+                debriefContainer.style.display = 'block';
+            } else {
+                debriefContainer.style.display = 'none';
             }
         }
 
