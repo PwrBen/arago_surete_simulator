@@ -3,8 +3,124 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Opération VIDOCQ - Arago Sûreté</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Opération VIDOCQ - Arago Sûreté Simulator</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: #f4f7f6; 
+            color: #333; 
+            margin: 0; 
+            padding: 0; 
+        }
+        header { 
+            background-color: #1a252f; 
+            color: white; 
+            padding: 20px; 
+            display: flex; 
+            align-items: center; 
+            border-bottom: 4px solid #e74c3c; 
+        }
+        .logo { 
+            font-size: 2em; 
+            font-weight: bold; 
+            background: #e74c3c; 
+            padding: 10px 15px; 
+            border-radius: 5px; 
+            margin-right: 20px; 
+        }
+        .header-titles h1 { margin: 0; font-size: 1.5em; }
+        .header-titles h2 { margin: 0; font-weight: normal; font-size: 1.1em; color: #bdc3c7; }
+        main { 
+            max-width: 800px; 
+            margin: 30px auto; 
+            padding: 20px; 
+            background: white; 
+            border-radius: 8px; 
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
+        }
+        .screen { display: none; }
+        .screen.active { display: block; }
+        .grid { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 15px; 
+            margin-top: 20px; 
+        }
+        button { 
+            cursor: pointer; 
+            padding: 15px; 
+            font-size: 1.1em; 
+            border: none; 
+            border-radius: 5px; 
+            transition: 0.3s; 
+        }
+        .module-btn { background-color: #2c3e50; color: white; width: 100%; text-align: left;}
+        .module-btn:hover { background-color: #34495e; transform: translateY(-2px); }
+        .back-btn { background-color: #95a5a6; color: white; margin-top: 20px; width: 100%; }
+        .back-btn:hover { background-color: #7f8c8d; }
+        .choice-btn { 
+            background-color: #ecf0f1; 
+            color: #333; 
+            display: block; 
+            width: 100%; 
+            text-align: left; 
+            margin: 10px 0; 
+            border: 1px solid #bdc3c7; 
+        }
+        .choice-btn:hover:not(:disabled) { background-color: #e0e6e8; }
+        .choice-btn:disabled { cursor: not-allowed; opacity: 0.8; }
+        .choice-btn.correct { background-color: #d4edda; border-color: #27ae60; color: #155724; }
+        .choice-btn.wrong { background-color: #f8d7da; border-color: #c0392b; color: #721c24; }
+        
+        #progress-bar {
+            width: 100%;
+            background-color: #ecf0f1;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            height: 10px;
+        }
+        #progress-fill {
+            height: 100%;
+            background-color: #e74c3c;
+            width: 0%;
+            transition: width 0.3s;
+        }
+        .progress-text {
+            font-size: 0.9em;
+            color: #7f8c8d;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        .feedback { 
+            margin-top: 15px; 
+            padding: 15px; 
+            border-radius: 5px; 
+            display: none;
+            font-size: 1.05em;
+            line-height: 1.4;
+        }
+        .feedback.active { display: block; }
+        .feedback.success { background-color: #d4edda; color: #155724; border-left: 5px solid #27ae60;}
+        .feedback.error { background-color: #f8d7da; color: #721c24; border-left: 5px solid #c0392b;}
+        .next-btn {
+            background-color: #2980b9;
+            color: white;
+            margin-top: 15px;
+            width: 100%;
+            display: none;
+        }
+        .next-btn.active { display: block; }
+        .next-btn:hover { background-color: #3498db; }
+        .score-display {
+            font-size: 1.5em;
+            text-align: center;
+            margin: 20px 0;
+            padding: 20px;
+            background: #ecf0f1;
+            border-radius: 8px;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -15,22 +131,245 @@
         </div>
     </header>
     <main>
+        <!-- ECRAN D'ACCUEIL -->
         <div id="menu" class="screen active">
-            <h3>Sélectionnez un module d'entraînement</h3>
+            <h3>Sélectionnez un module d'entraînement (10 situations par module)</h3>
             <div class="grid">
-                <button class="module-btn" onclick="loadModule('vidocq')">1. L'Œil de Vidocq</button>
-                <button class="module-btn" onclick="loadModule('desc')">2. Simulateur DESC</button>
-                <button class="module-btn" onclick="loadModule('radio')">3. Radio Express</button>
-                <button class="module-btn" onclick="loadModule('juridique')">4. L'Arène Juridique</button>
-                <button class="module-btn" onclick="loadModule('rapport')">5. Chrono-Rapport</button>
+                <button class="module-btn" onclick="startModule('vidocq')">1. L'Œil de Vidocq (Observation)</button>
+                <button class="module-btn" onclick="startModule('desc')">2. Simulateur DESC (Conflit)</button>
+                <button class="module-btn" onclick="startModule('radio')">3. Radio Express (Com.)</button>
+                <button class="module-btn" onclick="startModule('juridique')">4. L'Arène Juridique (Droit)</button>
+                <button class="module-btn" onclick="startModule('rapport')" style="grid-column: span 2;">5. Chrono-Rapport (Rédaction)</button>
             </div>
         </div>
+
+        <!-- ECRAN DU MODULE (QUESTIONS) -->
         <div id="module" class="screen">
             <h3 id="module-title">Titre</h3>
-            <div id="module-content" class="content-box"></div>
-            <button class="back-btn" onclick="goHome()">Retour au Menu</button>
+            <div class="progress-text" id="progress-text">Question 1 / 10</div>
+            <div id="progress-bar"><div id="progress-fill"></div></div>
+            
+            <div id="question-text" style="font-size: 1.1em; margin-bottom: 20px; font-weight: 500;"></div>
+            
+            <div id="options-container"></div>
+            
+            <div id="feedback-area" class="feedback"></div>
+            <button id="next-btn" class="next-btn" onclick="nextQuestion()">Question suivante</button>
+            <button class="back-btn" onclick="goHome()">Quitter le module</button>
+        </div>
+
+        <!-- ECRAN DES RESULTATS -->
+        <div id="result" class="screen">
+            <h3>Module Terminé !</h3>
+            <div id="score-display" class="score-display"></div>
+            <p id="score-message" style="text-align: center; font-weight: bold;"></p>
+            <button class="module-btn" onclick="goHome()">Retour au Menu Principal</button>
         </div>
     </main>
-    <script src="script.js"></script>
+
+    <script>
+        // BANQUE DE DONNEES DES MODULES
+        const db = {
+            vidocq: {
+                title: "1. L'Œil de Vidocq",
+                questions: [
+                    { q: "Lors d'une ronde, vous remarquez une poubelle déplacée sous une fenêtre du rez-de-chaussée.", options: ["Je la remets en place sans la signaler.", "C'est un risque d'intrusion par escalade, je signale la faille.", "C'est un point sensible."], correct: 1, explanation: "Méthode Vidocq : La poubelle sert de marchepied, c'est un outil facilitant l'intrusion." },
+                    { q: "La porte du TGBT (Tableau Général Basse Tension) est ouverte.", options: ["C'est un point dangereux et vulnérable. Je sécurise immédiatement.", "C'est un point sensible, je vérifie s'il y a de l'argent.", "J'attends le matin pour le dire à la maintenance."], correct: 0, explanation: "Le TGBT est un point vulnérable (coupure générale) et dangereux (électrocution). Sécurisation immédiate." },
+                    { q: "Un véhicule inconnu est garé devant la sortie de secours.", options: ["C'est un point de pointage.", "C'est une entrave à l'évacuation et un possible repérage.", "Je crève les pneus pour le punir."], correct: 1, explanation: "Un véhicule ventouse ici bloque la sécurité incendie et peut servir à charger du butin." },
+                    { q: "Vous remarquez que le grillage ouest est découpé.", options: ["Action : Réparation provisoire immédiate et ronde renforcée.", "Je ne fais rien, c'est le travail du paysagiste.", "Je me cache pour voir si le voleur revient."], correct: 0, explanation: "Règle des 3P (Prévision, Prévention, Protection). On comble la faille immédiatement." },
+                    { q: "Un badge visiteur traîne sur un comptoir.", options: ["Je le jette.", "Risque de faille sociale, usurpation d'identité pour accès libre.", "Ce n'est pas grave, il est désactivé le soir."], correct: 1, explanation: "La faille humaine est souvent la première exploitée par un malveillant." },
+                    { q: "La zone de stockage extérieure n'est plus éclairée.", options: ["J'utilise ma lampe torche pour finir ma ronde plus vite.", "Je signale le point d'ombre car il annule l'effet de dissuasion et la vidéoprotection.", "Je rentre au PCS, c'est trop dangereux."], correct: 1, explanation: "L'ombre favorise la phase d'approche et masque l'individu aux caméras." },
+                    { q: "Un individu prend des photos de vos caméras depuis le trottoir.", options: ["Je sors pour l'appréhender de force.", "Je le signale au PCS : c'est l'étape de 'Préparation' (repérage malveillant).", "Il a le droit, c'est la voie publique, je l'ignore."], correct: 1, explanation: "Le cycle de la malveillance commence par le repérage. L'observer et le signaler permet d'anticiper l'acte." },
+                    { q: "Une alarme incendie se déclenche dans une zone vide la nuit.", options: ["Je cours avec l'extincteur et je défonce la porte.", "Je fais une levée de doute prudente, cela peut être une ruse pour m'attirer.", "J'appelle directement les pompiers sans vérifier."], correct: 1, explanation: "La ruse (déclencher une alarme pour vider un poste) est classique. Prudence lors de la levée de doute." },
+                    { q: "Un sac à dos est abandonné dans le hall d'accueil.", options: ["Je l'ouvre pour chercher une pièce d'identité.", "Je le mets aux objets trouvés.", "Procédure Vigipirate : Je mets en place un périmètre de sécurité et j'alerte."], correct: 2, explanation: "Tout objet abandonné dans un lieu public/privé doit être traité comme un colis suspect (Gel des lieux)." },
+                    { q: "Des cartons masquent le détecteur de mouvement du couloir.", options: ["C'est une faille technique. Je dois dégager le champ de détection.", "Tant que la caméra marche, ce n'est pas grave.", "Je laisse les cartons, c'est le travail des magasiniers."], correct: 0, explanation: "L'agent de sûreté doit s'assurer que tous les dispositifs techniques (détecteurs, caméras) sont opérationnels." }
+                ]
+            },
+            desc: {
+                title: "2. Simulateur DESC",
+                questions: [
+                    { q: "Un individu refuse de présenter son sac. Étape D (Décrire).", options: ["Monsieur, vous avez l'air louche, ouvrez ce sac.", "Monsieur, vous cachez quelque chose ?", "Monsieur, je constate que vous refusez l'inspection visuelle de votre sac."], correct: 2, explanation: "D pour Décrire : Être factuel, sans aucun jugement de valeur." },
+                    { q: "L'individu refuse toujours. Étape E (Exprimer les conséquences).", options: ["Si vous ne l'ouvrez pas, je vous frappe.", "Sans ce contrôle, je ne peux pas m'assurer de la sécurité du site.", "Ça m'énerve que vous refusiez de m'écouter."], correct: 1, explanation: "E pour Exprimer : Expliquer l'impact objectif sur la mission de sûreté." },
+                    { q: "Proposez une solution. Étape S (Spécifier).", options: ["Je vous propose d'ouvrir le sac, ou de retourner à votre véhicule pour le déposer.", "Allez-vous-en immédiatement.", "Donnez-moi le sac que je l'ouvre de force."], correct: 0, explanation: "S pour Spécifier : Proposer une issue claire et réalisable (avec consentement)." },
+                    { q: "Conclure l'échange. Étape C (Conclure).", options: ["Si vous refusez les deux options, je vous interdis définitivement l'accès.", "Bon, passez pour cette fois.", "Je vais appeler la police pour vous mettre en prison."], correct: 0, explanation: "C pour Conclure : Poser le cadre final (refus d'accès) de manière ferme et polie." },
+                    { q: "Un spectateur fume en tribune. Quelle est la phrase d'amorce idéale ?", options: ["Hé ! Éteins ça tout de suite !", "Monsieur, vous avez certainement une bonne raison de fumer, mais le règlement l'interdit ici.", "C'est interdit de fumer, vous savez pas lire ?"], correct: 1, explanation: "L'empathie ('vous avez certainement une bonne raison de...') est la meilleure technique de désamorçage." },
+                    { q: "Une personne vous insulte dans l'exercice de vos missions de service public (Outrage).", options: ["Je l'insulte en retour.", "Je reste calme, je fais une sommation et je l'appréhende si le délit se poursuit.", "Je fuis."], correct: 1, explanation: "L'outrage à agent est un délit. L'agent doit garder son sang-froid et appliquer la procédure légale." },
+                    { q: "Lors d'un vol à l'étalage, l'individu nie avoir l'objet. Vous utilisez le DESC :", options: ["Je sais que vous l'avez volé, je vous ai vu !", "Je constate que vous avez passé les caisses sans régler l'article dissimulé dans votre veste.", "Vous êtes un voleur !"], correct: 1, explanation: "Toujours rester sur l'étape 'D' (faits constatés) pour ne pas braquer le suspect avant la négociation." },
+                    { q: "Que signifie la lettre S dans DESC ?", options: ["Sécuriser", "Spécifier (une solution)", "Sanctionner"], correct: 1, explanation: "Spécifier une action attendue ou une alternative." },
+                    { q: "Dans un conflit, à quoi sert le vouvoiement obligatoire ?", options: ["À montrer qu'on est supérieur.", "À garder une distance professionnelle et instaurer le respect.", "C'est optionnel si l'individu a le même âge."], correct: 1, explanation: "Le vouvoiement est la base de la posture professionnelle et de la politesse en sûreté." },
+                    { q: "Un individu ivre crie dans le hall. Comment ajustez-vous votre communication ?", options: ["Je crie plus fort que lui.", "Je parle très doucement pour l'ignorer.", "J'ajuste le ton de ma voix avec fermeté sans paraître agressif."], correct: 2, explanation: "Faire preuve de fermeté vocale permet de reprendre le contrôle de la situation sans envenimer." }
+                ]
+            },
+            radio: {
+                title: "3. Radio Express",
+                questions: [
+                    { q: "Comment épelez-vous le mot SÛRETÉ selon l'alphabet radio ?", options: ["Sierra Uniform Romeo Echo Tango Echo", "Sébastien Ulysse Robert Émile Thierry Émile", "Sierra Tango Romeo Echo Tango Echo"], correct: 0, explanation: "S=Sierra, U=Uniform, R=Romeo, E=Echo, T=Tango." },
+                    { q: "Comment transmettez-vous le chiffre 5 à la radio ?", options: ["Cinq", "3 et 2", "Moitié de dix"], correct: 1, explanation: "En procédure radio, 5 se dit '3 et 2' pour éviter les confusions." },
+                    { q: "Vous avez compris le message et vous allez exécuter l'ordre. Que dites-vous ?", options: ["OK, je gère.", "Reçu.", "Aperçu."], correct: 2, explanation: "Reçu = Message entendu. Aperçu = Message compris et je suis en mesure d'exécuter." },
+                    { q: "Vous voulez que votre collègue répète le message en entier.", options: ["Je n'ai pas compris.", "Répétez.", "Collationnez."], correct: 2, explanation: "Collationnez signifie 'Répétez la transmission exactement comme vous l'avez reçue'." },
+                    { q: "Règle d'or N°1 de la communication radio :", options: ["Parler très vite.", "Jamais de nom patronymique sur les ondes.", "Ne jamais utiliser les codes."], correct: 1, explanation: "On utilise toujours les indicatifs pour préserver la confidentialité des agents." },
+                    { q: "Qui doit clôturer (dire 'Terminé') une conversation radio ?", options: ["Le chef de poste.", "L'émetteur qui a engagé la communication.", "Celui qui a parlé en dernier."], correct: 1, explanation: "Règle n°2 : Celui qui appelle clôture l'échange." },
+                    { q: "Dans un signalement, quel est le bon ordre de transmission ?", options: ["Je fais / Je suis / Je vois", "Je vois / Je fais / Je suis", "Je suis / Je vois / Je fais"], correct: 2, explanation: "1. Identité/Position (Je suis). 2. Description (Je vois). 3. Action (Je fais/demande)." },
+                    { q: "Comment transmettez-vous la plaque 'BK-12' ?", options: ["Bravo Kilo Un Deux", "Bravo Kilo Unité Deux-fois-Un", "Bravo Kilo Douze"], correct: 1, explanation: "B=Bravo, K=Kilo. 1=Unité, 2=Deux fois un." },
+                    { q: "Vous devez stopper votre transmission pendant 1 minute.", options: ["Attendez terminé.", "Je vous reprends plus tard.", "Attendez."], correct: 0, explanation: "'Attendez' = quelques secondes. 'Attendez terminé' = plus de quelques secondes (libère les ondes)." },
+                    { q: "Vous entendez une conversation radio en cours entre Delta 1 et Delta 2.", options: ["Je les interromps pour dire bonjour.", "Je n'interromps jamais sauf urgence absolue.", "Je change de canal de moi-même."], correct: 1, explanation: "Règle n°3 : Ne jamais interrompre une communication en cours, sauf pour la procédure d'urgence vitale." }
+                ]
+            },
+            juridique: {
+                title: "4. L'Arène Juridique",
+                questions: [
+                    { q: "Article 53 CPP / L3312-1 CPP. Qu'est-ce que la flagrance ?", options: ["Un crime commis il y a 3 jours.", "Un crime ou délit qui se commet actuellement ou vient de se commettre.", "Une simple contravention de stationnement."], correct: 1, explanation: "La flagrance requiert l'actualité immédiate ou un temps très voisin de l'action." },
+                    { q: "Article 73 CPP / L1511-1 CPP (Appréhension). Qui peut appréhender l'auteur d'un délit flagrant ?", options: ["Uniquement la Police Nationale.", "Uniquement les agents de sûreté.", "Toute personne a qualité pour le faire."], correct: 2, explanation: "Le droit d'appréhension est un droit citoyen ouvert à toute personne témoin d'un crime ou délit flagrant puni d'emprisonnement." },
+                    { q: "Un individu vole une pomme et vous l'appréhendez (Art 73). Avez-vous le droit de le menotter (Art 803 / L1121-3) ?", options: ["Oui, systématiquement.", "Non, sauf s'il est dangereux pour lui/autrui ou susceptible de prendre la fuite.", "Non, c'est interdit aux agents privés."], correct: 1, explanation: "Le menottage n'est jamais automatique. Il faut prouver la dangerosité ou le risque d'évasion." },
+                    { q: "Article 122-5. Vous êtes bousculé à mains nues et vous sortez une arme pour frapper la personne. La légitime défense sera-t-elle retenue ?", options: ["Oui, l'agression était injuste.", "Non, il y a disproportion entre les moyens employés et la gravité de l'atteinte.", "Oui, car il a commencé."], correct: 1, explanation: "La riposte doit être strictement proportionnée. Arme vs mains nues est disproportionné." },
+                    { q: "Article 122-7 (État de nécessité). Vous défoncez une porte pour sauver une personne d'un incendie.", options: ["Je serai puni pour dégradation (Art 322-1 CP).", "Je ne suis pas pénalement responsable (acte nécessaire à la sauvegarde d'une personne).", "C'est de la légitime défense."], correct: 1, explanation: "L'état de nécessité permet de commettre une infraction (casser une porte) pour éviter un drame plus grave (mort)." },
+                    { q: "Un individu jette un papier par terre (Contravention). Pouvez-vous l'appréhender physiquement ?", options: ["Oui, c'est interdit.", "Non, l'appréhension n'est légale que pour un crime ou un délit puni de prison.", "Oui si le client du site l'exige."], correct: 1, explanation: "Pour une contravention, l'agent ne peut faire qu'un rappel au règlement ou appeler les forces de l'ordre, sans contrainte physique." },
+                    { q: "Palpation (Article L613-3 CSI). Une femme veut entrer au concert. Vous êtes un agent masculin.", options: ["Je peux la palper si elle est d'accord.", "Je dois faire appel à une agente féminine. C'est obligatoire.", "Je fouille directement son sac à la place."], correct: 1, explanation: "La palpation doit TOUJOURS être effectuée par une personne du même sexe." },
+                    { q: "Article 1240 Code Civil (Responsabilité). Qui répare le dommage ?", options: ["Celui qui casse paye (Faute + Dommage + Lien de causalité).", "L'agent de sécurité, toujours.", "La police."], correct: 0, explanation: "La responsabilité civile oblige l'auteur de la faute à indemniser la victime." },
+                    { q: "Qu'est-ce qu'une arme par destination (Article 132-75 CP) ?", options: ["Un pistolet.", "N'importe quel objet détourné de son usage pour menacer ou frapper (ex: un extincteur).", "Un pistolet en plastique (imitation)."], correct: 1, explanation: "Une chaise, une lampe torche ou une bouteille deviennent des armes par destination si on s'en sert pour frapper." },
+                    { q: "La Garde à Vue (GAV). Combien de temps dure-t-elle en règle générale avant prolongation ?", options: ["12 heures.", "24 heures.", "48 heures."], correct: 1, explanation: "La durée de base de la Garde à Vue est de 24h (renouvelable sur décision du magistrat)." }
+                ]
+            },
+            rapport: {
+                title: "5. Chrono-Rapport",
+                questions: [
+                    { q: "Quelle est la règle absolue du Compte Rendu ?", options: ["Donner son avis pour aider la police.", "Être Bref, Factuel et Signé.", "Trouver le coupable."], correct: 1, explanation: "Un rapport doit relater les faits bruts. Aucune supposition ni jugement." },
+                    { q: "Que signifie le premier Q de QQOQCP ?", options: ["Quand ?", "Qui ?", "Quantité ?"], correct: 1, explanation: "Qui ? (Personnes impliquées, victimes, témoins, auteurs)." },
+                    { q: "Quelle phrase est FACTUELLE et légale pour un rapport ?", options: ["L'individu avait l'air de vouloir voler la voiture.", "L'individu a inséré un tournevis dans la serrure de la portière.", "Je pense qu'il préparait un mauvais coup."], correct: 1, explanation: "On décrit l'action matérielle précise, pas les pensées de l'individu." },
+                    { q: "Quel temps du passé utiliser pour décrire une action brève et soudaine (ex: la vitre se casse) ?", options: ["L'imparfait (La vitre se cassait).", "Le passé simple (L'individu brisa la vitre).", "Le présent (Il casse la vitre)."], correct: 1, explanation: "Le passé simple est idéal pour les actions soudaines qui interrompent une situation." },
+                    { q: "Vous avez appelé les pompiers (action décidée dont les effets durent). Temps recommandé ?", options: ["J'ai appelé les secours (Passé composé).", "J'appelais les secours (Imparfait).", "J'appellerai les secours (Futur)."], correct: 0, explanation: "Le passé composé s'utilise pour les décisions prises dont on attend le résultat (les secours arrivent)." },
+                    { q: "Dans un rapport, pourquoi est-il crucial de décrire les traces (ex: verre sur les chaussures) ?", options: ["Pour que le rapport soit plus long.", "Pour qualifier l'état de Flagrance (Art. 53).", "Pour que le suspect paie le nettoyage."], correct: 1, explanation: "Les traces et indices justifient juridiquement la notion de flagrance dans un temps voisin." },
+                    { q: "Où se place la réponse au 'C' (Comment) dans le plan du compte rendu ?", options: ["En introduction.", "Dans le développement (déroulement des faits).", "En conclusion (mesures prises)."], correct: 1, explanation: "Le développement explique Comment et Pourquoi les choses se sont passées." },
+                    { q: "Quelle phrase illustre bien le 'O' (Où) ?", options: ["Dans le lycée.", "Au niveau du parking nord, place n°45.", "Dehors."], correct: 1, explanation: "La précision est la qualité première du rédacteur en sûreté." },
+                    { q: "Laquelle de ces conclusions est professionnelle ?", options: ["Mesure prise : Balisage de la zone et information au chef de poste à 14h10.", "J'espère que ça ne se reproduira plus.", "J'ai bien fait mon travail."], correct: 0, explanation: "La conclusion expose les mesures prises immédiatement et les alertes données." },
+                    { q: "Que se passe-t-il si un compte rendu n'est pas signé ?", options: ["Il perd toute sa valeur juridique professionnelle.", "Ce n'est pas grave si le nom est écrit en haut.", "Il est quand même valable."], correct: 0, explanation: "Un rapport non signé n'engage personne et n'a pas de valeur de témoignage assermenté." }
+                ]
+            }
+        };
+
+        // VARIABLES GLOBALES
+        let currentModuleId = "";
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        function startModule(moduleId) {
+            currentModuleId = moduleId;
+            currentQuestionIndex = 0;
+            score = 0;
+            
+            document.getElementById('menu').classList.remove('active');
+            document.getElementById('result').classList.remove('active');
+            document.getElementById('module').classList.add('active');
+            
+            document.getElementById('module-title').innerText = db[moduleId].title;
+            
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const module = db[currentModuleId];
+            const qData = module.questions[currentQuestionIndex];
+            
+            // Mise à jour de la progression
+            document.getElementById('progress-text').innerText = `Question ${currentQuestionIndex + 1} / ${module.questions.length}`;
+            const progressPercent = ((currentQuestionIndex) / module.questions.length) * 100;
+            document.getElementById('progress-fill').style.width = `${progressPercent}%`;
+            
+            // Affichage de la question
+            document.getElementById('question-text').innerText = qData.q;
+            
+            // Génération des boutons de réponse
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+            
+            qData.options.forEach((optText, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'choice-btn';
+                btn.innerText = optText;
+                btn.onclick = () => handleAnswer(index, btn);
+                optionsContainer.appendChild(btn);
+            });
+            
+            // Réinitialiser les zones de feedback et bouton suivant
+            document.getElementById('feedback-area').classList.remove('active', 'success', 'error');
+            document.getElementById('next-btn').classList.remove('active');
+        }
+
+        function handleAnswer(selectedIndex, clickedBtn) {
+            const module = db[currentModuleId];
+            const qData = module.questions[currentQuestionIndex];
+            const isCorrect = (selectedIndex === qData.correct);
+            
+            // Bloquer tous les boutons
+            const allBtns = document.querySelectorAll('.choice-btn');
+            allBtns.forEach((btn, index) => {
+                btn.disabled = true;
+                if (index === qData.correct) {
+                    btn.classList.add('correct'); // Mettre en vert la bonne réponse
+                } else if (index === selectedIndex && !isCorrect) {
+                    btn.classList.add('wrong'); // Mettre en rouge si le choix était faux
+                }
+            });
+            
+            // Mise à jour du score
+            if (isCorrect) score++;
+            
+            // Affichage du feedback
+            const fb = document.getElementById('feedback-area');
+            fb.classList.remove('success', 'error');
+            fb.classList.add('active', isCorrect ? 'success' : 'error');
+            fb.innerHTML = `<strong>${isCorrect ? '✓ CORRECT' : '✗ FAUX'}</strong><br>${qData.explanation}`;
+            
+            // Afficher le bouton suivant
+            document.getElementById('next-btn').classList.add('active');
+            
+            // Mettre à jour la barre de progression complète si c'est la dernière question
+            if (currentQuestionIndex === module.questions.length - 1) {
+                document.getElementById('progress-fill').style.width = `100%`;
+                document.getElementById('next-btn').innerText = "Voir les résultats du module";
+            } else {
+                document.getElementById('next-btn').innerText = "Question suivante";
+            }
+        }
+
+        function nextQuestion() {
+            const module = db[currentModuleId];
+            currentQuestionIndex++;
+            
+            if (currentQuestionIndex < module.questions.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            document.getElementById('module').classList.remove('active');
+            document.getElementById('result').classList.add('active');
+            
+            const total = db[currentModuleId].questions.length;
+            const scoreDisplay = document.getElementById('score-display');
+            const scoreMessage = document.getElementById('score-message');
+            
+            scoreDisplay.innerText = `Votre score : ${score} / ${total}`;
+            
+            if (score === total) {
+                scoreDisplay.style.color = "#27ae60";
+                scoreMessage.innerText = "Félicitations ! Vos réflexes sont dignes d'un vrai professionnel. Compétence validée.";
+            } else if (score >= total * 0.7) {
+                scoreDisplay.style.color = "#d35400";
+                scoreMessage.innerText = "Bon travail, mais quelques révisions du manuel sont encore nécessaires pour agir sans hésitation.";
+            } else {
+                scoreDisplay.style.color = "#c0392b";
+                scoreMessage.innerText = "Attention, vos erreurs juridiques ou tactiques mettent la mission en danger. Relisez impérativement votre manuel Arago.";
+            }
+        }
+
+        function goHome() {
+            document.getElementById('module').classList.remove('active');
+            document.getElementById('result').classList.remove('active');
+            document.getElementById('menu').classList.add('active');
+        }
+    </script>
 </body>
 </html>
