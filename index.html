@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Opération VIDOCQ - Arago Sûreté</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="logo">S4</div>
+        <div class="header-titles">
+            <h1>Arago Sûreté Simulator</h1>
+            <h2>Opération VIDOCQ</h2>
+        </div>
+    </header>
+    <main>
+        <div id="menu" class="screen active">
+            <h3>Sélectionnez un module d'entraînement</h3>
+            <div class="grid">
+                <button class="module-btn" onclick="loadModule('vidocq')">1. L'Œil de Vidocq</button>
+                <button class="module-btn" onclick="loadModule('desc')">2. Simulateur DESC</button>
+                <button class="module-btn" onclick="loadModule('radio')">3. Radio Express</button>
+                <button class="module-btn" onclick="loadModule('juridique')">4. L'Arène Juridique</button>
+                <button class="module-btn" onclick="loadModule('rapport')">5. Chrono-Rapport</button>
+            </div>
+        </div>
+        <div id="module" class="screen">
+            <h3 id="module-title">Titre</h3>
+            <div id="module-content" class="content-box"></div>
+            <button class="back-btn" onclick="goHome()">Retour au Menu</button>
+        </div>
+    </main>
+    <script src="script.js"></script>
+</body>
+</html>
