@@ -74,10 +74,11 @@
         .choice-btn.correct { background-color: #d4edda; border-color: #27ae60; color: #155724; }
         .choice-btn.wrong { background-color: #f8d7da; border-color: #c0392b; color: #721c24; }
         
+        /* Mod 1 (Dual QCM) */
         #dual-qcm-container { display: none; grid-template-columns: 1fr 1fr; gap: 20px; }
         .column-title { text-align: center; color: #2c3e50; font-size: 1.1em; border-bottom: 2px solid #bdc3c7; padding-bottom: 10px; margin-bottom: 15px;}
         
-        /* Styles Module 2 DESC Builder */
+        /* Mod 2 (DESC Builder) */
         #desc-builder-container { display: none; flex-direction: column; gap: 15px; }
         .desc-step { border: 2px solid #bdc3c7; border-radius: 8px; padding: 15px; }
         .desc-step.D { background-color: #f4f6f7; border-left: 5px solid #3498db; }
@@ -85,6 +86,15 @@
         .desc-step.S { background-color: #fef9e7; border-left: 5px solid #f1c40f; }
         .desc-step.C { background-color: #fdedec; border-left: 5px solid #e74c3c; }
         .desc-step h4 { margin-top: 0; color: #2c3e50; margin-bottom: 10px; }
+
+        /* Mod 3 (Radio Builder) */
+        #radio-builder-container { display: none; flex-direction: column; gap: 15px; }
+        .radio-step { border: 2px solid #bdc3c7; border-radius: 8px; padding: 15px; }
+        .radio-step.suis { background-color: #e8eaed; border-left: 5px solid #8e44ad; }
+        .radio-step.vois { background-color: #ebdef0; border-left: 5px solid #9b59b6; }
+        .radio-step.fais { background-color: #d6eaf8; border-left: 5px solid #2980b9; }
+        .radio-step.demande { background-color: #d1f2eb; border-left: 5px solid #16a085; }
+        .radio-step h4 { margin-top: 0; color: #2c3e50; margin-bottom: 10px; }
         
         #validate-btn { background-color: #f39c12; color: white; width: 100%; margin-top: 20px; display: none; font-weight: bold;}
         #validate-btn:hover { background-color: #e67e22; }
@@ -197,7 +207,7 @@
             
             <div id="question-text" style="font-size: 1.1em; margin-bottom: 20px; font-weight: 500; background: #fdfefe; padding: 15px; border-left: 4px solid #34495e;"></div>
             
-            <!-- CONTENEUR QCM SIMPLE (Modules 3 à 5) -->
+            <!-- CONTENEUR QCM SIMPLE (Modules 4 à 5) -->
             <div id="options-container" style="display:none;"></div>
             
             <!-- CONTENEUR QCM DOUBLE (Module 1) -->
@@ -215,20 +225,40 @@
             <!-- CONTENEUR DESC BUILDER (Module 2) -->
             <div id="desc-builder-container">
                 <div class="desc-step D">
-                    <h4>Étape D : Décrire les faits (Objectivité)</h4>
+                    <h4>Étape D : Décrire les faits</h4>
                     <div id="desc-options-d"></div>
                 </div>
                 <div class="desc-step E">
-                    <h4>Étape E : Exprimer les conséquences (Clarté)</h4>
+                    <h4>Étape E : Exprimer les conséquences</h4>
                     <div id="desc-options-e"></div>
                 </div>
                 <div class="desc-step S">
-                    <h4>Étape S : Spécifier une solution (Action attendue)</h4>
+                    <h4>Étape S : Spécifier une solution</h4>
                     <div id="desc-options-s"></div>
                 </div>
                 <div class="desc-step C">
-                    <h4>Étape C : Conclure (Conséquences finales)</h4>
+                    <h4>Étape C : Conclure</h4>
                     <div id="desc-options-c"></div>
+                </div>
+            </div>
+
+            <!-- CONTENEUR RADIO BUILDER (Module 3) -->
+            <div id="radio-builder-container">
+                <div class="radio-step suis">
+                    <h4>1. Appel & Je suis (Identité / Position)</h4>
+                    <div id="radio-options-suis"></div>
+                </div>
+                <div class="radio-step vois">
+                    <h4>2. Je vois (Description & Épellation)</h4>
+                    <div id="radio-options-vois"></div>
+                </div>
+                <div class="radio-step fais">
+                    <h4>3. Je fais (Action immédiate)</h4>
+                    <div id="radio-options-fais"></div>
+                </div>
+                <div class="radio-step demande">
+                    <h4>4. Je demande (Renforts & Final)</h4>
+                    <div id="radio-options-demande"></div>
                 </div>
             </div>
             
@@ -244,7 +274,6 @@
             <div id="score-display" class="score-display"></div>
             <p id="score-message" style="text-align: center; font-weight: bold;"></p>
             
-            <!-- ZONE DE DEBRIEFING DYNAMIQUE -->
             <div id="debriefing-container"></div>
 
             <button class="module-btn" style="margin-top: 30px;" onclick="goHome()">Retour au Menu Principal</button>
@@ -260,83 +289,63 @@
                 questions: [
                     { 
                         q: "Lors d'une ronde, vous remarquez une poubelle déplacée juste sous une fenêtre du rez-de-chaussée.", 
-                        optionsAction: ["Ignorer l'anomalie.", "Replacer l'objet et signaler au PCS.", "Monter sur l'objet pour inspecter la fenêtre."], 
-                        correctAction: 1, 
-                        optionsJustif: ["C'est la responsabilité exclusive des agents d'entretien.", "C'est un outil facilitant l'intrusion par escalade.", "Le site est un point sensible nécessitant une inspection visuelle interne."], 
-                        correctJustif: 1, 
+                        optionsAction: ["Ignorer l'anomalie.", "Replacer l'objet et signaler au PCS.", "Monter sur l'objet pour inspecter la fenêtre."], correctAction: 1, 
+                        optionsJustif: ["Responsabilité des agents d'entretien.", "Outil facilitant l'intrusion par escalade.", "Inspection visuelle interne requise."], correctJustif: 1, 
                         explanation: "Méthode Vidocq : La poubelle sert de marchepied (faille environnementale). Il faut la replacer immédiatement et le signaler." 
                     },
                     { 
                         q: "La porte du TGBT (Tableau Général Basse Tension) est ouverte sans présence technique.", 
-                        optionsAction: ["Refermer et sécuriser la porte immédiatement.", "Rechercher le technicien dans le bâtiment.", "Fouiller le local pour vérifier les équipements."], 
-                        correctAction: 0, 
-                        optionsJustif: ["C'est un point dangereux (électrocution) et vulnérable (coupure générale).", "L'agent n'est pas habilité à manipuler les installations.", "Il s'agit d'une zone de flagrance potentielle."], 
-                        correctJustif: 0, 
-                        explanation: "Le TGBT concentre un double risque : humain (danger) et matériel (vulnérabilité du site). La sécurisation est la priorité." 
+                        optionsAction: ["Refermer et sécuriser la porte immédiatement.", "Rechercher le technicien dans le bâtiment.", "Fouiller le local pour vérifier les équipements."], correctAction: 0, 
+                        optionsJustif: ["Point dangereux (électrocution) et vulnérable (coupure).", "L'agent n'est pas habilité à manipuler.", "Zone de flagrance potentielle."], correctJustif: 0, 
+                        explanation: "Le TGBT concentre un double risque : humain et matériel. La sécurisation est la priorité absolue." 
                     },
                     { 
-                        q: "Un véhicule utilitaire banalisé stationne depuis 2 heures devant la sortie de secours.", 
-                        optionsAction: ["Placer une contravention sur le pare-brise.", "Signaler l'immatriculation et demander une annonce micro.", "Déplacer le véhicule par vos propres moyens."], 
-                        correctAction: 1, 
-                        optionsJustif: ["C'est un stationnement sur voie publique.", "C'est une entrave à l'évacuation incendie et un repérage possible.", "Le véhicule doit être mis en fourrière immédiatement."], 
-                        correctJustif: 1, 
-                        explanation: "Un véhicule ventouse bloque la sécurité incendie et peut servir de moyen de fuite ou de repérage." 
+                        q: "Un utilitaire banalisé stationne depuis 2h devant la sortie de secours.", 
+                        optionsAction: ["Placer une contravention.", "Signaler l'immatriculation et demander une annonce.", "Déplacer le véhicule par vos moyens."], correctAction: 1, 
+                        optionsJustif: ["Stationnement sur voie publique.", "Entrave à l'évacuation incendie et repérage possible.", "Mise en fourrière immédiate."], correctJustif: 1, 
+                        explanation: "Bloque la sécurité incendie et peut servir de moyen de fuite/repérage." 
                     },
                     { 
                         q: "Vous constatez que le grillage ouest est nettement découpé à la pince.", 
-                        optionsAction: ["Mettre un panneau 'Attention Danger'.", "Réparation de fortune immédiate et ronde renforcée.", "Attendre la relève pour transmettre l'information."], 
-                        correctAction: 1, 
-                        optionsJustif: ["Préserver l'esthétique du site.", "Application de la règle des 3P (Prévision, Prévention, Protection).", "Le vandalisme relève de la procédure civile."], 
-                        correctJustif: 1, 
-                        explanation: "Une faille physique doit être comblée sans délai pour rétablir le périmètre de protection et prévenir l'intrusion." 
+                        optionsAction: ["Mettre un panneau Danger.", "Réparation de fortune immédiate et ronde renforcée.", "Attendre la relève."], correctAction: 1, 
+                        optionsJustif: ["Préserver l'esthétique.", "Règle des 3P (Prévision, Prévention, Protection).", "Le vandalisme relève du civil."], correctJustif: 1, 
+                        explanation: "Une faille physique doit être comblée sans délai pour rétablir le périmètre." 
                     },
                     { 
-                        q: "Vous trouvez un badge 'Visiteur' oublié sur un comptoir d'accueil.", 
-                        optionsAction: ["Le jeter à la poubelle.", "Le récupérer et le faire désactiver informatiquement.", "Le laisser à sa place pour que le visiteur le retrouve."], 
-                        correctAction: 1, 
-                        optionsJustif: ["C'est une faille technique matérielle.", "C'est une faille humaine permettant une usurpation d'identité.", "Il n'y a aucun risque sur une zone d'accueil."], 
-                        correctJustif: 1, 
-                        explanation: "La faille sociale est souvent la première exploitée. Un badge libre donne un accès sans effraction à un intrus." 
+                        q: "Un badge 'Visiteur' est oublié sur un comptoir d'accueil.", 
+                        optionsAction: ["Le jeter.", "Le récupérer et le faire désactiver informatiquement.", "Le laisser à sa place."], correctAction: 1, 
+                        optionsJustif: ["Faille technique.", "Faille humaine (usurpation d'identité).", "Aucun risque."], correctJustif: 1, 
+                        explanation: "La faille sociale. Un badge libre donne un accès sans effraction." 
                     },
                     { 
-                        q: "La zone de stockage des palettes extérieures est plongée dans le noir total (lampadaire HS).", 
-                        optionsAction: ["Continuer la ronde avec une lampe torche.", "Signaler la panne au PC Sécurité pour intervention technique.", "Éviter la zone pour des raisons de sécurité personnelle."], 
-                        correctAction: 1, 
-                        optionsJustif: ["L'obscurité annule la dissuasion et aveugle la vidéoprotection.", "Cela permet au site de faire des économies d'énergie.", "L'agent ne doit jamais opérer en zone non éclairée."], 
-                        correctJustif: 0, 
-                        explanation: "L'ombre favorise la phase 'd'approche' du malfaiteur et neutralise vos moyens techniques (caméras)." 
+                        q: "La zone de stockage des palettes extérieures est dans le noir total (lampadaire HS).", 
+                        optionsAction: ["Continuer avec une torche.", "Signaler la panne au PCS pour intervention.", "Éviter la zone."], correctAction: 1, 
+                        optionsJustif: ["L'obscurité annule la dissuasion et aveugle la vidéo.", "Économies d'énergie.", "Trop dangereux."], correctJustif: 0, 
+                        explanation: "L'ombre favorise la phase 'd'approche' et neutralise les caméras." 
                     },
                     { 
-                        q: "Un individu sur le trottoir photographie longuement vos caméras et vos barrières de filtrage.", 
-                        optionsAction: ["Sortir du site pour l'appréhender physiquement.", "L'observer, noter son signalement et alerter la hiérarchie.", "Confisquer son appareil photo."], 
-                        correctAction: 1, 
-                        optionsJustif: ["L'individu est en situation de flagrant délit (Art. 53 CPP).", "C'est la phase de 'Préparation' (repérage) du cycle de la malveillance.", "Il porte atteinte à la vie privée des agents."], 
-                        correctJustif: 1, 
-                        explanation: "Tant qu'il est sur la voie publique, pas d'infraction flagrante. Mais détecter la préparation permet d'anticiper l'attaque." 
+                        q: "Un individu sur le trottoir photographie vos caméras et vos barrières.", 
+                        optionsAction: ["L'appréhender physiquement.", "L'observer, noter son signalement et alerter.", "Confisquer l'appareil."], correctAction: 1, 
+                        optionsJustif: ["Flagrant délit.", "Phase de 'Préparation' (repérage) de la malveillance.", "Atteinte à la vie privée."], correctJustif: 1, 
+                        explanation: "Détecter la préparation permet d'anticiper l'attaque." 
                     },
                     { 
-                        q: "Une alarme incendie se déclenche de nuit dans un bâtiment vide et isolé du site.", 
-                        optionsAction: ["Se rendre sur place en courant et défoncer la porte.", "Effectuer une levée de doute avec extrême prudence.", "Appeler le 18 (Pompiers) immédiatement sans vérifier."], 
-                        correctAction: 1, 
-                        optionsJustif: ["Le danger de mort est imminent (État de nécessité).", "Il y a un risque de ruse pour attirer l'agent (acte de malveillance).", "La procédure d'appel est automatique."], 
-                        correctJustif: 1, 
-                        explanation: "La ruse (déclencher une alarme pour vider un poste central ou piéger un agent) est classique. La levée de doute doit être tactique." 
+                        q: "Une alarme incendie se déclenche de nuit dans un bâtiment vide et isolé.", 
+                        optionsAction: ["Défoncer la porte.", "Effectuer une levée de doute avec prudence.", "Appeler le 18 sans vérifier."], correctAction: 1, 
+                        optionsJustif: ["État de nécessité.", "Risque de ruse pour attirer l'agent.", "Procédure automatique."], correctJustif: 1, 
+                        explanation: "La ruse est classique. La levée de doute doit être tactique." 
                     },
                     { 
-                        q: "Un sac de sport volumineux est abandonné sous un banc dans le hall d'accueil.", 
-                        optionsAction: ["L'ouvrir pour identifier rapidement le propriétaire.", "Mettre en place un périmètre de sécurité et donner l'alerte.", "Le déplacer vers le bureau des objets trouvés."], 
-                        correctAction: 1, 
-                        optionsJustif: ["Procédure de gel des lieux (Colis suspect).", "C'est une vérification d'identité indirecte.", "Il faut dégager les voies de circulation."], 
-                        correctJustif: 0, 
-                        explanation: "Tout objet abandonné sans propriétaire identifiable doit être figé et traité comme une menace potentielle." 
+                        q: "Un sac de sport volumineux est abandonné sous un banc dans le hall.", 
+                        optionsAction: ["L'ouvrir.", "Mettre en place un périmètre de sécurité et donner l'alerte.", "Le déplacer aux objets trouvés."], correctAction: 1, 
+                        optionsJustif: ["Gel des lieux (Colis suspect).", "Vérification d'identité.", "Dégager les voies."], correctJustif: 0, 
+                        explanation: "Tout objet abandonné sans propriétaire = menace potentielle." 
                     },
                     { 
-                        q: "Dans un couloir, une pile de cartons de livraison masque totalement un détecteur de mouvement volumétrique.", 
-                        optionsAction: ["Déplacer les cartons pour libérer le champ de détection.", "Laisser les cartons en place.", "Éteindre le détecteur pour éviter les fausses alarmes."], 
-                        correctAction: 0, 
-                        optionsJustif: ["Maintenir l'esthétisme des lieux.", "Un dispositif masqué est une faille rendant le système aveugle.", "C'est la responsabilité des magasiniers."], 
-                        correctJustif: 1, 
-                        explanation: "L'agent de sûreté doit garantir l'opérabilité de son dispositif de défense. Une alarme masquée ne sert à rien." 
+                        q: "Une pile de cartons masque totalement un détecteur de mouvement volumétrique.", 
+                        optionsAction: ["Déplacer les cartons pour libérer le champ.", "Laisser en place.", "Éteindre le détecteur."], correctAction: 0, 
+                        optionsJustif: ["Esthétisme.", "Un dispositif masqué rend le système aveugle.", "Responsabilité des magasiniers."], correctJustif: 1, 
+                        explanation: "L'agent doit garantir l'opérabilité de son dispositif de défense." 
                     }
                 ]
             },
@@ -346,247 +355,172 @@
                 questions: [
                     {
                         q: "Situation 1 : À l'entrée d'un concert, le terminal indique que le billet d'un visiteur est une contrefaçon. Le visiteur s'énerve et bloque la file.",
-                        optionsD: [
-                            "Vous êtes un faussaire, votre billet est faux.",
-                            "Monsieur, je viens de scanner votre billet et le terminal indique qu'il s'agit d'une contrefaçon.",
-                            "Je constate que vous essayez de frauder l'entrée."
-                        ], correctD: 1,
-                        optionsE: [
-                            "Ce titre n'étant pas reconnu, je ne peux pas vous laisser entrer et votre insistance bloque le passage.",
-                            "Vous m'énervez à forcer le passage, vous allez créer une émeute.",
-                            "Si vous entrez, mon chef va me crier dessus."
-                        ], correctE: 0,
-                        optionsS: [
-                            "Allez-vous-en ou je vous frappe.",
-                            "Je vous demande de libérer l'accès. Vous pouvez vous rendre au guichet litiges à l'extérieur.",
-                            "Restez là en attendant la police."
-                        ], correctS: 1,
-                        optionsC: [
-                            "Si vous persistez à bloquer l'accès, je serai contraint de solliciter les OPJ présents pour une interpellation.",
-                            "Si vous restez, je vous casse la figure.",
-                            "Si vous continuez, je vous laisse entrer mais vous vous cachez."
-                        ], correctC: 0,
-                        explanation: "Le DESC face à un titre frauduleux doit rester objectif. L'agent ne juge pas (il ne dit pas 'vous êtes un voleur') mais constate le refus de la machine et donne une alternative claire (guichet litige)."
+                        optionsD: ["Vous êtes un faussaire, votre billet est faux.", "Monsieur, je viens de scanner votre billet et le terminal indique qu'il s'agit d'une contrefaçon.", "Je constate que vous essayez de frauder l'entrée."], correctD: 1,
+                        optionsE: ["Ce titre n'étant pas reconnu, je ne peux pas vous laisser entrer et votre insistance bloque le passage.", "Vous m'énervez à forcer le passage, vous allez créer une émeute.", "Si vous entrez, mon chef va me crier dessus."], correctE: 0,
+                        optionsS: ["Allez-vous-en ou je vous frappe.", "Je vous demande de libérer l'accès. Vous pouvez vous rendre au guichet litiges à l'extérieur.", "Restez là en attendant la police."], correctS: 1,
+                        optionsC: ["Si vous persistez à bloquer l'accès, je serai contraint de solliciter les OPJ présents pour une interpellation.", "Si vous restez, je vous casse la figure.", "Si vous continuez, je vous laisse entrer mais vous vous cachez."], correctC: 0,
+                        explanation: "DESC objectif : On ne juge pas ('faussaire'), on constate le refus machine et on donne une alternative (guichet litige)."
                     },
                     {
                         q: "Situation 2 : Un spectateur fume une cigarette dans une tribune classée zone non-fumeur.",
-                        optionsD: [
-                            "Vous ne savez pas lire les panneaux 'Interdit de fumer' ?",
-                            "Monsieur, je constate que vous fumez dans cette zone.",
-                            "Éteignez ça tout de suite, c'est interdit."
-                        ], correctD: 1,
-                        optionsE: [
-                            "Votre fumée incommode les autres spectateurs et crée un risque d'incendie.",
-                            "La fumée me donne mal à la tête.",
-                            "C'est comme ça et pas autrement, c'est le règlement."
-                        ], correctE: 0,
-                        optionsS: [
-                            "Donnez-moi votre paquet de cigarettes.",
-                            "Sortez du stade immédiatement.",
-                            "Je vous demande d'éteindre votre cigarette ou de vous rendre dans la zone fumeur à l'extérieur."
-                        ], correctS: 2,
-                        optionsC: [
-                            "Dans le cas contraire, je devrai demander votre exclusion du stade à ma hiérarchie.",
-                            "Si vous continuez, je vous vide mon extincteur dessus.",
-                            "Sinon, je vous mets une amende de 135 euros."
-                        ], correctC: 0,
-                        explanation: "L'agent de sûreté n'est pas policier municipal, il ne met pas d'amende (sauf assermentation très spécifique). Il doit proposer l'alternative de la zone fumeur avant l'exclusion."
+                        optionsD: ["Vous ne savez pas lire les panneaux 'Interdit de fumer' ?", "Monsieur, je constate que vous fumez dans cette zone.", "Éteignez ça tout de suite, c'est interdit."], correctD: 1,
+                        optionsE: ["Votre fumée incommode les autres spectateurs et crée un risque d'incendie.", "La fumée me donne mal à la tête.", "C'est comme ça et pas autrement, c'est le règlement."], correctE: 0,
+                        optionsS: ["Donnez-moi votre paquet de cigarettes.", "Sortez du stade immédiatement.", "Je vous demande d'éteindre votre cigarette ou de vous rendre dans la zone fumeur à l'extérieur."], correctS: 2,
+                        optionsC: ["Dans le cas contraire, je devrai demander votre exclusion du stade à ma hiérarchie.", "Si vous continuez, je vous vide mon extincteur dessus.", "Sinon, je vous mets une amende de 135 euros."], correctC: 0,
+                        explanation: "L'agent propose l'alternative de la zone fumeur avant l'exclusion. Il ne met pas d'amendes."
                     },
                     {
-                        q: "Situation 3 : Lors d'un filtrage (Art. L613-3), un visiteur se présente avec une bouteille en verre. Il refuse de s'en séparer.",
-                        optionsD: [
-                            "Monsieur, vous avez une arme par destination dans votre sac.",
-                            "Monsieur, vous avez certainement une bonne raison de l'amener, mais je constate que vous portez une bouteille en verre.",
-                            "C'est interdit les bouteilles, vous êtes idiot ?"
-                        ], correctD: 1,
-                        optionsE: [
-                            "Cet objet est interdit car il représente un risque de blessure ou de jet dans l'enceinte.",
-                            "Je ne veux pas avoir de problèmes avec mon patron.",
-                            "Si vous la gardez, vous allez vous saouler."
-                        ], correctE: 0,
-                        optionsS: [
-                            "Je vous invite à la jeter dans cette poubelle ou à la ramener dans votre véhicule.",
-                            "Donnez-la moi, je vais la boire.",
-                            "Je vous la confisque de force."
-                        ], correctS: 0,
-                        optionsC: [
-                            "Sinon, je vous tape.",
-                            "Si vous refusez de vous en séparer, le règlement m'oblige à vous interdire l'accès au site.",
-                            "Si vous refusez, je vous arrête pour vol."
-                        ], correctC: 1,
-                        explanation: "L'empathie en introduction ('vous avez certainement une bonne raison') est parfaite pour désamorcer. Confisquer de force un objet non délictuel est du vol."
+                        q: "Situation 3 : Lors d'un filtrage, un visiteur se présente avec une bouteille en verre (interdite).",
+                        optionsD: ["Monsieur, vous avez une arme par destination dans votre sac.", "Monsieur, vous avez certainement une bonne raison de l'amener, mais je constate que vous portez une bouteille en verre.", "C'est interdit les bouteilles, vous êtes idiot ?"], correctD: 1,
+                        optionsE: ["Cet objet est interdit car il représente un risque de blessure ou de jet dans l'enceinte.", "Je ne veux pas avoir de problèmes avec mon patron.", "Si vous la gardez, vous allez vous saouler."], correctE: 0,
+                        optionsS: ["Je vous invite à la jeter dans cette poubelle ou à la ramener dans votre véhicule.", "Donnez-la moi, je vais la boire.", "Je vous la confisque de force."], correctS: 0,
+                        optionsC: ["Sinon, je vous tape.", "Si vous refusez de vous en séparer, le règlement m'oblige à vous interdire l'accès au site.", "Si vous refusez, je vous arrête pour vol."], correctC: 1,
+                        explanation: "L'empathie en introduction ('vous avez certainement une bonne raison') désamorce. Pas de confiscation de force."
                     },
                     {
-                        q: "Situation 4 : Un individu refuse de se soumettre à la palpation de sécurité obligatoire à l'entrée d'un événement.",
-                        optionsD: [
-                            "Vous cachez une arme, c'est sûr.",
-                            "Je vois bien que vous refusez de vous faire palper.",
-                            "Monsieur, je constate que vous refusez la palpation de sécurité."
-                        ], correctD: 2,
-                        optionsE: [
-                            "Sans ce contrôle, je ne peux pas garantir l'absence d'objets dangereux et assurer la sécurité du site.",
-                            "Vous m'empêchez de faire mon travail correctement.",
-                            "Si je ne vous palpe pas, on va tous mourir."
-                        ], correctE: 0,
-                        optionsS: [
-                            "Laissez-moi vous fouiller de force.",
-                            "Je vous invite soit à accepter ce contrôle, soit à quitter la file d'attente.",
-                            "Appelez votre avocat si vous n'êtes pas content."
-                        ], correctS: 1,
-                        optionsC: [
-                            "Si vous refusez, je vous enferme dans le local de sécurité.",
-                            "Si vous persistez dans votre refus, je devrai vous refuser définitivement l'accès.",
-                            "Si vous restez, je vous passe les menottes."
-                        ], correctC: 1,
-                        explanation: "Le refus de palpation n'est pas un délit (donc pas d'entrave, pas de force). La seule conséquence légale est l'interdiction d'accès."
+                        q: "Situation 4 : Un individu refuse la palpation de sécurité obligatoire.",
+                        optionsD: ["Vous cachez une arme, c'est sûr.", "Je vois bien que vous refusez de vous faire palper.", "Monsieur, je constate que vous refusez la palpation de sécurité."], correctD: 2,
+                        optionsE: ["Sans ce contrôle, je ne peux pas garantir l'absence d'objets dangereux.", "Vous m'empêchez de faire mon travail.", "Si je ne vous palpe pas, on va tous mourir."], correctE: 0,
+                        optionsS: ["Laissez-moi vous fouiller de force.", "Je vous invite soit à accepter ce contrôle, soit à quitter la file d'attente.", "Appelez votre avocat."], correctS: 1,
+                        optionsC: ["Si vous refusez, je vous enferme.", "Si vous persistez dans votre refus, je devrai vous refuser définitivement l'accès.", "Si vous restez, je vous passe les menottes."], correctC: 1,
+                        explanation: "Refus de palpation = simple interdiction d'accès (pas un délit, donc pas d'entrave)."
                     },
                     {
-                        q: "Situation 5 : Vol à l'étalage. Vous avez intercepté une personne après les caisses. Dans le local, vous commencez le dialogue.",
-                        optionsD: [
-                            "Vous êtes un voleur, je vous ai vu sur les caméras.",
-                            "Monsieur, j'ai constaté que vous avez passé les caisses sans régler l'article dissimulé dans votre veste.",
-                            "Je sais que vous avez volé, avouez-le !"
-                        ], correctD: 1,
-                        optionsE: [
-                            "Cela m'énerve que les gens volent dans ce magasin.",
-                            "Vous allez aller en prison pour ça.",
-                            "Ceci constitue un vol, ce qui pose un préjudice financier à l'entreprise."
-                        ], correctE: 2,
-                        optionsS: [
-                            "Je vous propose de régler l'article immédiatement en caisse centrale pour réparer le dommage.",
-                            "Rendez-moi l'article et donnez-moi 50 euros en plus.",
-                            "Laissez votre carte d'identité en garantie."
-                        ], correctS: 0,
-                        optionsC: [
-                            "Si vous payez, l'incident est clos. Sinon, je ferai appel à la police pour une procédure judiciaire.",
-                            "Si vous refusez, je vous frappe.",
-                            "Dans le cas contraire, je vous séquestre ici toute la nuit."
-                        ], correctC: 0,
-                        explanation: "Dans le cadre d'un règlement à l'amiable toléré par l'enseigne, l'agent reste factuel sur le délit de vol, propose la réparation civile (paiement) et rappelle la conséquence pénale (OPJ)."
+                        q: "Situation 5 : Vol à l'étalage. Interception d'une personne après les caisses.",
+                        optionsD: ["Vous êtes un voleur, je vous ai vu.", "Monsieur, j'ai constaté que vous avez passé les caisses sans régler l'article dissimulé dans votre veste.", "Avouez que vous avez volé !"], correctD: 1,
+                        optionsE: ["Cela m'énerve que les gens volent.", "Vous allez aller en prison.", "Ceci constitue un vol, ce qui pose un préjudice financier à l'entreprise."], correctE: 2,
+                        optionsS: ["Je vous propose de régler l'article immédiatement en caisse centrale.", "Rendez l'article et donnez 50 euros de plus.", "Laissez votre carte d'identité en garantie."], correctS: 0,
+                        optionsC: ["Si vous payez, l'incident est clos. Sinon, appel à la police pour procédure judiciaire.", "Si vous refusez, je vous frappe.", "Dans le cas contraire, je vous séquestre toute la nuit."], correctC: 0,
+                        explanation: "Règlement amiable : constat du vol (fait), proposition de réparation civile (paiement), rappel de la conséquence pénale."
                     },
                     {
-                        q: "Situation 6 : Un apprenti du lycée refuse de vous présenter son badge à l'entrée de manière insolente.",
-                        optionsD: [
-                            "Tu es mal élevé, montre ton badge.",
-                            "Jeune homme, je constate que tu refuses de me présenter ton badge d'accès.",
-                            "Tu te prends pour qui pour me parler comme ça ?"
-                        ], correctD: 1,
-                        optionsE: [
-                            "Sans ce badge, je ne peux pas vérifier ton identité et garantir que tu es bien élève ici.",
-                            "Ton comportement m'insupporte et je vais te punir.",
-                            "Tu vas avoir des problèmes avec la direction."
-                        ], correctE: 0,
-                        optionsS: [
-                            "Repars chez toi immédiatement.",
-                            "Je te demande de le chercher dans ton sac ou de passer par l'accueil de la vie scolaire.",
-                            "Donne-moi ton sac que je cherche moi-même."
-                        ], correctS: 1,
-                        optionsC: [
-                            "Si tu t'obstines, tu resteras à l'extérieur et l'administration sera prévenue.",
-                            "Sinon, je t'emmène de force au commissariat.",
-                            "Dans le cas contraire, je te confisque ton téléphone."
-                        ], correctC: 0,
-                        explanation: "L'agent ne doit pas se laisser gagner par l'émotion face à l'insolence. Il rappelle la règle objective (vérification d'identité pour l'accès) et donne la solution standard (vie scolaire)."
+                        q: "Situation 6 : Un apprenti du lycée refuse de présenter son badge de manière insolente.",
+                        optionsD: ["Tu es mal élevé, montre ton badge.", "Jeune homme, je constate que tu refuses de me présenter ton badge d'accès.", "Tu te prends pour qui ?"], correctD: 1,
+                        optionsE: ["Sans ce badge, je ne peux pas vérifier ton identité.", "Ton comportement m'insupporte.", "Tu vas avoir des problèmes."], correctE: 0,
+                        optionsS: ["Repars chez toi.", "Je te demande de le chercher dans ton sac ou de passer par la vie scolaire.", "Donne-moi ton sac que je cherche."], correctS: 1,
+                        optionsC: ["Si tu t'obstines, tu resteras à l'extérieur et l'administration sera prévenue.", "Sinon, commissariat.", "Dans le cas contraire, je te confisque ton téléphone."], correctC: 0,
+                        explanation: "L'agent ne répond pas à l'insolence. Il rappelle la règle objective (vérification d'identité)."
                     },
                     {
-                        q: "Situation 7 : Lors d'une ronde sur un parking privé, un véhicule se gare sur une place handicapée sans macaron.",
-                        optionsD: [
-                            "Vous n'êtes pas handicapé, bougez votre voiture.",
-                            "Monsieur, je constate que vous êtes stationné sur une place réservée aux personnes à mobilité réduite sans macaron visible.",
-                            "Vous n'avez pas honte de vous garer là ?"
-                        ], correctD: 1,
-                        optionsE: [
-                            "Cela bloque l'accès à une personne qui en a réellement besoin.",
-                            "Je déteste les gens comme vous.",
-                            "C'est une infraction qui va vous coûter cher."
-                        ], correctE: 0,
-                        optionsS: [
-                            "Je vous demande de déplacer votre véhicule immédiatement sur une place standard.",
-                            "Donnez-moi vos clés, je vais la garer.",
-                            "Quittez le parking."
-                        ], correctS: 0,
-                        optionsC: [
-                            "Sinon, je crève vos pneus.",
-                            "Si vous refusez, je devrai rédiger un signalement et demander l'enlèvement du véhicule.",
-                            "Si vous la laissez, je vous bloque avec ma voiture."
-                        ], correctC: 1,
-                        explanation: "Même face à un manque de civisme flagrant, l'agent garde le contrôle de sa communication. L'enlèvement est la conséquence légale sur un site privé."
+                        q: "Situation 7 : Véhicule stationné sur une place handicapée sans macaron sur un parking privé.",
+                        optionsD: ["Bougez votre voiture.", "Monsieur, je constate que vous êtes stationné sur une place réservée sans macaron visible.", "Vous n'avez pas honte ?"], correctD: 1,
+                        optionsE: ["Cela bloque l'accès à une personne qui en a besoin.", "Je déteste les gens comme vous.", "Ça va vous coûter cher."], correctE: 0,
+                        optionsS: ["Je vous demande de déplacer votre véhicule immédiatement.", "Donnez-moi vos clés.", "Quittez le parking."], correctS: 0,
+                        optionsC: ["Sinon, je crève vos pneus.", "Si vous refusez, je devrai demander l'enlèvement du véhicule.", "Si vous la laissez, je vous bloque."], correctC: 1,
+                        explanation: "Même face à un incivisme, l'agent garde le contrôle. Conséquence légale sur site privé = enlèvement."
                     },
                     {
-                        q: "Situation 8 : Un usager s'énerve à l'accueil et commence à vous insulter violemment (Outrage).",
-                        optionsD: [
-                            "Monsieur, vous venez de prononcer des insultes à mon encontre dans l'exercice de mes fonctions.",
-                            "Vous êtes complètement fou de m'insulter.",
-                            "Répétez ça pour voir ?"
-                        ], correctD: 0,
-                        optionsE: [
-                            "Vos propos me blessent personnellement.",
-                            "Ces propos constituent un délit d'outrage et troublent la tranquillité du site.",
-                            "Vous allez regretter d'avoir dit ça."
-                        ], correctE: 1,
-                        optionsS: [
-                            "Battez-vous avec moi dehors.",
-                            "Je vous demande de vous calmer et de cesser immédiatement ces insultes.",
-                            "Taisez-vous ou je vous frappe."
-                        ], correctS: 1,
-                        optionsC: [
-                            "Si vous continuez, je serai contraint de vous appréhender et de vous remettre à la Police.",
-                            "Si vous n'arrêtez pas, je vous insulte en retour.",
-                            "Dans le cas contraire, je refuse de vous parler."
-                        ], correctC: 0,
-                        explanation: "Face à un outrage (délit), l'agent doit formuler une sommation claire. S'il y a récidive ou violence, l'appréhension (Art. 73) devient légitime."
+                        q: "Situation 8 : Un usager s'énerve à l'accueil et vous insulte violemment (Outrage).",
+                        optionsD: ["Vous venez de prononcer des insultes à mon encontre.", "Vous êtes fou de m'insulter.", "Répétez ça pour voir ?"], correctD: 0,
+                        optionsE: ["Vos propos me blessent.", "Ces propos constituent un délit d'outrage et troublent la tranquillité.", "Vous allez regretter."], correctE: 1,
+                        optionsS: ["Battez-vous avec moi.", "Je vous demande de vous calmer et de cesser ces insultes.", "Taisez-vous ou je frappe."], correctS: 1,
+                        optionsC: ["Si vous continuez, je serai contraint de vous appréhender et de vous remettre à la Police.", "Si vous n'arrêtez pas, je vous insulte en retour.", "Dans le cas contraire, je refuse de vous parler."], correctC: 0,
+                        explanation: "Face à un outrage (délit), l'agent formule une sommation claire. Récidive = appréhension légitime (Art. 73)."
                     },
                     {
                         q: "Situation 9 : Un livreur décharge ses cartons en bloquant totalement une issue de secours.",
-                        optionsD: [
-                            "Vous bloquez la porte, dégagez ça.",
-                            "Monsieur, je constate que vous déposez vos cartons devant l'issue de secours.",
-                            "C'est interdit de livrer ici, lisez les panneaux."
-                        ], correctD: 1,
-                        optionsE: [
-                            "Cet encombrement bloque l'évacuation en cas d'incendie et met tout le monde en danger.",
-                            "C'est pénible, je dois passer par là pour ma ronde.",
-                            "Vous allez vous prendre une amende par l'inspection du travail."
-                        ], correctE: 0,
-                        optionsS: [
-                            "Je vous demande de décaler votre livraison vers la zone dédiée à quelques mètres.",
-                            "Remballez tout et annulez la livraison.",
-                            "Je vais jeter vos cartons."
-                        ], correctS: 0,
-                        optionsC: [
-                            "Si vous refusez, je devrai stopper votre réception et informer votre direction.",
-                            "Sinon, je préviens la police.",
-                            "Dans le cas contraire, je ferme la porte à clé."
-                        ], correctC: 0,
-                        explanation: "Le livreur est un professionnel, il faut lui rappeler le risque sécurité (évacuation) et l'impact professionnel (remontée à sa hiérarchie) pour obtenir sa coopération."
+                        optionsD: ["Vous bloquez la porte, dégagez ça.", "Monsieur, je constate que vous déposez vos cartons devant l'issue de secours.", "C'est interdit de livrer ici."], correctD: 1,
+                        optionsE: ["Cet encombrement bloque l'évacuation en cas d'incendie et met tout le monde en danger.", "C'est pénible pour ma ronde.", "Amende par l'inspection du travail."], correctE: 0,
+                        optionsS: ["Je vous demande de décaler votre livraison vers la zone dédiée.", "Remballez tout.", "Je vais jeter vos cartons."], correctS: 0,
+                        optionsC: ["Si vous refusez, je devrai stopper votre réception et informer votre direction.", "Sinon, j'appelle la police.", "Dans le cas contraire, je ferme la porte."], correctC: 0,
+                        explanation: "On rappelle le risque sécurité (évacuation) et l'impact professionnel au livreur."
                     },
                     {
-                        q: "Situation 10 : Un individu visiblement alcoolisé refuse de sortir du hall d'un bâtiment privé à la fermeture.",
-                        optionsD: [
-                            "Vous êtes complètement ivre, dehors !",
-                            "Tu as trop bu, il faut partir maintenant.",
-                            "Monsieur, je constate que vous refusez de quitter le bâtiment alors que nous fermons."
-                        ], correctD: 2,
-                        optionsE: [
-                            "Vous me faites perdre mon temps.",
-                            "Votre présence non autorisée après l'heure empêche la mise sous alarme du site.",
-                            "Vous sentez l'alcool et vous dérangez."
-                        ], correctE: 1,
-                        optionsS: [
-                            "Je vous demande de vous diriger calmement vers la sortie principale.",
-                            "Sortez en courant.",
-                            "Je vais vous porter jusqu'à la sortie."
-                        ], correctS: 0,
-                        optionsC: [
-                            "Si vous ne sortez pas, je vais vous pousser dehors.",
-                            "Si vous restez, je serai obligé de faire intervenir les forces de l'ordre pour intrusion.",
-                            "Sinon, je vous laisse enfermé ici toute la nuit."
-                        ], correctC: 1,
-                        explanation: "Face à une personne alcoolisée, on évite absolument le jugement ('vous êtes ivre') qui génère de la violence. On reste sur le fait objectif : le refus de quitter les lieux à la fermeture."
+                        q: "Situation 10 : Un individu alcoolisé refuse de sortir à la fermeture.",
+                        optionsD: ["Vous êtes ivre, dehors !", "Tu as trop bu, pars.", "Monsieur, je constate que vous refusez de quitter le bâtiment alors que nous fermons."], correctD: 2,
+                        optionsE: ["Vous me faites perdre mon temps.", "Votre présence non autorisée empêche la mise sous alarme du site.", "Vous sentez l'alcool."], correctE: 1,
+                        optionsS: ["Je vous demande de vous diriger calmement vers la sortie principale.", "Sortez en courant.", "Je vais vous porter."], correctS: 0,
+                        optionsC: ["Si vous ne sortez pas, je vous pousse.", "Si vous restez, je serai obligé de faire intervenir les forces de l'ordre pour intrusion.", "Sinon, je vous enferme ici."], correctC: 1,
+                        explanation: "On évite le jugement ('vous êtes ivre') qui génère la violence. Fait objectif : refus de quitter les lieux."
                     }
                 ]
             },
-            radio: { title: "3. Radio Express", type: "single", questions: [{ q: "En construction", options: ["1"], correct: 0, explanation: "" }] },
+            radio: {
+                title: "3. Radio Express",
+                type: "radio_builder",
+                questions: [
+                    {
+                        q: "Situation 1 : Véhicule suspect garé devant une issue de secours. Immatriculation : AB-12-CD. Vous êtes l'agent 'Delta 1'.",
+                        optionsSuis: ["Ici Delta 1, devant l'issue de secours Nord.", "Je suis l'agent Delta 1 au parking.", "C'est Delta 1."], correctSuis: 0,
+                        optionsVois: ["Un véhicule AB-12-CD.", "Un véhicule suspect, plaque Alpha Bravo séparatif Unité Deux-fois-Un séparatif Charlie Delta.", "Voiture suspecte, immatriculée Alpha Bravo Douze Charlie Delta."], correctVois: 1,
+                        optionsFais: ["Je crève les pneus.", "J'inspecte visuellement l'habitacle sans rien toucher.", "Je force la porte."], correctFais: 1,
+                        optionsDemande: ["Je demande au PCS une vérification de la plaque. Parlez.", "Au secours, terminé.", "Je demande à mon chef de venir."], correctDemande: 0,
+                        explanation: "Structure 'Je suis, je vois, je fais, je demande'. Les chiffres 1 et 2 se prononcent Unité et 2 fois 1."
+                    },
+                    {
+                        q: "Situation 2 : Un individu a été appréhendé sans pièce d'identité. Il dit s'appeler 'KANY'. Vous êtes au 'PCS'.",
+                        optionsSuis: ["C'est la salle vidéo.", "Ici l'agent d'accueil au PCS.", "Appel du PCS."], correctSuis: 1,
+                        optionsVois: ["Individu appréhendé sans papiers, nom déclaré Kilo Alpha November Yankee.", "Un voleur qui s'appelle Kilo Alpha Novembre Yvettes.", "Le suspect KANY."], correctVois: 0,
+                        optionsFais: ["Je le maintiens sous surveillance dans le local de sécurité.", "Je l'interroge de force.", "Je le laisse partir."], correctFais: 0,
+                        optionsDemande: ["Appelez la police svp.", "Je demande l'appel immédiat des forces de l'ordre. Parlez.", "Venez vite, terminé."], correctDemande: 1,
+                        explanation: "Le nom doit être épelé avec l'alphabet radio international strict."
+                    },
+                    {
+                        q: "Situation 3 : Vitre fracturée détectée sur le bâtiment C, secteur 'T-8'. Vous êtes la patrouille 'Alpha'.",
+                        optionsSuis: ["Ici Alpha, au T-8.", "Ici la patrouille Alpha, au bâtiment C, secteur Tango séparatif Deux-fois-Quatre.", "Alpha en position vitre cassée."], correctSuis: 1,
+                        optionsVois: ["Une vitre fracturée avec des traces de pesée sur le chambranle.", "Il y a des bris de glace partout.", "Une vitre Tango Huit brisée."], correctVois: 0,
+                        optionsFais: ["Je ramasse le verre.", "Je mets en place un périmètre de sécurité pour geler les lieux.", "Je rentre par la fenêtre."], correctFais: 1,
+                        optionsDemande: ["Envoyez le chef !", "Je demande la présence du chef de poste pour constatation. Parlez.", "Rien à signaler. Terminé."], correctDemande: 1,
+                        explanation: "Le chiffre 8 en radio se prononce '2 fois 4'. L'action prioritaire est le gel des lieux."
+                    },
+                    {
+                        q: "Situation 4 : Trottinette renversant un piéton au parking. Plaque visible : 'F-9-K'. Vous êtes 'Delta 2'.",
+                        optionsSuis: ["Ici Delta 2, sur le parking principal.", "Delta 2 à l'appareil.", "C'est moi Delta 2."], correctSuis: 0,
+                        optionsVois: ["Une trottinette en fuite après choc, plaque Foxtrot séparatif Cinq-et-Quatre séparatif Kilo.", "Un piéton écrasé par F-9-K.", "Trotinette Foxtrot Neuf Kilo."], correctVois: 0,
+                        optionsFais: ["Je cours après la trottinette.", "Je protège la zone et je réalise le bilan d'urgence vitale.", "Je prends des photos."], correctFais: 1,
+                        optionsDemande: ["Appelez la police !", "Je demande l'appel immédiat du SAMU et d'un agent SST. Parlez.", "Amenez la trousse de secours. Terminé."], correctDemande: 1,
+                        explanation: "Le chiffre 9 se dit 'Cinq et Quatre'. L'action est le secours à personne (bilan vital)."
+                    },
+                    {
+                        q: "Situation 5 : Un visiteur s'énerve à l'accueil. Son badge indique 'VIP'. Vous êtes 'Accueil 1'.",
+                        optionsSuis: ["Ici l'accueil.", "Ici Accueil Unité.", "Accueil 1 en ligne."], correctSuis: 1,
+                        optionsVois: ["Un mec VIP très énervé.", "Un visiteur avec un badge Victor India Papa qui se montre agressif verbalement.", "Un VIP qui crie."], correctVois: 1,
+                        optionsFais: ["J'applique la méthode DESC pour tenter de le calmer.", "Je le frappe.", "Je fuis."], correctFais: 0,
+                        optionsDemande: ["Je demande à un agent de se tenir prêt en retrait. Parlez.", "Au secours, terminé.", "Virez-le !"], correctDemande: 0,
+                        explanation: "Le chiffre 1 se dit 'Unité'. VIP s'épelle Victor India Papa. Le DESC est l'action immédiate."
+                    },
+                    {
+                        q: "Situation 6 : Colis suspect repéré (sac noir) en zone 'G-3'. Vous êtes 'Ronde 1'.",
+                        optionsSuis: ["Ici Ronde Unité, en zone Golf séparatif Deux-et-Un.", "Ici Ronde 1 en zone G-3.", "Ronde Unité en Golf Trois."], correctSuis: 0,
+                        optionsVois: ["Un colis suspect.", "Un sac à dos noir abandonné sous un siège sans propriétaire.", "Un sac Golf Trois."], correctVois: 1,
+                        optionsFais: ["Je l'ouvre pour vérifier.", "Je le déplace dehors.", "Je fais évacuer le public à distance de sécurité sans toucher le sac."], correctFais: 2,
+                        optionsDemande: ["Appelez les démineurs.", "Je demande l'application de la procédure Vigipirate. Parlez.", "Terminé."], correctDemande: 1,
+                        explanation: "Le chiffre 3 se dit 'Deux et Un'. Ne jamais toucher un colis suspect (Gel des lieux)."
+                    },
+                    {
+                        q: "Situation 7 : Malaise d'une personne dans l'allée 'D-5'. Vous êtes 'Secours 1'.",
+                        optionsSuis: ["Ici Secours Unité, dans l'allée Delta séparatif Trois-et-Deux.", "Secours 1 en Delta 5.", "Secours Unité dans le rayon D."], correctSuis: 0,
+                        optionsVois: ["Une personne consciente au sol se plaignant de fortes douleurs à la poitrine.", "Quelqu'un qui a mal au cœur.", "Une crise cardiaque."], correctVois: 0,
+                        optionsFais: ["Je la mets au repos et la rassure en attendant.", "Je lui donne des médicaments.", "Je lui fais un massage cardiaque."], correctFais: 0,
+                        optionsDemande: ["Appelez le 18.", "Je demande l'appel du centre 15 et qu'on m'apporte le défibrillateur. Parlez.", "Terminé, besoin d'aide."], correctDemande: 1,
+                        explanation: "Le 5 se dit 'Trois et Deux'. On ne donne jamais de médicaments. Appel au 15 (SAMU) prioritaire."
+                    },
+                    {
+                        q: "Situation 8 : Départ de feu dans le local 'TGBT'. Vous êtes 'Delta 1'.",
+                        optionsSuis: ["Ici Delta 1, devant le local Tango Golf Bravo Tango.", "Ici Delta 1 au local électrique.", "Delta 1 au TGBT."], correctSuis: 0,
+                        optionsVois: ["Il y a le feu !", "Une épaisse fumée noire et des étincelles sortant de la porte.", "Des flammes Tango Golf Bravo Tango."], correctVois: 1,
+                        optionsFais: ["Je sécurise les abords sans utiliser d'eau (risque électrique).", "Je jette un seau d'eau.", "J'ouvre la porte en grand."], correctFais: 0,
+                        optionsDemande: ["Au feu !", "Je demande l'évacuation de la zone et l'appel aux pompiers. Parlez.", "Appelez les secours. Terminé."], correctDemande: 1,
+                        explanation: "TGBT = Tango Golf Bravo Tango. Pas d'eau sur un feu d'origine électrique."
+                    },
+                    {
+                        q: "Situation 9 : Un camion de livraison bloque la rue, immatriculé 'W-8-Z'. Vous êtes au 'Filtrage'.",
+                        optionsSuis: ["Ici le poste de Filtrage.", "C'est la barrière.", "Poste de filtrage en ligne."], correctSuis: 0,
+                        optionsVois: ["Un camion bloquant la circulation, plaque Whiskey séparatif Deux-fois-Quatre séparatif Zulu.", "Un camion W-8-Z.", "Un véhicule Whiskey Huit Zulu."], correctVois: 0,
+                        optionsFais: ["Je crève les pneus.", "Je recherche le chauffeur dans les environs immédiats.", "J'appelle la fourrière."], correctFais: 1,
+                        optionsDemande: ["Faites une annonce.", "Je demande une annonce micro générale pour déplacer le véhicule. Parlez.", "Que quelqu'un vienne. Terminé."], correctDemande: 1,
+                        explanation: "Le 8 se dit 'Deux fois Quatre'. On cherche d'abord le conducteur avant l'enlèvement."
+                    },
+                    {
+                        q: "Situation 10 : Intrusion par le portail 'Q-2' visionnée sur les caméras. Vous êtes 'Vidéo 1'.",
+                        optionsSuis: ["Ici Vidéo Unité au PCS.", "Caméra 1 en alerte.", "PCS vidéo."], correctSuis: 0,
+                        optionsVois: ["Un voleur qui entre.", "Un individu vêtu de sombre vient de franchir le portail Quebec séparatif Deux-fois-Un.", "Un gars en Quebec Deux."], correctVois: 1,
+                        optionsFais: ["Je crie dans le micro.", "Je continue le suivi vidéo de l'individu et je verrouille les accès distants.", "Je descends l'arrêter."], correctFais: 1,
+                        optionsDemande: ["Allez l'attraper !", "Je demande à Delta 1 et Delta 2 d'intervenir pour l'appréhender. Parlez.", "Intervention demandée. Terminé."], correctDemande: 1,
+                        explanation: "Le 2 se dit 'Deux fois Un'. L'agent vidéo (PCS) coordonne l'action des équipes sur le terrain."
+                    }
+                ]
+            },
             juridique: { title: "4. L'Arène Juridique", type: "single", questions: [{ q: "En construction", options: ["1"], correct: 0, explanation: "" }] },
             rapport: { title: "5. Chrono-Rapport", type: "single", questions: [{ q: "En construction", options: ["1"], correct: 0, explanation: "" }] }
         };
@@ -595,9 +529,10 @@
         let currentModuleId = "";
         let currentQuestionIndex = 0;
         let score = 0;
-        let userAnswers = []; // Mémoire des réponses pour le débriefing
+        let userAnswers = [];
         let selectionDual = { actionCorrect: false, justifCorrect: false, actionBtn: null, justifBtn: null };
-        let selectionDesc = { d: null, e: null, s: null, c: null }; // Pour le module DESC
+        let selectionDesc = { d: null, e: null, s: null, c: null };
+        let selectionRadio = { suis: null, vois: null, fais: null, demande: null };
 
         // FONCTION DE MELANGE ALEATOIRE
         function shuffleArray(array) {
@@ -633,33 +568,31 @@
             const module = db[currentModuleId];
             const qData = module.questions[currentQuestionIndex];
             
-            // Progression
             document.getElementById('progress-text').innerText = `Situation ${currentQuestionIndex + 1} / ${module.questions.length}`;
             const progressPercent = ((currentQuestionIndex) / module.questions.length) * 100;
             document.getElementById('progress-fill').style.width = `${progressPercent}%`;
             
-            // Texte
             document.getElementById('question-text').innerText = qData.q;
             
-            // Réinitialiser UI
             document.getElementById('feedback-area').classList.remove('active', 'success', 'error', 'partial');
             document.getElementById('next-btn').classList.remove('active');
             document.getElementById('validate-btn').style.display = 'none';
             document.getElementById('options-container').style.display = 'none';
             document.getElementById('dual-qcm-container').style.display = 'none';
             document.getElementById('desc-builder-container').style.display = 'none';
+            document.getElementById('radio-builder-container').style.display = 'none';
             
             if (module.type === "dual") {
-                // Logique Mod 1 (Vidocq)
+                // MOD 1
                 document.getElementById('dual-qcm-container').style.display = 'grid';
                 document.getElementById('validate-btn').style.display = 'block';
                 document.getElementById('validate-btn').disabled = true;
                 document.getElementById('validate-btn').style.opacity = '0.5';
+                document.getElementById('validate-btn').innerText = "Valider ma décision";
                 document.getElementById('validate-btn').onclick = validateDual;
                 
                 selectionDual = { actionCorrect: null, justifCorrect: null, actionBtn: null, justifBtn: null };
                 
-                // Remplir Colonne Action
                 const actionsShuffled = qData.optionsAction.map((text, idx) => ({ text: text, isCorrect: (idx === qData.correctAction) }));
                 const randomActions = shuffleArray(actionsShuffled);
                 const actionContainer = document.getElementById('options-action');
@@ -673,7 +606,6 @@
                     actionContainer.appendChild(btn);
                 });
                 
-                // Remplir Colonne Justification
                 const justifsShuffled = qData.optionsJustif.map((text, idx) => ({ text: text, isCorrect: (idx === qData.correctJustif) }));
                 const randomJustifs = shuffleArray(justifsShuffled);
                 const justifContainer = document.getElementById('options-justif');
@@ -688,7 +620,7 @@
                 });
                 
             } else if (module.type === "desc_builder") {
-                // Logique Mod 2 (DESC)
+                // MOD 2
                 document.getElementById('desc-builder-container').style.display = 'flex';
                 document.getElementById('validate-btn').style.display = 'block';
                 document.getElementById('validate-btn').disabled = true;
@@ -718,8 +650,39 @@
                     });
                 });
                 
+            } else if (module.type === "radio_builder") {
+                // MOD 3
+                document.getElementById('radio-builder-container').style.display = 'flex';
+                document.getElementById('validate-btn').style.display = 'block';
+                document.getElementById('validate-btn').disabled = true;
+                document.getElementById('validate-btn').style.opacity = '0.5';
+                document.getElementById('validate-btn').innerText = "Émettre le message radio";
+                document.getElementById('validate-btn').onclick = validateRadio;
+                
+                selectionRadio = { suis: null, vois: null, fais: null, demande: null };
+                
+                const steps = ['Suis', 'Vois', 'Fais', 'Demande'];
+                steps.forEach(step => {
+                    const optKey = 'options' + step;
+                    const correctKey = 'correct' + step;
+                    
+                    const shuffled = qData[optKey].map((text, idx) => ({ text: text, isCorrect: (idx === qData[correctKey]) }));
+                    const randomOpts = shuffleArray(shuffled);
+                    
+                    const container = document.getElementById('radio-options-' + step.toLowerCase());
+                    container.innerHTML = '';
+                    randomOpts.forEach(item => {
+                        const btn = document.createElement('button');
+                        btn.className = 'choice-btn';
+                        btn.innerText = item.text;
+                        btn.dataset.correct = item.isCorrect;
+                        btn.onclick = () => selectRadio(step.toLowerCase(), item.isCorrect, btn);
+                        container.appendChild(btn);
+                    });
+                });
+
             } else {
-                // Logique pour les QCM simples (Modules 3 à 5)
+                // MOD SIMPLES
                 document.getElementById('options-container').style.display = 'block';
                 const optionsContainer = document.getElementById('options-container');
                 optionsContainer.innerHTML = '';
@@ -733,7 +696,7 @@
             }
         }
 
-        /* --- FONCTIONS MODULE 1 (DUAL) --- */
+        /* --- MOD 1 --- */
         function selectDual(type, isCorrect, btn) {
             const container = document.getElementById(type === 'action' ? 'options-action' : 'options-justif');
             const btns = container.querySelectorAll('.choice-btn');
@@ -794,7 +757,7 @@
             setupNextButton();
         }
 
-        /* --- FONCTIONS MODULE 2 (DESC BUILDER) --- */
+        /* --- MOD 2 --- */
         function selectDesc(step, isCorrect, btn) {
             const container = document.getElementById('desc-options-' + step);
             const btns = container.querySelectorAll('.choice-btn');
@@ -820,7 +783,6 @@
                 if (selectionDesc[s] && selectionDesc[s].isCorrect) pts += 0.25;
             });
             
-            // Mémoire pour debrief
             userAnswers.push({
                 q: qData.q,
                 score: pts,
@@ -831,7 +793,6 @@
                 explanation: qData.explanation
             });
 
-            // Coloration des boutons
             const allBtns = document.querySelectorAll('#desc-builder-container .choice-btn');
             allBtns.forEach(b => {
                 b.disabled = true;
@@ -863,7 +824,74 @@
             setupNextButton();
         }
 
-        /* --- FONCTIONS AUTRES MODULES --- */
+        /* --- MOD 3 --- */
+        function selectRadio(step, isCorrect, btn) {
+            const container = document.getElementById('radio-options-' + step);
+            const btns = container.querySelectorAll('.choice-btn');
+            btns.forEach(b => b.classList.remove('selected'));
+            
+            btn.classList.add('selected');
+            selectionRadio[step] = { isCorrect: isCorrect, btn: btn };
+            
+            if (selectionRadio.suis !== null && selectionRadio.vois !== null && selectionRadio.fais !== null && selectionRadio.demande !== null) {
+                document.getElementById('validate-btn').disabled = false;
+                document.getElementById('validate-btn').style.opacity = '1';
+            }
+        }
+
+        function validateRadio() {
+            document.getElementById('validate-btn').style.display = 'none';
+            const module = db[currentModuleId];
+            const qData = module.questions[currentQuestionIndex];
+            
+            let pts = 0;
+            const steps = ['suis', 'vois', 'fais', 'demande'];
+            steps.forEach(s => {
+                if (selectionRadio[s] && selectionRadio[s].isCorrect) pts += 0.25;
+            });
+            
+            userAnswers.push({
+                q: qData.q,
+                score: pts,
+                suis_user: selectionRadio.suis.btn.innerText, suis_correct: selectionRadio.suis.isCorrect, suis_exp: qData.optionsSuis[qData.correctSuis],
+                vois_user: selectionRadio.vois.btn.innerText, vois_correct: selectionRadio.vois.isCorrect, vois_exp: qData.optionsVois[qData.correctVois],
+                fais_user: selectionRadio.fais.btn.innerText, fais_correct: selectionRadio.fais.isCorrect, fais_exp: qData.optionsFais[qData.correctFais],
+                demande_user: selectionRadio.demande.btn.innerText, demande_correct: selectionRadio.demande.isCorrect, demande_exp: qData.optionsDemande[qData.correctDemande],
+                explanation: qData.explanation
+            });
+
+            const allBtns = document.querySelectorAll('#radio-builder-container .choice-btn');
+            allBtns.forEach(b => {
+                b.disabled = true;
+                if (b.dataset.correct === "true") b.classList.add('correct');
+            });
+
+            steps.forEach(s => {
+                if (selectionRadio[s] && !selectionRadio[s].isCorrect) {
+                    selectionRadio[s].btn.classList.add('wrong');
+                }
+            });
+
+            score += pts;
+            
+            const fb = document.getElementById('feedback-area');
+            fb.classList.remove('success', 'error', 'partial');
+            if (pts === 1) {
+                fb.classList.add('active', 'success');
+                fb.innerHTML = `<strong>✓ MESSAGE RADIO IMPECCABLE (1 pt)</strong><br>${qData.explanation}`;
+            } else if (pts > 0) {
+                fb.classList.add('active', 'partial');
+                fb.innerHTML = `<strong>⚠ TRANSMISSION BROUILLÉE (+${pts} pt)</strong><br>Erreur de procédure radio ou de phonétique.<br><br><em>Rappel :</em> ${qData.explanation}`;
+            } else {
+                fb.classList.add('active', 'error');
+                fb.innerHTML = `<strong>✗ ÉCHEC DE TRANSMISSION</strong><br>${qData.explanation}`;
+            }
+            
+            updateLiveScore();
+            setupNextButton();
+        }
+
+        /* --- MOD SIMPLES --- */
         function handleSingleAnswer(selectedIndex, clickedBtn) {
             const module = db[currentModuleId];
             const qData = module.questions[currentQuestionIndex];
@@ -872,11 +900,8 @@
             const allBtns = document.querySelectorAll('#options-container .choice-btn');
             allBtns.forEach((btn, index) => {
                 btn.disabled = true;
-                if (index === qData.correct) {
-                    btn.classList.add('correct'); 
-                } else if (index === selectedIndex && !isCorrect) {
-                    btn.classList.add('wrong'); 
-                }
+                if (index === qData.correct) btn.classList.add('correct'); 
+                else if (index === selectedIndex && !isCorrect) btn.classList.add('wrong'); 
             });
             
             if (isCorrect) score++;
@@ -906,12 +931,8 @@
         function nextQuestion() {
             const module = db[currentModuleId];
             currentQuestionIndex++;
-            
-            if (currentQuestionIndex < module.questions.length) {
-                loadQuestion();
-            } else {
-                showResults();
-            }
+            if (currentQuestionIndex < module.questions.length) loadQuestion();
+            else showResults();
         }
 
         function showResults() {
@@ -926,13 +947,13 @@
             
             if (score === total) {
                 scoreDisplay.style.color = "#27ae60";
-                scoreMessage.innerText = "Excellent ! Discernement et communication parfaits. Vous êtes digne de votre carte professionnelle.";
+                scoreMessage.innerText = "Excellent ! Vous êtes digne de votre carte professionnelle.";
             } else if (score >= total * 0.7) {
                 scoreDisplay.style.color = "#d35400";
-                scoreMessage.innerText = "Opérationnel. Votre instinct est bon, mais quelques failles persistent. Lisez le débriefing ci-dessous.";
+                scoreMessage.innerText = "Opérationnel. Votre instinct est bon, mais quelques failles persistent.";
             } else {
                 scoreDisplay.style.color = "#c0392b";
-                scoreMessage.innerText = "Vos erreurs tactiques ou verbales engagent votre responsabilité. Lisez attentivement le débriefing et reprenez vos manuels.";
+                scoreMessage.innerText = "Vos erreurs engagent votre responsabilité. Reprenez vos manuels.";
             }
 
             // GENERATION DU DEBRIEFING 
@@ -945,10 +966,10 @@
                     html += `
                     <div class="debrief-item">
                         <p><strong>Situation ${idx + 1} :</strong> ${ans.q}</p>
-                        <p><strong>Votre Action :</strong> <span class="${ans.isActionCorrect ? 'correct-text' : 'wrong-text'}">${ans.userAction}</span></p>
-                        ${!ans.isActionCorrect ? `<p><strong>Action attendue :</strong> <span class="expected-text">${ans.correctAction}</span></p>` : ''}
-                        <p><strong>Votre Justification :</strong> <span class="${ans.isJustifCorrect ? 'correct-text' : 'wrong-text'}">${ans.userJustif}</span></p>
-                        ${!ans.isJustifCorrect ? `<p><strong>Justification attendue :</strong> <span class="expected-text">${ans.correctJustif}</span></p>` : ''}
+                        <p><strong>Action :</strong> <span class="${ans.isActionCorrect ? 'correct-text' : 'wrong-text'}">${ans.userAction}</span></p>
+                        ${!ans.isActionCorrect ? `<p><strong>Attendu :</strong> <span class="expected-text">${ans.correctAction}</span></p>` : ''}
+                        <p><strong>Justification :</strong> <span class="${ans.isJustifCorrect ? 'correct-text' : 'wrong-text'}">${ans.userJustif}</span></p>
+                        ${!ans.isJustifCorrect ? `<p><strong>Attendu :</strong> <span class="expected-text">${ans.correctJustif}</span></p>` : ''}
                         <p style="margin-top: 10px; background-color: #f4f6f7; padding: 10px; border-radius: 4px;"><em>${ans.explanation}</em></p>
                     </div>`;
                 });
@@ -962,7 +983,7 @@
                     html += `
                     <div class="debrief-item">
                         <p><strong>Conflit ${idx + 1} :</strong> ${ans.q}</p>
-                        <p><strong>Score pour ce conflit : ${ans.score} / 1</strong></p>
+                        <p><strong>Score : ${ans.score} / 1</strong></p>
                         <ul>
                             <li><strong>D :</strong> <span class="${ans.d_correct ? 'correct-text' : 'wrong-text'}">${ans.d_user}</span> ${!ans.d_correct ? `<br><span class="expected-text">➔ Attendu : ${ans.d_exp}</span>` : ''}</li>
                             <li><strong>E :</strong> <span class="${ans.e_correct ? 'correct-text' : 'wrong-text'}">${ans.e_user}</span> ${!ans.e_correct ? `<br><span class="expected-text">➔ Attendu : ${ans.e_exp}</span>` : ''}</li>
@@ -972,7 +993,27 @@
                         <p style="margin-top: 10px; background-color: #f4f6f7; padding: 10px; border-radius: 4px;"><em>${ans.explanation}</em></p>
                     </div>`;
                 });
-                html += `<div class="debrief-advice"><h4>Conseils de l'Instructeur :</h4><p>La communication est votre première arme. Relisez le chapitre <strong>03 - La communication verbale</strong> (page 10) et refaites l'<strong>EXERCICE 4 : Analyse de script (Méthode DESC)</strong> (page 16) de votre manuel d'exercices.</p></div>`;
+                html += `<div class="debrief-advice"><h4>Conseils de l'Instructeur :</h4><p>Relisez le chapitre <strong>03 - La communication verbale</strong> (page 10).</p></div>`;
+                debriefContainer.innerHTML = html;
+                debriefContainer.style.display = 'block';
+            
+            } else if (currentModuleId === 'radio' && userAnswers.length > 0) {
+                let html = "<h4 style='font-size: 1.3em; color: #2c3e50; border-bottom: 2px solid #34495e; padding-bottom: 10px;'>Rapport détaillé de vos transmissions :</h4>";
+                userAnswers.forEach((ans, idx) => {
+                    html += `
+                    <div class="debrief-item">
+                        <p><strong>Transmission ${idx + 1} :</strong> ${ans.q}</p>
+                        <p><strong>Score : ${ans.score} / 1</strong></p>
+                        <ul>
+                            <li><strong>Suis :</strong> <span class="${ans.suis_correct ? 'correct-text' : 'wrong-text'}">${ans.suis_user}</span> ${!ans.suis_correct ? `<br><span class="expected-text">➔ Attendu : ${ans.suis_exp}</span>` : ''}</li>
+                            <li><strong>Vois :</strong> <span class="${ans.vois_correct ? 'correct-text' : 'wrong-text'}">${ans.vois_user}</span> ${!ans.vois_correct ? `<br><span class="expected-text">➔ Attendu : ${ans.vois_exp}</span>` : ''}</li>
+                            <li><strong>Fais :</strong> <span class="${ans.fais_correct ? 'correct-text' : 'wrong-text'}">${ans.fais_user}</span> ${!ans.fais_correct ? `<br><span class="expected-text">➔ Attendu : ${ans.fais_exp}</span>` : ''}</li>
+                            <li><strong>Demande :</strong> <span class="${ans.demande_correct ? 'correct-text' : 'wrong-text'}">${ans.demande_user}</span> ${!ans.demande_correct ? `<br><span class="expected-text">➔ Attendu : ${ans.demande_exp}</span>` : ''}</li>
+                        </ul>
+                        <p style="margin-top: 10px; background-color: #f4f6f7; padding: 10px; border-radius: 4px;"><em>${ans.explanation}</em></p>
+                    </div>`;
+                });
+                html += `<div class="debrief-advice"><h4>Conseils de l'Instructeur :</h4><p>Révisez l'alphabet et les chiffres radio dans le chapitre <strong>04 - La communication radio</strong> (page 11) et les exercices dédiés (page 18).</p></div>`;
                 debriefContainer.innerHTML = html;
                 debriefContainer.style.display = 'block';
             } else {
