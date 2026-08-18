@@ -2,123 +2,18 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <script>
-    (function(){var s=localStorage.getItem("arago-theme");var p=window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches;if(s==="dark"||(s!=="light"&&p)){document.documentElement.setAttribute("data-theme","dark");}else{document.documentElement.setAttribute("data-theme","light");}})();
-    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Opération VIDOCQ - Arago Sûreté Simulator</title>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;600;700&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
-        /* ══ THÈME SOMBRE (dark — défaut) ══ */
-        :root,
-        [data-theme="dark"] {
-          --navy:   #0a0e1a;
-          --deep:   #0d1220;
-          --blue:   #1a3a6e;
-          --accent: #1e5bdc;
-          --red:    #c0392b;
-          --white:  #f0f4ff;
-          --gray:   #8a9ab5;
-          --light:  #d0daea;
-          --card:   #111827;
-          --border: rgba(30,91,220,0.25);
-
-          --nav-bg:         rgba(10,14,26,0.92);
-          --module-hover:   #141d2f;
-          --article-hdr-bg: rgba(30,91,220,0.08);
-          --article-num-bg: rgba(30,91,220,0.15);
-          --article-num-bd: rgba(30,91,220,0.3);
-          --info-bg:        rgba(30,91,220,0.05);
-          --desc-card-bg:   rgba(30,91,220,0.06);
-          --btn-ghost-brd:  rgba(255,255,255,0.2);
-          
-          --correct-bg:     rgba(39, 174, 96, 0.15);
-          --correct-text:   #2ecc71;
-          --wrong-bg:       rgba(192, 57, 43, 0.15);
-          --wrong-text:     #e74c3c;
-          --partial-bg:     rgba(241, 196, 15, 0.15);
-          --partial-text:   #f1c40f;
-          
-          --bar-red:        #c0392b;
-          --bar-orange:     #e67e22;
-          --bar-yellow:     #f1c40f;
-          --bar-green:      #27ae60;
-        }
-
-        /* ══ THÈME CLAIR — Papier & Encre ══ */
-        [data-theme="light"] {
-          --navy:   #faf8f4;
-          --deep:   #f3f1ec;
-          --blue:   #e8e4de;
-          --accent: #1a1a1a;
-          --red:    #8a3020;
-          --white:  #1a1a1a;
-          --gray:   #6e6b66;
-          --light:  #2c2925;
-          --card:   #ffffff;
-          --border: rgba(0,0,0,0.12);
-
-          --nav-bg:         rgba(250,248,244,0.94);
-          --module-hover:   #f3f1ec;
-          --article-hdr-bg: rgba(26,26,26,0.04);
-          --article-num-bg: rgba(26,26,26,0.07);
-          --article-num-bd: rgba(26,26,26,0.2);
-          --info-bg:        rgba(26,26,26,0.03);
-          --desc-card-bg:   rgba(26,26,26,0.04);
-          --btn-ghost-brd:  rgba(26,26,26,0.25);
-          
-          --correct-bg:     rgba(39, 174, 96, 0.1);
-          --correct-text:   #27ae60;
-          --wrong-bg:       rgba(192, 57, 43, 0.1);
-          --wrong-text:     #c0392b;
-          --partial-bg:     rgba(241, 196, 15, 0.1);
-          --partial-text:   #b7950b;
-        }
-
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        
-        body { 
-            font-family: 'Barlow', sans-serif; 
-            background-color: var(--navy); 
-            color: var(--light); 
-            transition: background 0.3s, color 0.3s;
-        }
-
-        /* Noise texture — dark only */
-        [data-theme="dark"] body::before {
-            content: ''; position: fixed; inset: 0; z-index: 0;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-            pointer-events: none; opacity: 0.4;
-        }
-        
-        header, main, #theme-toggle-wrap { position: relative; z-index: 1; }
-
-        header { 
-            background-color: var(--nav-bg); 
-            padding: 15px 20px; 
-            display: flex; 
-            align-items: center; 
-            border-bottom: 2px solid var(--accent);
-            backdrop-filter: blur(12px);
-        }
-        
-        .logo { 
-            font-size: 2.2em; 
-            font-family: 'Bebas Neue', sans-serif;
-            color: var(--accent); 
-            letter-spacing: 2px;
-            margin-right: 20px; 
-        }
-        
-        .header-titles h1 { margin: 0; font-size: 1.8em; font-family: 'Bebas Neue', sans-serif; color: var(--white); letter-spacing: 2px;}
-        .header-titles h2 { margin: 0; font-family: 'Barlow Condensed', sans-serif; font-weight: 300; font-size: 1.1em; color: var(--gray); letter-spacing: 4px; text-transform: uppercase;}
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; color: #333; margin: 0; padding: 0; }
+        header { background-color: #1a252f; color: white; padding: 20px; display: flex; align-items: center; border-bottom: 4px solid #e74c3c; }
+        .logo { font-size: 2em; font-weight: bold; background: #e74c3c; padding: 10px 15px; border-radius: 5px; margin-right: 20px; }
+        .header-titles h1 { margin: 0; font-size: 1.5em; }
+        .header-titles h2 { margin: 0; font-weight: normal; font-size: 1.1em; color: #bdc3c7; }
         
         main { max-width: 1200px; margin: 30px auto; padding: 20px; display: flex; gap: 20px; flex-wrap: wrap; }
-        .container-box { background: var(--card); border-radius: 8px; padding: 20px; border: 1px solid var(--border); box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: 0.3s;}
+        .container-box { background: white; border-radius: 8px; padding: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
         
-        h3, h4, h5 { color: var(--white); font-family: 'Barlow Condensed', sans-serif; text-transform: uppercase; letter-spacing: 1px;}
-        h3 { font-family: 'Bebas Neue', sans-serif; font-size: 2em; letter-spacing: 2px; border-bottom: 1px solid var(--border); padding-bottom: 10px;}
-
         /* LAYOUT DOUBLE COLONNE ACCUEIL */
         #left-sidebar { flex: 1; min-width: 300px; max-width: 350px; }
         #right-content { flex: 2; min-width: 300px; }
@@ -127,109 +22,94 @@
         .screen.active { display: block; }
         
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
-        @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } }
+        @media (max-width: 768px) {
+            .grid { grid-template-columns: 1fr; }
+        }
 
-        button { cursor: pointer; padding: 15px; font-size: 1.1em; border: none; border-radius: 5px; transition: 0.3s; font-family: 'Barlow Condensed', sans-serif; font-weight: 600; letter-spacing: 1px;}
+        button { cursor: pointer; padding: 15px; font-size: 1.1em; border: none; border-radius: 5px; transition: 0.3s; }
+        .module-btn { background-color: #2c3e50; color: white; width: 100%; text-align: left;}
+        .module-btn:hover { background-color: #34495e; transform: translateY(-2px); }
+        .back-btn { background-color: #95a5a6; color: white; margin-top: 20px; width: 100%; }
+        .back-btn:hover { background-color: #7f8c8d; }
         
-        .module-btn { background-color: var(--article-hdr-bg); color: var(--white); border: 1px solid var(--border); width: 100%; text-align: left; text-transform: uppercase;}
-        .module-btn:hover { background-color: var(--module-hover); border-color: var(--accent); transform: translateY(-2px); }
-        
-        .back-btn { background-color: var(--article-num-bg); color: var(--gray); border: 1px solid var(--border); margin-top: 20px; width: 100%; text-align: center;}
-        .back-btn:hover { background-color: var(--border); color: var(--white); }
-        
-        .choice-btn { background-color: var(--card); color: var(--light); display: block; width: 100%; text-align: left; margin: 10px 0; border: 1px solid var(--border); font-family: 'Barlow', sans-serif; font-weight: 400; text-transform: none; letter-spacing: normal;}
-        .choice-btn:hover:not(:disabled) { background-color: var(--module-hover); border-color: var(--accent); }
-        .choice-btn.selected { background-color: var(--accent); color: #fff; border-color: var(--accent); }
-        .choice-btn:disabled { cursor: not-allowed; opacity: 0.7; }
-        
-        .choice-btn.correct { background-color: var(--correct-bg); border-color: var(--bar-green); color: var(--correct-text); }
-        .choice-btn.wrong { background-color: var(--wrong-bg); border-color: var(--bar-red); color: var(--wrong-text); text-decoration: line-through;}
+        .choice-btn { background-color: #ecf0f1; color: #333; display: block; width: 100%; text-align: left; margin: 10px 0; border: 1px solid #bdc3c7; }
+        .choice-btn:hover:not(:disabled) { background-color: #e0e6e8; }
+        .choice-btn.selected { background-color: #3498db; color: white; border-color: #2980b9; }
+        .choice-btn:disabled { cursor: not-allowed; opacity: 0.8; }
+        .choice-btn.correct { background-color: #d4edda; border-color: #27ae60; color: #155724; }
+        .choice-btn.wrong { background-color: #f8d7da; border-color: #c0392b; color: #721c24; }
         
         /* ECRAN DE PRESENTATION (INTRO) */
         .intro-section { margin-bottom: 25px; }
-        .intro-section h4 { color: var(--accent); border-bottom: 1px solid var(--border); padding-bottom: 8px; font-size: 1.2em; margin-bottom: 10px;}
-        .intro-section p, .intro-section ul { font-size: 1.05em; line-height: 1.6; color: var(--light);}
+        .intro-section h4 { color: #2980b9; border-bottom: 2px solid #ecf0f1; padding-bottom: 8px; font-size: 1.2em; margin-bottom: 10px;}
+        .intro-section p, .intro-section ul { font-size: 1.1em; line-height: 1.6; }
         .intro-section ul { padding-left: 20px; }
         .intro-section li { margin-bottom: 10px; }
-        #start-sim-btn { background-color: var(--bar-green); color: white; width: 100%; font-size: 1.3em; padding: 15px; margin-top: 10px; text-align: center; border:none;}
-        #start-sim-btn:hover { filter: brightness(1.1); transform: translateY(-2px); box-shadow: 0 4px 8px rgba(39, 174, 96, 0.3);}
+        #start-sim-btn { background-color: #27ae60; color: white; width: 100%; font-size: 1.2em; font-weight: bold; padding: 15px; margin-top: 10px; text-align: center;}
+        #start-sim-btn:hover { background-color: #2ecc71; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(39, 174, 96, 0.3);}
 
         /* COMPOSANTS DES MODULES INTERACTIFS */
-        .question-text { font-size: 1.1em; margin-bottom: 20px; background: var(--desc-card-bg); padding: 15px; border-left: 4px solid var(--accent); color: var(--white); border-radius: 4px;}
-        
         #options-container { display: none; }
         #dual-qcm-container { display: none; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .column-title { text-align: center; color: var(--white); font-size: 1.2em; border-bottom: 2px solid var(--border); padding-bottom: 10px; margin-bottom: 15px;}
+        .column-title { text-align: center; color: #2c3e50; font-size: 1.1em; border-bottom: 2px solid #bdc3c7; padding-bottom: 10px; margin-bottom: 15px;}
+        #desc-builder-container { display: none; flex-direction: column; gap: 15px; }
+        .desc-step { border: 2px solid #bdc3c7; border-radius: 8px; padding: 15px; }
+        .desc-step.D { background-color: #f4f6f7; border-left: 5px solid #3498db; }
+        .desc-step.E { background-color: #e8f8f5; border-left: 5px solid #1abc9c; }
+        .desc-step.S { background-color: #fef9e7; border-left: 5px solid #f1c40f; }
+        .desc-step.C { background-color: #fdedec; border-left: 5px solid #e74c3c; }
+        .desc-step h4 { margin-top: 0; color: #2c3e50; margin-bottom: 10px; }
+        #radio-builder-container { display: none; flex-direction: column; gap: 15px; }
+        .radio-step { border: 2px solid #bdc3c7; border-radius: 8px; padding: 15px; }
+        .radio-step.suis { background-color: #e8eaed; border-left: 5px solid #8e44ad; }
+        .radio-step.vois { background-color: #ebdef0; border-left: 5px solid #9b59b6; }
+        .radio-step.fais { background-color: #d6eaf8; border-left: 5px solid #2980b9; }
+        .radio-step.demande { background-color: #d1f2eb; border-left: 5px solid #16a085; }
+        .radio-step h4 { margin-top: 0; color: #2c3e50; margin-bottom: 10px; }
+        #report-builder-container { display: none; flex-direction: column; gap: 10px; }
+        .report-step { border: 1px solid #bdc3c7; border-radius: 8px; padding: 10px 15px; background-color: #fff; }
+        .report-step h4 { margin-top: 0; color: #34495e; margin-bottom: 5px; font-size: 1.05em; border-bottom: 1px solid #eee; padding-bottom: 5px;}
         
-        .desc-step, .radio-step, .report-step { background-color: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 15px; margin-bottom: 15px;}
-        .desc-step.D, .radio-step.suis { border-left: 4px solid #3498db; }
-        .desc-step.E, .radio-step.vois { border-left: 4px solid #1abc9c; }
-        .desc-step.S, .radio-step.fais { border-left: 4px solid #f1c40f; }
-        .desc-step.C, .radio-step.demande { border-left: 4px solid #e74c3c; }
-        
-        #desc-builder-container, #radio-builder-container, #report-builder-container { display: none; flex-direction: column; gap: 10px; }
-        
-        #validate-btn { background-color: var(--bar-orange); color: white; width: 100%; margin-top: 20px; display: none; text-align: center; border:none;}
-        #validate-btn:hover { filter: brightness(1.1); }
+        #validate-btn { background-color: #f39c12; color: white; width: 100%; margin-top: 20px; display: none; font-weight: bold; text-align: center;}
+        #validate-btn:hover { background-color: #e67e22; }
 
         /* BLOCS DU MODULE EN COURS */
         .module-header-status { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .live-score-badge { background-color: var(--article-num-bg); color: var(--accent); padding: 6px 14px; border-radius: 20px; font-size: 1em; font-family:'Barlow Condensed', sans-serif; letter-spacing:1px; font-weight: bold; border: 1px solid var(--article-num-bd); }
-        .dashboard-container { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; padding: 15px; background: var(--info-bg); border-radius: 8px; border: 1px solid var(--border); justify-content: center; }
-        .sit-block { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background-color: var(--article-num-bg); color: var(--gray); border-radius: 6px; font-family:'Bebas Neue', sans-serif; font-size:1.2em; border: 1px solid var(--border); cursor: pointer; transition: 0.2s; }
-        .sit-block:hover:not(.played) { background-color: var(--module-hover); color: var(--white); }
-        .sit-block.active { border-color: var(--accent); color: var(--white); background-color: var(--accent); transform: scale(1.05); }
-        .sit-block.played { opacity: 0.8; cursor: not-allowed; }
+        .live-score-badge { background-color: #2c3e50; color: #ecf0f1; padding: 6px 14px; border-radius: 20px; font-size: 0.95em; font-weight: bold; border: 1px solid #34495e; }
+        .dashboard-container { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; padding: 10px; background: #ecf0f1; border-radius: 8px; justify-content: center; }
+        .sit-block { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background-color: #bdc3c7; color: white; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .sit-block.active { border: 3px solid #2c3e50; transform: scale(1.05); }
+        .sit-block.played { cursor: not-allowed; opacity: 0.9; }
         
         /* COULEURS STATUTS */
-        .color-green { background-color: var(--correct-bg) !important; color: var(--correct-text) !important; border-color: var(--bar-green) !important; }
-        .color-yellow { background-color: var(--partial-bg) !important; color: var(--partial-text) !important; border-color: var(--bar-yellow) !important; }
-        .color-red { background-color: var(--wrong-bg) !important; color: var(--wrong-text) !important; border-color: var(--bar-red) !important; }
+        .color-green { background-color: #27ae60 !important; color: white !important; }
+        .color-yellow { background-color: #f1c40f !important; color: #2c3e50 !important; }
+        .color-red { background-color: #c0392b !important; color: white !important; }
+        .color-gray { background-color: #bdc3c7 !important; color: white !important; }
 
-        .feedback { margin-top: 15px; padding: 15px; border-radius: 5px; display: none; font-size: 1.05em; line-height: 1.4; background: var(--card); border: 1px solid var(--border);}
+        .feedback { margin-top: 15px; padding: 15px; border-radius: 5px; display: none; font-size: 1.05em; line-height: 1.4; }
         .feedback.active { display: block; }
-        .feedback.success { background-color: var(--correct-bg); color: var(--correct-text); border-left: 5px solid var(--bar-green);}
-        .feedback.error { background-color: var(--wrong-bg); color: var(--wrong-text); border-left: 5px solid var(--bar-red);}
-        .feedback.partial { background-color: var(--partial-bg); color: var(--partial-text); border-left: 5px solid var(--bar-yellow);}
+        .feedback.success { background-color: #d4edda; color: #155724; border-left: 5px solid #27ae60;}
+        .feedback.error { background-color: #f8d7da; color: #721c24; border-left: 5px solid #c0392b;}
+        .feedback.partial { background-color: #fff3cd; color: #856404; border-left: 5px solid #ffeeba;}
         
-        .next-btn { background-color: var(--accent); color: white; margin-top: 15px; width: 100%; display: none; text-align: center; border:none;}
+        .next-btn { background-color: #2980b9; color: white; margin-top: 15px; width: 100%; display: none; text-align: center;}
         .next-btn.active { display: block; }
-        .next-btn:hover { filter: brightness(1.2); }
-        .score-display { font-size: 2em; font-family:'Bebas Neue', sans-serif; letter-spacing:2px; text-align: center; margin: 20px 0; padding: 20px; background: var(--info-bg); border: 1px solid var(--border); border-radius: 8px; color: var(--white);}
-        
+        .next-btn:hover { background-color: #3498db; }
+        .score-display { font-size: 1.5em; text-align: center; margin: 20px 0; padding: 20px; background: #ecf0f1; border-radius: 8px; }
         #debriefing-container { margin-top: 30px; display: none; }
-        .debrief-item { background-color: var(--desc-card-bg); border-left: 4px solid var(--accent); padding: 15px; margin-bottom: 15px; border: 1px solid var(--border); border-left-width: 4px;}
-        .debrief-advice { background-color: var(--info-bg); border: 2px dashed var(--accent); padding: 20px; border-radius: 8px; margin-top: 20px; }
-        .debrief-advice h4 { color: var(--accent); }
-        .correct-text { color: var(--correct-text); font-weight: bold; }
-        .wrong-text { color: var(--wrong-text); font-weight: bold; text-decoration: line-through; }
-        .expected-text { color: var(--accent); font-weight: bold; }
+        .debrief-item { background-color: #fdfefe; border-left: 4px solid #34495e; padding: 15px; margin-bottom: 15px; }
 
         /* SIDEBAR INTERFACE ACCUEIL */
-        .sidebar-module-card { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 15px; margin-bottom: 15px; }
-        .sidebar-module-card h5 { margin: 0 0 10px 0; font-size: 1.1em; }
-        .progress-wrapper { background-color: var(--article-num-bg); border-radius: 12px; height: 16px; width: 100%; overflow: hidden; position: relative; margin-bottom: 10px; border: 1px solid var(--border);}
+        .sidebar-module-card { background: #fdfefe; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px; margin-bottom: 12px; }
+        .sidebar-module-card h5 { margin: 0 0 8px 0; color: #2c3e50; font-size: 0.95em; }
+        .progress-wrapper { background-color: #e2e8f0; border-radius: 12px; height: 16px; width: 100%; overflow: hidden; position: relative; margin-bottom: 8px; }
         .progress-inner-bar { height: 100%; width: 0%; text-align: center; color: white; font-size: 10px; font-weight: bold; line-height: 16px; transition: width 0.4s ease, background-color 0.4s ease; }
-        .mini-dots-row { display: flex; gap: 5px; flex-wrap: wrap;}
-        .mini-dot { width: 12px; height: 12px; border-radius: 50%; background-color: var(--article-num-bg); border: 1px solid var(--border);}
-
-        /* TOGGLE SWITCH */
-        #theme-toggle-wrap { position: fixed; bottom: 24px; left: 24px; z-index: 3001; display: flex; align-items: center; gap: 10px; }
-        #theme-toggle { flex-shrink: 0; width: 52px; height: 28px; border-radius: 14px; cursor: pointer; display: flex; align-items: center; padding: 3px; transition: background 0.3s, border-color 0.3s; box-shadow: 0 2px 8px rgba(0,0,0,0.2); border: 1px solid rgba(128,128,128,0.3); background: #2a3a5a; }
-        #theme-toggle::after { content: ''; display: block; width: 20px; height: 20px; border-radius: 50%; background: #f0f4ff; box-shadow: 0 1px 4px rgba(0,0,0,0.3); transition: transform 0.28s cubic-bezier(0.34,1.56,0.64,1), background 0.3s; transform: translateX(24px); }
-        [data-theme="light"] #theme-toggle { background: #e8e4de; border-color: rgba(0,0,0,0.18); }
-        [data-theme="light"] #theme-toggle::after { transform: translateX(0); background: #fff; }
-        .toggle-label { font-family: 'Barlow Condensed', sans-serif; font-size: 12px; font-weight: bold; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gray); background: var(--card); padding: 5px 10px; border-radius: 4px; border: 1px solid var(--border); pointer-events: none; white-space: nowrap; transition: color 0.3s, background 0.3s; }
+        .mini-dots-row { display: flex; gap: 4px; }
+        .mini-dot { width: 10px; height: 10px; border-radius: 50%; background-color: #bdc3c7; }
     </style>
 </head>
 <body>
-
-    <!-- BOUTON THÈME -->
-    <div id="theme-toggle-wrap">
-        <div id="theme-toggle" onclick="toggleTheme()" role="switch" aria-label="Basculer mode sombre/clair" title="Mode sombre / Mode clair"></div>
-        <span class="toggle-label" id="toggle-label">Mode sombre</span>
-    </div>
-
     <header>
         <div class="logo">@BDOL</div>
         <div class="header-titles">
@@ -241,7 +121,7 @@
     <main>
         <!-- NAVIGATION GAUCHE PERMANENTE SUR L'ACCUEIL -->
         <div id="left-sidebar" class="container-box">
-            <h3>Tableau de Bord Général</h3>
+            <h3 style="margin-top: 0; color: #1a252f; border-bottom: 2px solid #e74c3c; padding-bottom: 8px;">Tableau de Bord Général</h3>
             <div id="sidebar-progress-list"></div>
         </div>
 
@@ -250,8 +130,8 @@
             
             <!-- ECRAN D'ACCUEIL -->
             <div id="menu" class="screen active">
-                <h3>Salles de Simulation Tactique</h3>
-                <p style="color: var(--gray);">Sélectionnez un des modules ci-dessous pour lancer l'analyse de crise de 10 scénarios opérationnels.</p>
+                <h3 style="margin-top:0;">Salles de Simulation Tactique</h3>
+                <p style="color: #7f8c8d;">Sélectionnez un des modules ci-dessous pour lancer l'analyse de crise de 10 scénarios opérationnels.</p>
                 <div class="grid">
                     <button class="module-btn" onclick="openModuleIntro('vidocq')">1. L'Œil de Vidocq (Observation)</button>
                     <button class="module-btn" onclick="openModuleIntro('desc')">2. Simulateur DESC (Conflit)</button>
@@ -263,7 +143,7 @@
 
             <!-- ECRAN DE PRÉSENTATION (INTRO) DU MODULE -->
             <div id="module-intro" class="screen">
-                <h3 id="intro-title" style="text-align: center; border-bottom: none; font-size: 2.5em; color: var(--accent);">Titre</h3>
+                <h3 id="intro-title" style="margin-top:0; font-size: 1.6em; text-align: center; color: #2c3e50;">Titre</h3>
                 
                 <div class="intro-section">
                     <h4>Ce qui est attendu de vous</h4>
@@ -282,15 +162,15 @@
             <!-- ECRAN DU MODULE INTERACTIF (SITUATIONS) -->
             <div id="module" class="screen">
                 <div class="module-header-status">
-                    <h3 id="module-title" style="margin: 0; border:none; font-size: 1.8em;">Titre</h3>
+                    <h3 id="module-title" style="margin: 0; color: #2c3e50;">Titre</h3>
                     <div id="live-score" class="live-score-badge">Score : 0.0 / 10</div>
                 </div>
                 
                 <div id="dashboard" class="dashboard-container"></div>
                 
                 <div id="question-area" style="display: none;">
-                    <h4 id="question-title" style="color: var(--accent); margin-top: 0; border-bottom: 1px solid var(--border); padding-bottom: 10px;">Situation</h4>
-                    <div id="question-text" class="question-text"></div>
+                    <h4 id="question-title" style="color: #2980b9; margin-top: 0; border-bottom: 2px solid #ecf0f1; padding-bottom: 10px;">Situation</h4>
+                    <div id="question-text" style="font-size: 1.1em; margin-bottom: 20px; font-weight: 500; background: #fdfefe; padding: 15px; border-left: 4px solid #34495e;"></div>
                     
                     <div id="options-container"></div>
 
@@ -335,7 +215,7 @@
             <div id="result" class="screen">
                 <h3>Mission Terminée !</h3>
                 <div id="score-display" class="score-display"></div>
-                <p id="score-message" style="text-align: center; font-weight: bold; font-size: 1.2em;"></p>
+                <p id="score-message" style="text-align: center; font-weight: bold;"></p>
                 <div id="debriefing-container"></div>
                 <button class="module-btn" style="margin-top: 30px; text-align:center;" onclick="goHome()">Retour au Menu Principal</button>
             </div>
@@ -343,30 +223,7 @@
     </main>
 
     <script>
-        // ── THÈME GESTION (Clair / Sombre) ──────────────────────────────────
-        function toggleTheme() {
-            var html = document.documentElement;
-            var isDark = html.getAttribute('data-theme') === 'dark';
-            var next = isDark ? 'light' : 'dark';
-            html.setAttribute('data-theme', next);
-            localStorage.setItem('arago-theme', next);
-            var lbl = document.getElementById('toggle-label');
-            if (lbl) lbl.textContent = next === 'dark' ? 'Mode sombre' : 'Mode clair';
-            // Update UI elements dependent on theme variables
-            renderGlobalSidebar();
-            if (currentModuleId && document.getElementById('module').classList.contains('active')) {
-                renderModuleDashboard();
-            }
-        }
-        (function() {
-            var lbl = document.getElementById('toggle-label');
-            if (lbl) {
-                var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-                lbl.textContent = isDark ? 'Mode sombre' : 'Mode clair';
-            }
-        })();
-
-        // ── BANQUE DE DONNEES DES MODULES ──────────────────────────────────
+        // BANQUE DE DONNEES DES MODULES
         const db = {
             vidocq: {
                 title: "1. L'Œil de Vidocq (Observation)", 
@@ -550,7 +407,7 @@
                         optionsD6: [ "Le mis en cause a déclaré : « Il a mal regardé ma femme ! »", "Il a dit qu'il avait regardé sa femme donc il l'a frappé.", "L'auteur a crié des trucs sur sa femme." ], correctD6: 0,
                         optionsD7: [ "On a arrêté B en lui mettant les menottes serrées et on a appelé les pompiers pour A.", "Avons procédé à l'interpellation du mis en cause et requis les sapeurs-pompiers pour la victime.", "On les a emmenés de force au commissariat." ], correctD7: 1,
                         optionsD8: [ "Avons ramené l'auteur au commissariat pour placement en Garde à Vue devant l'OPJ.", "M. B a été jeté en cellule de dégrisement au commissariat. Fin de rapport.", "On a fait la paperasse de fin de service habituelle." ], correctD8: 0,
-                        explanation: "En procédure de Police, on utilise le 'Nous' de patrouille, des termes précis ('requis', 'rixe', 'mis en cause', 'OPJ') sans aucun jugement moral."
+                        explanation: "En procédure de Police, on utilise le 'Nous' de patrouille, des termes précis ('requis', 'rixe', 'mis en cause') sans aucun jugement moral."
                     },
                     {
                         q: "SITUATION 9 : CONTRÔLE ROUTIER ET STUPÉFIANTS (Agent de Police)\nMardi 16h. Un véhicule grille un feu rouge. Lors du contrôle, forte odeur de cannabis. Vous découvrez 50g de résine dans la boîte à gants.",
@@ -559,7 +416,7 @@
                         optionsD3: [ "On a mis le gyrophare et la sirène pour lui faire peur.", "Avons intercepté le véhicule à l'aide des avertisseurs spéciaux et procédé au contrôle du conducteur.", "On l'a arrêté plus loin sur le bas-côté." ], correctD3: 1,
                         optionsD4: [ "Dès l'ouverture de la fenêtre, une odeur évidente de drogue s'est fait sentir, ce qui m'a poussé à fouiller la voiture pour trouver un gros morceau de shit de 50 grammes caché.", "Y'avait du shit caché dans la boîte à gants.", "Avons constaté une forte odeur de cannabis dans l'habitacle et découvert 50 grammes de résine dans la boîte à gants." ], correctD4: 2,
                         optionsD5: [ "Le mec s'appelle Y, un trafiquant bien connu.", "Conducteur formellement identifié par son permis de conduire comme étant Monsieur Y.", "M. Y était au volant défoncé." ], correctD5: 1,
-                        optionsD6: [ "Il a bafouillé que c'était juste pour lui fumer.", "M. Y a déclaré spontanément : « C'est ma consommation personnelle. »", "Il a avoué fumer du cannabis tous les jours." ], correctD6: 1,
+                        optionsD6: [ "Il a bafouillé que c'tétait juste pour lui fumer.", "M. Y a déclaré spontanément : « C'est ma consommation personnelle. »", "Il a avoué fumer du cannabis tous les jours." ], correctD6: 1,
                         optionsD7: [ "Avons procédé à la saisie du produit stupéfiant et à l'interpellation du mis en cause.", "On a pris la drogue et on l'a arrêté direct.", "Saisie et arrestation musclée." ], correctD7: 0,
                         optionsD8: [ "Fin de service après l'avoir interrogé rudement.", "Individu ramené au poste et jeté en GAV.", "Le mis en cause a été remis à l'OPJ de permanence avec les scellés pour la suite de la procédure." ], correctD8: 2,
                         explanation: "Dans les affaires de stupéfiants, la qualification des constatations matérielles (odeur, pesée) valide la légalité de la fouille."
@@ -738,4 +595,374 @@
                 document.getElementById('validate-btn').style.display = 'block';
                 document.getElementById('validate-btn').disabled = true;
                 document.getElementById('validate-btn').style.opacity = '0.5';
-                document.getElementById('validate-btn').innerText = "Valider laJe ne peux pas vous aider à ce sujet, car je ne suis qu'un modèle de langage.
+                document.getElementById('validate-btn').innerText = "Valider la rédaction du rapport";
+                document.getElementById('validate-btn').onclick = validateReport;
+                
+                selectionReport = { s1: null, s2: null, s3: null, s4: null, s5: null, s6: null, s7: null, s8: null };
+                
+                for(let i=1; i<=8; i++) {
+                    const optKey = 'optionsD' + i;
+                    const container = document.getElementById('report-options-' + i);
+                    container.innerHTML = '';
+                    const shuffled = qData[optKey].map((text, idx) => ({ text: text, isCorrect: (idx === qData['correctD' + i]) }));
+                    const randomOpts = shuffleArray(shuffled);
+                    randomOpts.forEach(item => {
+                        const btn = document.createElement('button');
+                        btn.className = 'choice-btn';
+                        btn.innerText = item.text;
+                        btn.dataset.correct = item.isCorrect;
+                        btn.onclick = () => selectReport('s'+i, item.isCorrect, btn);
+                        container.appendChild(btn);
+                    });
+                }
+            } else if (module.type === "dual") {
+                document.getElementById('dual-qcm-container').style.display = 'grid';
+                document.getElementById('validate-btn').style.display = 'block';
+                document.getElementById('validate-btn').disabled = true;
+                document.getElementById('validate-btn').style.opacity = '0.5';
+                document.getElementById('validate-btn').innerText = "Valider ma décision";
+                document.getElementById('validate-btn').onclick = validateDual;
+                
+                selectionDual = { actionCorrect: null, justifCorrect: null, actionBtn: null, justifBtn: null };
+                const actionsShuffled = qData.optionsAction.map((text, idx) => ({ text: text, isCorrect: (idx === qData.correctAction) }));
+                const randomActions = shuffleArray(actionsShuffled);
+                const actionContainer = document.getElementById('options-action');
+                actionContainer.innerHTML = '';
+                randomActions.forEach((item) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'choice-btn';
+                    btn.innerText = item.text;
+                    btn.dataset.correct = item.isCorrect;
+                    btn.onclick = () => selectDual('action', item.isCorrect, btn);
+                    actionContainer.appendChild(btn);
+                });
+                
+                const justifsShuffled = qData.optionsJustif.map((text, idx) => ({ text: text, isCorrect: (idx === qData.correctJustif) }));
+                const randomJustifs = shuffleArray(justifsShuffled);
+                const justifContainer = document.getElementById('options-justif');
+                justifContainer.innerHTML = '';
+                randomJustifs.forEach((item) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'choice-btn';
+                    btn.innerText = item.text;
+                    btn.dataset.correct = item.isCorrect;
+                    btn.onclick = () => selectDual('justif', item.isCorrect, btn);
+                    justifContainer.appendChild(btn);
+                });
+            } else if (module.type === "desc_builder") {
+                document.getElementById('desc-builder-container').style.display = 'flex';
+                document.getElementById('validate-btn').style.display = 'block';
+                document.getElementById('validate-btn').disabled = true;
+                document.getElementById('validate-btn').style.opacity = '0.5';
+                document.getElementById('validate-btn').innerText = "Valider ma méthode DESC";
+                document.getElementById('validate-btn').onclick = validateDesc;
+                
+                selectionDesc = { d: null, e: null, s: null, c: null };
+                const steps = ['d', 'e', 's', 'c'];
+                steps.forEach(step => {
+                    const optKey = 'options' + step.toUpperCase();
+                    const container = document.getElementById('desc-options-' + step);
+                    container.innerHTML = '';
+                    const shuffled = qData[optKey].map((text, idx) => ({ text: text, isCorrect: (idx === qData['correct' + step.toUpperCase()]) }));
+                    const randomOpts = shuffleArray(shuffled);
+                    randomOpts.forEach(item => {
+                        const btn = document.createElement('button');
+                        btn.className = 'choice-btn';
+                        btn.innerText = item.text;
+                        btn.dataset.correct = item.isCorrect;
+                        btn.onclick = () => selectDesc(step, item.isCorrect, btn);
+                        container.appendChild(btn);
+                    });
+                });
+            } else if (module.type === "radio_builder") {
+                document.getElementById('radio-builder-container').style.display = 'flex';
+                document.getElementById('validate-btn').style.display = 'block';
+                document.getElementById('validate-btn').disabled = true;
+                document.getElementById('validate-btn').style.opacity = '0.5';
+                document.getElementById('validate-btn').innerText = "Émettre le message radio";
+                document.getElementById('validate-btn').onclick = validateRadio;
+                
+                selectionRadio = { suis: null, vois: null, fais: null, demande: null };
+                const steps = ['Suis', 'Vois', 'Fais', 'Demande'];
+                steps.forEach(step => {
+                    const optKey = 'options' + step;
+                    const container = document.getElementById('radio-options-' + step.toLowerCase());
+                    container.innerHTML = '';
+                    const shuffled = qData[optKey].map((text, idx) => ({ text: text, isCorrect: (idx === qData['correct' + step]) }));
+                    const randomOpts = shuffleArray(shuffled);
+                    randomOpts.forEach(item => {
+                        const btn = document.createElement('button');
+                        btn.className = 'choice-btn';
+                        btn.innerText = item.text;
+                        btn.dataset.correct = item.isCorrect;
+                        btn.onclick = () => selectRadio(step.toLowerCase(), item.isCorrect, btn);
+                        container.appendChild(btn);
+                    });
+                });
+            }
+        }
+
+        /* --- CLICS --- */
+        function selectDual(type, isCorrect, btn) {
+            const container = document.getElementById(type === 'action' ? 'options-action' : 'options-justif');
+            container.querySelectorAll('.choice-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            selectionDual[type + 'Correct'] = isCorrect;
+            selectionDual[type + 'Btn'] = btn;
+            if (selectionDual.actionCorrect !== null && selectionDual.justifCorrect !== null) {
+                document.getElementById('validate-btn').disabled = false; document.getElementById('validate-btn').style.opacity = '1';
+            }
+        }
+
+        function selectDesc(step, isCorrect, btn) {
+            document.getElementById('desc-options-' + step).querySelectorAll('.choice-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            selectionDesc[step] = { isCorrect: isCorrect, btn: btn };
+            if (selectionDesc.d && selectionDesc.e && selectionDesc.s && selectionDesc.c) {
+                document.getElementById('validate-btn').disabled = false; document.getElementById('validate-btn').style.opacity = '1';
+            }
+        }
+
+        function selectRadio(step, isCorrect, btn) {
+            document.getElementById('radio-options-' + step).querySelectorAll('.choice-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            selectionRadio[step] = { isCorrect: isCorrect, btn: btn };
+            if (selectionRadio.suis && selectionRadio.vois && selectionRadio.fais && selectionRadio.demande) {
+                document.getElementById('validate-btn').disabled = false; document.getElementById('validate-btn').style.opacity = '1';
+            }
+        }
+
+        function selectReport(step, isCorrect, btn) {
+            const num = step.replace('s', '');
+            document.getElementById('report-options-' + num).querySelectorAll('.choice-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            selectionReport[step] = { isCorrect: isCorrect, btn: btn };
+            
+            let ready = true;
+            for(let i=1; i<=8; i++) { if(!selectionReport['s'+i]) ready = false; }
+            if (ready) {
+                document.getElementById('validate-btn').disabled = false; document.getElementById('validate-btn').style.opacity = '1';
+            }
+        }
+
+        /* --- VALIDATIONS --- */
+        function validateDual() {
+            document.getElementById('validate-btn').style.display = 'none';
+            const qData = db[currentModuleId].questions[currentQuestionIndex];
+            const isActionCorrect = (selectionDual.actionCorrect === true);
+            const isJustifCorrect = (selectionDual.justifCorrect === true);
+            let pts = (isActionCorrect && isJustifCorrect) ? 1 : (isActionCorrect || isJustifCorrect ? 0.5 : 0);
+            
+            globalModuleTracking[currentModuleId].array[currentQuestionIndex] = { played: true, score: pts };
+            userAnswers.push({ q: qData.q, userAction: selectionDual.actionBtn.innerText, isActionCorrect: isActionCorrect, correctAction: qData.optionsAction[qData.correctAction], userJustif: selectionDual.justifBtn.innerText, isJustifCorrect: isJustifCorrect, correctJustif: qData.optionsJustif[qData.correctJustif], explanation: qData.explanation });
+            
+            document.querySelectorAll('#dual-qcm-container .choice-btn').forEach(b => { b.disabled = true; if(b.dataset.correct === "true") b.classList.add('correct'); });
+            if (!isActionCorrect) selectionDual.actionBtn.classList.add('wrong');
+            if (!isJustifCorrect) selectionDual.justifBtn.classList.add('wrong');
+            
+            const fb = document.getElementById('feedback-area');
+            fb.classList.remove('success', 'error', 'partial');
+            if (pts === 1) { fb.classList.add('active', 'success'); fb.innerHTML = `<strong>✓ OPÉRATION VALIDÉE (1 pt)</strong><br>${qData.explanation}`; }
+            else if (pts === 0.5) { fb.classList.add('active', 'partial'); fb.innerHTML = `<strong>⚠ ANALYSE PARTIELLE (+0.5 pt)</strong><br>${qData.explanation}`; }
+            else { fb.classList.add('active', 'error'); fb.innerHTML = `<strong>✗ ÉCHEC TACTIQUE (0 pt)</strong><br>${qData.explanation}`; }
+            
+            updateLiveScore(); renderModuleDashboard(); checkCompletion();
+        }
+
+        function validateDesc() {
+            document.getElementById('validate-btn').style.display = 'none';
+            const qData = db[currentModuleId].questions[currentQuestionIndex];
+            let pts = 0;
+            ['d','e','s','c'].forEach(s => { if(selectionDesc[s].isCorrect) pts += 0.25; });
+            
+            globalModuleTracking[currentModuleId].array[currentQuestionIndex] = { played: true, score: pts };
+            userAnswers.push({ q: qData.q, score: pts, d_user: selectionDesc.d.btn.innerText, d_correct: selectionDesc.d.isCorrect, d_exp: qData.optionsD[qData.correctD], e_user: selectionDesc.e.btn.innerText, e_correct: selectionDesc.e.isCorrect, e_exp: qData.optionsE[qData.correctE], s_user: selectionDesc.s.btn.innerText, s_correct: selectionDesc.s.isCorrect, s_exp: qData.optionsS[qData.correctS], c_user: selectionDesc.c.btn.innerText, c_correct: selectionDesc.c.isCorrect, c_exp: qData.optionsC[qData.correctC], explanation: qData.explanation });
+            
+            document.querySelectorAll('#desc-builder-container .choice-btn').forEach(b => { b.disabled = true; if (b.dataset.correct === "true") b.classList.add('correct'); });
+            ['d','e','s','c'].forEach(s => { if(!selectionDesc[s].isCorrect) selectionDesc[s].btn.classList.add('wrong'); });
+            
+            const fb = document.getElementById('feedback-area');
+            fb.classList.remove('success', 'error', 'partial');
+            if(pts===1){ fb.classList.add('active','success'); fb.innerHTML=`<strong>✓ DIALOGUE PARFAIT (1 pt)</strong><br>${qData.explanation}`; }
+            else if(pts>0){ fb.classList.add('active','partial'); fb.innerHTML=`<strong>⚠ ÉTAPES IMPARFAITES (+${pts} pt)</strong><br>${qData.explanation}`; }
+            else { fb.classList.add('active','error'); fb.innerHTML=`<strong>✗ CONFLIT ENVENIMÉ</strong><br>${qData.explanation}`; }
+            
+            updateLiveScore(); renderModuleDashboard(); checkCompletion();
+        }
+
+        function validateRadio() {
+            document.getElementById('validate-btn').style.display = 'none';
+            const qData = db[currentModuleId].questions[currentQuestionIndex];
+            let pts = 0;
+            ['suis','vois','fais','demande'].forEach(s => { if(selectionRadio[s].isCorrect) pts += 0.25; });
+            
+            globalModuleTracking[currentModuleId].array[currentQuestionIndex] = { played: true, score: pts };
+            userAnswers.push({ q: qData.q, score: pts, suis_user: selectionRadio.suis.btn.innerText, suis_correct: selectionRadio.suis.isCorrect, suis_exp: qData.optionsSuis[qData.correctSuis], vois_user: selectionRadio.vois.btn.innerText, vois_correct: selectionRadio.vois.isCorrect, vois_exp: qData.optionsVois[qData.correctVois], fais_user: selectionRadio.fais.btn.innerText, fais_correct: selectionRadio.fais.isCorrect, fais_exp: qData.optionsFais[qData.correctFais], demande_user: selectionRadio.demande.btn.innerText, demande_correct: selectionRadio.demande.isCorrect, demande_exp: qData.optionsDemande[qData.correctDemande], explanation: qData.explanation });
+            
+            document.querySelectorAll('#radio-builder-container .choice-btn').forEach(b => { b.disabled = true; if (b.dataset.correct === "true") b.classList.add('correct'); });
+            ['suis','vois','fais','demande'].forEach(s => { if(!selectionRadio[s].isCorrect) selectionRadio[s].btn.classList.add('wrong'); });
+            
+            const fb = document.getElementById('feedback-area');
+            fb.classList.remove('success', 'error', 'partial');
+            if(pts===1){ fb.classList.add('active','success'); fb.innerHTML=`<strong>✓ TRANSMISSION PARFAITE (1 pt)</strong><br>${qData.explanation}`; }
+            else { fb.classList.add('active','partial'); fb.innerHTML=`<strong>⚠ ERREUR DE PROCÉDURE (+${pts} pt)</strong><br>${qData.explanation}`; }
+            
+            updateLiveScore(); renderModuleDashboard(); checkCompletion();
+        }
+
+        function validateReport() {
+            document.getElementById('validate-btn').style.display = 'none';
+            const qData = db[currentModuleId].questions[currentQuestionIndex];
+            let pts = 0;
+            for(let i=1; i<=8; i++) { if(selectionReport['s'+i].isCorrect) pts += 0.125; }
+            
+            globalModuleTracking[currentModuleId].array[currentQuestionIndex] = { played: true, score: pts };
+            userAnswers.push({ q: qData.q, score: pts, explanation: qData.explanation });
+            
+            document.querySelectorAll('#report-builder-container .choice-btn').forEach(b => { 
+                b.disabled = true; 
+                if (b.dataset.correct === "true") b.classList.add('correct'); 
+            });
+            for(let i=1; i<=8; i++) { 
+                if(!selectionReport['s'+i].isCorrect) selectionReport['s'+i].btn.classList.add('wrong'); 
+            }
+            
+            const fb = document.getElementById('feedback-area');
+            fb.classList.remove('success', 'error', 'partial');
+            if(pts === 1) { fb.classList.add('active', 'success'); fb.innerHTML = `<strong>✓ STYLE ET STRUCTURE EXCELLENTS (1/1)</strong><br>${qData.explanation}`; }
+            else if(pts >= 0.5) { fb.classList.add('active', 'partial'); fb.innerHTML = `<strong>⚠ FORMULATION PARTIELLE (${pts}/1)</strong><br>${qData.explanation}`; }
+            else { fb.classList.add('active', 'error'); fb.innerHTML = `<strong>✗ INEXPLOITABLE JURIDIQUEMENT (${pts}/1)</strong><br>${qData.explanation}`; }
+            
+            updateLiveScore(); renderModuleDashboard(); checkCompletion();
+        }
+
+        /* --- NAVIGATION --- */
+        function checkCompletion() {
+            const nextBtn = document.getElementById('next-btn');
+            nextBtn.classList.add('active');
+            let allPlayed = globalModuleTracking[currentModuleId].array.every(q => q.played);
+            if (allPlayed) {
+                nextBtn.innerText = "Aller au débriefing de mission";
+            } else {
+                nextBtn.innerText = "Situation suivante";
+            }
+        }
+
+        function nextUnplayedQuestion() {
+            let nextIndex = globalModuleTracking[currentModuleId].array.findIndex(q => !q.played);
+            if (nextIndex !== -1) {
+                currentQuestionIndex = nextIndex;
+                loadQuestion();
+                renderModuleDashboard();
+            } else {
+                showResults(false);
+            }
+        }
+
+        function quitEarly() {
+            let hasPlayedAny = globalModuleTracking[currentModuleId].array.some(q => q.played);
+            if (!hasPlayedAny) {
+                goHome();
+            } else {
+                showResults(true);
+            }
+        }
+
+        function showResults(isEarlyQuit = false) {
+            document.getElementById('module').classList.remove('active');
+            document.getElementById('result').classList.add('active');
+            const total = db[currentModuleId].questions.length;
+            const scoreDisplay = document.getElementById('score-display');
+            const scoreMessage = document.getElementById('score-message');
+            
+            scoreDisplay.innerText = `Évaluation finale : ${score.toFixed(1)} / ${total}`;
+            
+            if (isEarlyQuit) {
+                scoreDisplay.style.color = "#e67e22";
+                scoreMessage.innerText = "Mission interrompue. Voici le débriefing de vos actions jusqu'à votre abandon.";
+            } else {
+                if (score >= total * 0.8) { scoreDisplay.style.color = "#27ae60"; scoreMessage.innerText = "Parfait ! Rigueur professionnelle validée."; }
+                else if (score >= total * 0.6) { scoreDisplay.style.color = "#d35400"; scoreMessage.innerText = "Opérationnel, mais des failles persistent."; }
+                else { scoreDisplay.style.color = "#c0392b"; scoreMessage.innerText = "Échec. Un rapport ou une action mal menée annule votre travail sur le terrain. Reprenez le manuel."; }
+            }
+
+            const debriefContainer = document.getElementById('debriefing-container');
+            debriefContainer.innerHTML = '';
+            
+            if (currentModuleId === 'vidocq' || currentModuleId === 'juridique') {
+                let titleText = currentModuleId === 'vidocq' ? 'Rapport détaillé de vos observations :' : 'Rapport détaillé de vos décisions juridiques :';
+                let html = `<h4 style='font-size: 1.3em; color: #2c3e50; border-bottom: 2px solid #34495e; padding-bottom: 10px;'>${titleText}</h4>`;
+                userAnswers.forEach((ans, idx) => {
+                    html += `
+                    <div class="debrief-item">
+                        <p><strong>Situation :</strong> ${ans.q}</p>
+                        <p><strong>Action :</strong> <span class="${ans.isActionCorrect ? 'correct-text' : 'wrong-text'}">${ans.userAction}</span></p>
+                        ${!ans.isActionCorrect ? `<p><strong>Attendu :</strong> <span class="expected-text">${ans.correctAction}</span></p>` : ''}
+                        <p><strong>Justification :</strong> <span class="${ans.isJustifCorrect ? 'correct-text' : 'wrong-text'}">${ans.userJustif}</span></p>
+                        ${!ans.isJustifCorrect ? `<p><strong>Attendu :</strong> <span class="expected-text">${ans.correctJustif}</span></p>` : ''}
+                        <p style="margin-top: 10px; background-color: #f4f6f7; padding: 10px; border-radius: 4px;"><em>${ans.explanation}</em></p>
+                    </div>`;
+                });
+                let adviceHTML = currentModuleId === 'vidocq' 
+                    ? `<div class="debrief-advice"><h4>Conseils de l'Instructeur :</h4><p>Relisez la <strong>FICHE 30 - La méthode VIDOCQ</strong>.</p></div>`
+                    : `<div class="debrief-advice"><h4>Conseils de l'Instructeur :</h4><p>Le droit est votre bouclier. Relisez attentivement les chapitres sur le <strong>Cadre Légal (Art 53, 73, 122-5)</strong>.</p></div>`;
+                html += adviceHTML;
+                debriefContainer.innerHTML = html; debriefContainer.style.display = 'block';
+            } else if (currentModuleId === 'desc') {
+                let html = "<h4 style='font-size: 1.3em; color: #2c3e50; border-bottom: 2px solid #34495e; padding-bottom: 10px;'>Rapport détaillé de vos négociations :</h4>";
+                userAnswers.forEach((ans, idx) => {
+                    html += `
+                    <div class="debrief-item">
+                        <p><strong>Conflit :</strong> ${ans.q}</p><p><strong>Score : ${ans.score} / 1</strong></p><ul>
+                            <li><strong>D :</strong> <span class="${ans.d_correct ? 'correct-text' : 'wrong-text'}">${ans.d_user}</span> ${!ans.d_correct ? `<br><span class="expected-text">➔ Attendu : ${ans.d_exp}</span>` : ''}</li>
+                            <li><strong>E :</strong> <span class="${ans.e_correct ? 'correct-text' : 'wrong-text'}">${ans.e_user}</span> ${!ans.e_correct ? `<br><span class="expected-text">➔ Attendu : ${ans.e_exp}</span>` : ''}</li>
+                            <li><strong>S :</strong> <span class="${ans.s_correct ? 'correct-text' : 'wrong-text'}">${ans.s_user}</span> ${!ans.s_correct ? `<br><span class="expected-text">➔ Attendu : ${ans.s_exp}</span>` : ''}</li>
+                            <li><strong>C :</strong> <span class="${ans.c_correct ? 'correct-text' : 'wrong-text'}">${ans.c_user}</span> ${!ans.c_correct ? `<br><span class="expected-text">➔ Attendu : ${ans.c_exp}</span>` : ''}</li>
+                        </ul><p style="margin-top: 10px; background-color: #f4f6f7; padding: 10px; border-radius: 4px;"><em>${ans.explanation}</em></p>
+                    </div>`;
+                });
+                html += `<div class="debrief-advice"><h4>Conseils de l'Instructeur :</h4><p>Relisez le chapitre <strong>03 - La communication verbale</strong>.</p></div>`;
+                debriefContainer.innerHTML = html; debriefContainer.style.display = 'block';
+            } else if (currentModuleId === 'radio') {
+                let html = "<h4 style='font-size: 1.3em; color: #2c3e50; border-bottom: 2px solid #34495e; padding-bottom: 10px;'>Rapport détaillé de vos transmissions :</h4>";
+                userAnswers.forEach((ans, idx) => {
+                    html += `
+                    <div class="debrief-item">
+                        <p><strong>Transmission :</strong> ${ans.q}</p><p><strong>Score : ${ans.score} / 1</strong></p><ul>
+                            <li><strong>Suis :</strong> <span class="${ans.suis_correct ? 'correct-text' : 'wrong-text'}">${ans.suis_user}</span> ${!ans.suis_correct ? `<br><span class="expected-text">➔ Attendu : ${ans.suis_exp}</span>` : ''}</li>
+                            <li><strong>Vois :</strong> <span class="${ans.vois_correct ? 'correct-text' : 'wrong-text'}">${ans.vois_user}</span> ${!ans.vois_correct ? `<br><span class="expected-text">➔ Attendu : ${ans.vois_exp}</span>` : ''}</li>
+                            <li><strong>Fais :</strong> <span class="${ans.fais_correct ? 'correct-text' : 'wrong-text'}">${ans.fais_user}</span> ${!ans.fais_correct ? `<br><span class="expected-text">➔ Attendu : ${ans.fais_exp}</span>` : ''}</li>
+                            <li><strong>Demande :</strong> <span class="${ans.demande_correct ? 'correct-text' : 'wrong-text'}">${ans.demande_user}</span> ${!ans.demande_correct ? `<br><span class="expected-text">➔ Attendu : ${ans.demande_exp}</span>` : ''}</li>
+                        </ul><p style="margin-top: 10px; background-color: #f4f6f7; padding: 10px; border-radius: 4px;"><em>${ans.explanation}</em></p>
+                    </div>`;
+                });
+                html += `<div class="debrief-advice"><h4>Conseils de l'Instructeur :</h4><p>Révisez l'alphabet et les chiffres radio.</p></div>`;
+                debriefContainer.innerHTML = html; debriefContainer.style.display = 'block';
+            } else if (currentModuleId === 'rapport') {
+                let html = "<h4 style='font-size: 1.3em; color: #2c3e50; border-bottom: 2px solid #34495e; padding-bottom: 10px;'>Débriefing de l'Instructeur :</h4>";
+                userAnswers.forEach((ans, idx) => {
+                    html += `
+                    <div class="debrief-item">
+                        <p><strong>Rapport traité :</strong> Résultat ${ans.score} / 1 point</p>
+                        <p style="background-color: #f4f6f7; padding: 10px; border-radius: 4px;"><em>Rappel de correction : ${ans.explanation}</em></p>
+                    </div>`;
+                });
+                html += `<div class="debrief-advice"><h4>Conseil de Rédaction Obligatoire :</h4><p>N'oubliez jamais la structure des 8 piliers théoriques. L'écrit doit être neutre, factuel et précis.</p></div>`;
+                debriefContainer.innerHTML = html; debriefContainer.style.display = 'block';
+            }
+            renderGlobalSidebar();
+        }
+
+        function goHome() {
+            document.getElementById('module-intro').classList.remove('active');
+            document.getElementById('module').classList.remove('active');
+            document.getElementById('result').classList.remove('active');
+            document.getElementById('menu').classList.add('active');
+            renderGlobalSidebar();
+        }
+
+        // INITIALISATION AU CHARGEMENT DE LA PAGE
+        renderGlobalSidebar();
+    </script>
+</body>
+</html>
