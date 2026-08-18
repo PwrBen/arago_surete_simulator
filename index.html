@@ -141,7 +141,7 @@
     </header>
     <main>
         <div id="menu" class="screen active">
-            <h3>Sélectionnez un module d'entraînement</h3>
+            <h3>Sélectionnez un module d'entraînement (10 situations par module)</h3>
             <div class="grid">
                 <button class="module-btn" onclick="startModule('vidocq')">1. L'Œil de Vidocq (Observation)</button>
                 <button class="module-btn" onclick="startModule('desc')">2. Simulateur DESC (Conflit)</button>
@@ -163,6 +163,8 @@
             <div id="progress-bar"><div id="progress-fill"></div></div>
             
             <div id="question-text" style="font-size: 1.1em; margin-bottom: 20px; font-weight: 500; background: #fdfefe; padding: 15px; border-left: 4px solid #34495e;"></div>
+            
+            <div id="options-container" style="display:none;"></div>
             
             <div id="dual-qcm-container">
                 <div>
@@ -192,15 +194,15 @@
             <div id="report-builder-container">
                 <div class="report-step"><h4>1) INFORMATION (Quand, où, avec qui, par qui, comment)</h4><div id="report-options-1"></div></div>
                 <div class="report-step"><h4>2) CIRCONSTANCES (Résumé des faits)</h4><div id="report-options-2"></div></div>
-                <div class="report-step"><h4>3) DILIGENCES (Ce que vous avez fait pour vous rendre sur place)</h4><div id="report-options-3"></div></div>
-                <div class="report-step"><h4>4) CONSTATATIONS (Ce que vous voyez sur place)</h4><div id="report-options-4"></div></div>
-                <div class="report-step"><h4>5) IDENTIFICATIONS (Noms, statuts)</h4><div id="report-options-5"></div></div>
-                <div class="report-step"><h4>6) DÉCLARATIONS (Propos recueillis)</h4><div id="report-options-6"></div></div>
-                <div class="report-step"><h4>7) MESURES PRISES (Vos actions sur place)</h4><div id="report-options-7"></div></div>
-                <div class="report-step"><h4>8) SUITES DONNÉES (Fin de l'intervention)</h4><div id="report-options-8"></div></div>
+                <div class="report-step"><h4>3) DILIGENCES (Action de transport et réactivité)</h4><div id="report-options-3"></div></div>
+                <div class="report-step"><h4>4) CONSTATATIONS (État des lieux matériel, indices)</h4><div id="report-options-4"></div></div>
+                <div class="report-step"><h4>5) IDENTIFICATIONS (Noms, fonctions, rôles exacts)</h4><div id="report-options-5"></div></div>
+                <div class="report-step"><h4>6) DÉCLARATIONS (Discours direct obligatoire « ... »)</h4><div id="report-options-6"></div></div>
+                <div class="report-step"><h4>7) MESURES PRISES (Interpellation, alertes, sécurité)</h4><div id="report-options-7"></div></div>
+                <div class="report-step"><h4>8) SUITES DONNÉES (Remise à l'autorité publique, rapport)</h4><div id="report-options-8"></div></div>
             </div>
             
-            <button id="validate-btn" onclick="validateAnswer()">Valider ma décision</button>
+            <button id="validate-btn">Valider ma décision</button>
             <div id="feedback-area" class="feedback"></div>
             <button id="next-btn" class="next-btn" onclick="nextQuestion()">Situation suivante</button>
             <button class="back-btn" onclick="goHome()">Quitter le module</button>
@@ -218,134 +220,433 @@
     <script>
         // BANQUE DE DONNEES DES MODULES
         const db = {
-            vidocq: { title: "1. L'Œil de Vidocq", type: "dual", questions: [{ q: "Situation test", optionsAction: ["A"], correctAction: 0, optionsJustif: ["J"], correctJustif: 0, explanation: "" }] },
-            desc: { title: "2. Simulateur DESC", type: "desc_builder", questions: [{ q: "Situation test", optionsD: ["D"], correctD: 0, optionsE: ["E"], correctE: 0, optionsS: ["S"], correctS: 0, optionsC: ["C"], correctC: 0, explanation: "" }] },
-            radio: { title: "3. Radio Express", type: "radio_builder", questions: [{ q: "Situation test", optionsSuis: ["S"], correctSuis: 0, optionsVois: ["V"], correctVois: 0, optionsFais: ["F"], correctFais: 0, optionsDemande: ["D"], correctDemande: 0, explanation: "" }] },
-            juridique: { title: "4. L'Arène Juridique", type: "dual", questions: [{ q: "Situation test", optionsAction: ["A"], correctAction: 0, optionsJustif: ["J"], correctJustif: 0, explanation: "" }] },
-            
+            vidocq: {
+                title: "1. L'Œil de Vidocq",
+                type: "dual",
+                questions: [
+                    { 
+                        q: "Lors d'une ronde, vous remarquez une poubelle déplacée juste sous une fenêtre du rez-de-chaussée.", 
+                        optionsAction: ["Ignorer l'anomalie.", "Replacer l'objet et signaler au PCS.", "Monter sur l'objet pour inspecter la fenêtre."], correctAction: 1, 
+                        optionsJustif: ["Responsabilité des agents d'entretien.", "Outil facilitant l'intrusion par escalade.", "Inspection visuelle interne requise."], correctJustif: 1, 
+                        explanation: "Méthode Vidocq : La poubelle sert de marchepied (faille environnementale). Il faut la replacer immédiatement et le signaler." 
+                    },
+                    { 
+                        q: "La porte du TGBT (Tableau Général Basse Tension) est ouverte sans présence technique.", 
+                        optionsAction: ["Refermer et sécuriser la porte immédiatement.", "Rechercher le technicien dans le bâtiment.", "Fouiller le local pour vérifier les équipements."], correctAction: 0, 
+                        optionsJustif: ["Point dangereux (électrocution) et vulnérable (coupure).", "L'agent n'est pas habilité à manipuler.", "Zone de flagrance potentielle."], correctJustif: 0, 
+                        explanation: "Le TGBT concentre un double risque : humain et matériel. La sécurisation est la priorité absolue." 
+                    },
+                    { 
+                        q: "Un utilitaire banalisé stationne depuis 2h devant la sortie de secours.", 
+                        optionsAction: ["Placer une contravention.", "Signaler l'immatriculation et demander une annonce.", "Déplacer le véhicule par vos moyens."], correctAction: 1, 
+                        optionsJustif: ["Stationnement sur voie publique.", "Entrave à l'évacuation incendie et repérage possible.", "Mise en fourrière immédiate."], correctJustif: 1, 
+                        explanation: "Bloque la sécurité incendie et peut servir de moyen de fuite/repérage." 
+                    },
+                    { 
+                        q: "Vous constatez que le grillage ouest est nettement découpé à la pince.", 
+                        optionsAction: ["Mettre un panneau Danger.", "Réparation de fortune immédiate et ronde renforcée.", "Attendre la relève."], correctAction: 1, 
+                        optionsJustif: ["Préserver l'esthétique.", "Règle des 3P (Prévision, Prévention, Protection).", "Le vandalisme relève du civil."], correctJustif: 1, 
+                        explanation: "Une faille physique doit être comblée sans délai pour rétablir le périmètre." 
+                    },
+                    { 
+                        q: "Un badge 'Visiteur' est oublié sur un comptoir d'accueil.", 
+                        optionsAction: ["Le jeter.", "Le récupérer et le faire désactiver informatiquement.", "Le laisser à sa place."], correctAction: 1, 
+                        optionsJustif: ["Faille technique.", "Faille humaine (usurpation d'identité).", "Aucun risque."], correctJustif: 1, 
+                        explanation: "La faille sociale. Un badge libre donne un accès sans effraction." 
+                    },
+                    { 
+                        q: "La zone de stockage des palettes extérieures est dans le noir total (lampadaire HS).", 
+                        optionsAction: ["Continuer avec une torche.", "Signaler la panne au PCS pour intervention.", "Éviter la zone."], correctAction: 1, 
+                        optionsJustif: ["L'obscurité annule la dissuasion et aveugle la vidéo.", "Économies d'énergie.", "Trop dangereux."], correctJustif: 0, 
+                        explanation: "L'ombre favorise la phase 'd'approche' et neutralise les caméras." 
+                    },
+                    { 
+                        q: "Un individu sur le trottoirographie vos caméras et vos barrières.", 
+                        optionsAction: ["L'appréhender physiquement.", "L'observer, noter son signalement et alerter.", "Confisquer l'appareil."], correctAction: 1, 
+                        optionsJustif: ["Flagrant délit.", "Phase de 'Préparation' (repérage) de la malveillance.", "Atteinte à la vie privée."], correctJustif: 1, 
+                        explanation: "Détecter la préparation permet d'anticiper l'attaque." 
+                    },
+                    { 
+                        q: "Une alarme incendie se déclenche de nuit dans un bâtiment vide et isolé.", 
+                        optionsAction: ["Défoncer la porte.", "Effectuer une levée de doute avec prudence.", "Appeler le 18 sans vérifier."], correctAction: 1, 
+                        optionsJustif: ["État de nécessité.", "Risque de ruse pour attirer l'agent.", "Procédure automatique."], correctJustif: 1, 
+                        explanation: "La ruse est classique. La levée de doute doit être tactique." 
+                    },
+                    { 
+                        q: "Un sac de sport volumineux est abandonné sous un banc dans le hall.", 
+                        optionsAction: ["L'ouvrir.", "Mettre en place un périmètre de sécurité et donner l'alerte.", "Le déplacer aux objets trouvés."], correctAction: 1, 
+                        optionsJustif: ["Gel des lieux (Colis suspect).", "Vérification d'identité.", "Dégager les voies."], correctJustif: 0, 
+                        explanation: "Tout objet abandonné sans propriétaire = menace potentielle." 
+                    },
+                    { 
+                        q: "Une pile de cartons masque totalement un détecteur de mouvement volumétrique.", 
+                        optionsAction: ["Déplacer les cartons pour libérer le champ.", "Laisser en place.", "Éteindre le détecteur."], correctAction: 0, 
+                        optionsJustif: ["Esthétisme.", "Un dispositif masqué rend le système aveugle.", "Responsabilité des magasiniers."], correctJustif: 1, 
+                        explanation: "L'agent doit garantir l'opérabilité de son dispositif de défense." 
+                    }
+                ]
+            },
+            desc: {
+                title: "2. Simulateur DESC",
+                type: "desc_builder",
+                questions: [
+                    {
+                        q: "Situation 1 : À l'entrée d'un concert, le terminal indique que le billet d'un visiteur est une contrefaçon. Le visiteur s'énerve et bloque la file.",
+                        optionsD: ["Vous êtes un faussaire, votre billet est faux.", "Monsieur, je viens de scanner votre billet et le terminal indique qu'il s'agit d'une contrefaçon.", "Je constate que vous essayez de frauder l'entrée."], correctD: 1,
+                        optionsE: ["Ce titre n'étant pas reconnu, je ne peux pas vous laisser entrer et votre insistance bloque le passage.", "Vous m'énervez à forcer le passage, vous allez créer une émeute.", "Si vous entrez, mon chef va me crier dessus."], correctE: 0,
+                        optionsS: ["Allez-vous-en ou je vous frappe.", "Je vous demande de libérer l'accès. Vous pouvez vous rendre au guichet litiges à l'extérieur.", "Restez là en attendant la police."], correctS: 1,
+                        optionsC: ["Si vous persistez à bloquer l'accès, je serai contraint de solliciter les OPJ présents pour une interpellation.", "Si vous restez, je vous casse la figure.", "Si vous continuez, je vous laisse entrer mais vous vous cachez."], correctC: 0,
+                        explanation: "DESC objectif : On ne juge pas ('faussaire'), on constate le refus machine et on donne une alternative (guichet litige)."
+                    },
+                    {
+                        q: "Situation 2 : Un spectateur fume une cigarette dans une tribune classée zone non-fumeur.",
+                        optionsD: ["Vous ne savez pas lire les panneaux 'Interdit de fumer' ?", "Monsieur, je constate que vous fumez dans cette zone.", "Éteignez ça tout de suite, c'est interdit."], correctD: 1,
+                        optionsE: ["Votre fumée incommode les autres spectateurs et crée un risque d'incendie.", "La fumée me donne mal à la tête.", "C'est comme ça et pas autrement, c'est le règlement."], correctE: 0,
+                        optionsS: ["Donnez-moi votre paquet de cigarettes.", "Sortez du stade immédiatement.", "Je vous demande d'éteindre votre cigarette ou de vous rendre dans la zone fumeur à l'extérieur."], correctS: 2,
+                        optionsC: ["Dans le cas contraire, je devrai demander votre exclusion du stade à ma hiérarchie.", "Si vous continuez, je vous vide mon extincteur dessus.", "Sinon, je vous mets une amende de 135 euros."], correctC: 0,
+                        explanation: "L'agent propose l'alternative de la zone fumeur avant l'exclusion. Il ne met pas d'amendes."
+                    },
+                    {
+                        q: "Situation 3 : Lors d'un filtrage, un visiteur se présente avec une bouteille en verre (interdite).",
+                        optionsD: ["Monsieur, vous avez une arme par destination dans votre sac.", "Monsieur, vous avez certainement une bonne raison de l'amener, mais je constate que vous portez une bouteille en verre.", "C'est interdit les bouteilles, vous êtes idiot ?"], correctD: 1,
+                        optionsE: ["Cet objet est interdit car il représente un risque de blessure ou de jet dans l'enceinte.", "Je ne veux pas avoir de problèmes avec mon patron.", "Si vous la gardez, vous allez vous saouler."], correctE: 0,
+                        optionsS: ["Je vous invite à la jeter dans cette poubelle ou à la ramener dans votre véhicule.", "Donnez-la moi, je vais la boire.", "Je vous la confisque de force."], correctS: 0,
+                        optionsC: ["Sinon, je vous tape.", "Si vous refusez de vous en séparer, le règlement m'oblige à vous interdire l'accès au site.", "Si vous refusez, je vous arrête pour vol."], correctC: 1,
+                        explanation: "L'empathie en introduction ('vous avez certainement une bonne raison') désamorce. Pas de confiscation de force."
+                    },
+                    {
+                        q: "Situation 4 : Un individu refuse la palpation de sécurité obligatoire.",
+                        optionsD: ["Vous cachez une arme, c'est sûr.", "Je vois bien que vous refusez de vous faire palper.", "Monsieur, je constate que vous refusez la palpation de sécurité."], correctD: 2,
+                        optionsE: ["Sans ce contrôle, je ne peux pas garantir l'absence d'objets dangereux.", "Vous m'empêchez de faire mon travail.", "Si je ne vous palpe pas, on va tous mourir."], correctE: 0,
+                        optionsS: ["Laissez-moi vous fouiller de force.", "Je vous invite soit à accepter ce contrôle, soit à quitter la file d'attente.", "Appelez votre avocat."], correctS: 1,
+                        optionsC: ["Si vous refusez, je vous enferme.", "Si vous persistez dans votre refus, je devrai vous refuser définitivement l'accès.", "Si vous restez, je vous passe les menottes."], correctC: 1,
+                        explanation: "Refus de palpation = simple interdiction d'accès (pas un délit, donc pas d'entrave)."
+                    },
+                    {
+                        q: "Situation 5 : Vol à l'étalage. Interception d'une personne après les caisses.",
+                        optionsD: ["Vous êtes un voleur, je vous ai vu.", "Monsieur, j'ai constaté que vous avez passé les caisses sans régler l'article dissimulé dans votre veste.", "Avouez que vous avez volé !"], correctD: 1,
+                        optionsE: ["Cela m'énerve que les gens volent.", "Vous allez aller en prison.", "Ceci constitue un vol, ce qui pose un préjudice financier à l'entreprise."], correctE: 2,
+                        optionsS: ["Je vous propose de régler l'article immédiatement en caisse centrale.", "Rendez l'article et donnez 50 euros de plus.", "Laissez votre carte d'identité en garantie."], correctS: 0,
+                        optionsC: ["Si vous payez, l'incident est clos. Sinon, appel à la police pour procédure judiciaire.", "Si vous refusez, je vous frappe.", "Dans le cas contraire, je vous séquestre toute la nuit."], correctC: 0,
+                        explanation: "Règlement amiable : constat du vol (fait), proposition de réparation civile (paiement), rappel de la conséquence pénale."
+                    },
+                    {
+                        q: "Situation 6 : Un apprenti du lycée refuse de présenter son badge de manière insolente.",
+                        optionsD: ["Tu es mal élevé, montre ton badge.", "Jeune homme, je constate que tu refuses de me présenter ton badge d'accès.", "Tu te prends pour qui ?"], correctD: 1,
+                        optionsE: ["Sans ce badge, je ne peux pas vérifier ton identité.", "Ton comportement m'insupporte.", "Tu vas avoir des problèmes."], correctE: 0,
+                        optionsS: ["Repars chez toi.", "Je te demande de le chercher dans ton sac ou de passer par la vie scolaire.", "Donne-moi ton sac que je cherche."], correctS: 1,
+                        optionsC: ["Si tu t'obstines, tu resteras à l'extérieur et l'administration sera prévenue.", "Sinon, commissariat.", "Dans le cas contraire, je te confisque ton téléphone."], correctC: 0,
+                        explanation: "L'agent ne répond pas à l'insolence. Il rappelle la règle objective (vérification d'identité)."
+                    },
+                    {
+                        q: "Situation 7 : Véhicule stationné sur une place handicapée sans macaron sur un parking privé.",
+                        optionsD: ["Bougez votre voiture.", "Monsieur, je constate que vous êtes stationné sur une place réservée sans macaron visible.", "Vous n'avez pas honte ?"], correctD: 1,
+                        optionsE: ["Cela bloque l'accès à une personne qui en a besoin.", "Je déteste les gens comme vous.", "Ça va vous coûter cher."], correctE: 0,
+                        optionsS: ["Je vous demande de déplacer votre véhicule immédiatement.", "Donnez-moi vos clés.", "Quittez le parking."], correctS: 0,
+                        optionsC: ["Sinon, je crève vos pneus.", "Si vous refusez, je devrai demander l'enlèvement du véhicule.", "Si vous la laissez, je vous bloque."], correctC: 1,
+                        explanation: "Même face à un incivisme, l'agent garde le contrôle. Conséquence légale sur site privé = enlèvement."
+                    },
+                    {
+                        q: "Situation 8 : Un usager s'énerve à l'accueil et vous insulte violemment (Outrage).",
+                        optionsD: ["Vous venez de prononcer des insultes à mon encontre.", "Vous êtes fou de m'insulter.", "Répétez ça pour voir ?"], correctD: 0,
+                        optionsE: ["Vos propos me blessent.", "Ces propos constituent un délit d'outrage et troublent la tranquillité.", "Vous allez regretter."], correctE: 1,
+                        optionsS: ["Battez-vous avec moi.", "Je vous demande de vous calmer et de cesser ces insultes.", "Taisez-vous ou je frappe."], correctS: 1,
+                        optionsC: ["Si vous continuez, je serai contraint de vous appréhender et de vous remettre à la Police.", "Si vous n'arrêtez pas, je vous insulte en retour.", "Dans le cas contraire, je refuse de vous parler."], correctC: 0,
+                        explanation: "Face à un outrage (délit), l'agent formule une sommation claire. Récidive = appréhension légitime (Art. 73)."
+                    },
+                    {
+                        q: "Situation 9 : Un livreur décharge ses cartons en bloquant totalement une issue de secours.",
+                        optionsD: ["Vous bloquez la porte, dégagez ça.", "Monsieur, je constate que vous déposez vos cartons devant l'issue de secours.", "C'est interdit de livrer ici."], correctD: 1,
+                        optionsE: ["Cet encombrement bloque l'évacuation en cas d'incendie et met tout le monde en danger.", "C'est pénible pour ma ronde.", "Amende par l'inspection du travail."], correctE: 0,
+                        optionsS: ["Je vous demande de décaler votre livraison vers la zone dédiée.", "Remballez tout.", "Je vais jeter vos cartons."], correctS: 0,
+                        optionsC: ["Si vous refusez, je devrai stopper votre réception et informer votre direction.", "Sinon, j'appelle la police.", "Dans le cas contraire, je ferme la porte."], correctC: 0,
+                        explanation: "On rappelle le risque sécurité (évacuation) et l'impact professionnel au livreur."
+                    },
+                    {
+                        q: "Situation 10 : Un individu alcoolisé refuse de sortir à la fermeture.",
+                        optionsD: ["Vous êtes ivre, dehors !", "Tu as trop bu, pars.", "Monsieur, je constate que vous refusez de quitter le bâtiment alors que nous fermons."], correctD: 2,
+                        optionsE: ["Vous me faites perdre mon temps.", "Votre présence non autorisée empêche la mise sous alarme du site.", "Vous sentez l'alcool."], correctE: 1,
+                        optionsS: ["Je vous demande de vous diriger calmement vers la sortie principale.", "Sortez en courant.", "Je vais vous porter."], correctS: 0,
+                        optionsC: ["Si vous ne sortez pas, je vous pousse.", "Si vous restez, je serai obligé de faire intervenir les forces de l'ordre pour intrusion.", "Sinon, je vous enferme ici."], correctC: 1,
+                        explanation: "On évite le jugement ('vous êtes ivre') qui génère la violence. Fait objectif : refus de quitter les lieux."
+                    }
+                ]
+            },
+            radio: {
+                title: "3. Radio Express",
+                type: "radio_builder",
+                questions: [
+                    {
+                        q: "Situation 1 : Véhicule suspect garé devant une issue de secours. Immatriculation : AB-12-CD. Vous êtes l'agent 'Delta 1'.",
+                        optionsSuis: ["Ici Delta 1, devant l'issue de secours Nord.", "Je suis l'agent Delta 1 au parking.", "C'est Delta 1."], correctSuis: 0,
+                        optionsVois: ["Un véhicule AB-12-CD.", "Un véhicule suspect, plaque Alpha Bravo séparatif Unité Deux-fois-Un séparatif Charlie Delta.", "Voiture suspecte, immatriculée Alpha Bravo Douze Charlie Delta."], correctVois: 1,
+                        optionsFais: ["Je crève les pneus.", "J'inspecte visuellement l'habitacle sans rien toucher.", "Je force la porte."], correctFais: 1,
+                        optionsDemande: ["Je demande au PCS une vérification de la plaque. Parlez.", "Au secours, terminé.", "Je demande à mon chef de venir."], correctDemande: 0,
+                        explanation: "Structure 'Je suis, je vois, je fais, je demande'. Les chiffres 1 et 2 se prononcent Unité et 2 fois 1."
+                    },
+                    {
+                        q: "Situation 2 : Un individu a été appréhendé sans pièce d'identité. Il dit s'appeler 'KANY'. Vous êtes au 'PCS'.",
+                        optionsSuis: ["C'est la salle vidéo.", "Ici l'agent d'accueil au PCS.", "Appel du PCS."], correctSuis: 1,
+                        optionsVois: ["Individu appréhendé sans papiers, nom déclaré Kilo Alpha November Yankee.", "Un voleur qui s'appelle Kilo Alpha Novembre Yvettes.", "Le suspect KANY."], correctVois: 0,
+                        optionsFais: ["Je le maintiens sous surveillance dans le local de sécurité.", "Je l'interroge de force.", "Je le laisse partir."], correctFais: 0,
+                        optionsDemande: ["Appelez la police svp.", "Je demande l'appel immédiat des forces de l'ordre. Parlez.", "Venez vite, terminé."], correctDemande: 1,
+                        explanation: "Le nom doit être épelé avec l'alphabet radio international strict."
+                    },
+                    {
+                        q: "Situation 3 : Vitre fracturée détectée sur le bâtiment C, secteur 'T-8'. Vous êtes la patrouille 'Alpha'.",
+                        optionsSuis: ["Ici Alpha, au T-8.", "Ici la patrouille Alpha, au bâtiment C, secteur Tango séparatif Deux-fois-Quatre.", "Alpha en position vitre cassée."], correctSuis: 1,
+                        optionsVois: ["Une vitre fracturée avec des traces de pesée sur le chambranle.", "Il y a des bris de glace partout.", "Une vitre Tango Huit brisée."], correctVois: 0,
+                        optionsFais: ["Je ramasse le verre.", "Je mets en place un périmètre de sécurité pour geler les lieux.", "Je rentre par la fenêtre."], correctFais: 1,
+                        optionsDemande: ["Envoyez le chef !", "Je demande la présence du chef de poste pour constatation. Parlez.", "Rien à signaler. Terminé."], correctDemande: 1,
+                        explanation: "Le chiffre 8 en radio se prononce '2 fois 4'. L'action prioritaire est le gel des lieux."
+                    },
+                    {
+                        q: "Situation 4 : Trottinette renversant un piéton au parking. Plaque visible : 'F-9-K'. Vous êtes 'Delta 2'.",
+                        optionsSuis: ["Ici Delta 2, sur le parking principal.", "Delta 2 à l'appareil.", "C'est moi Delta 2."], correctSuis: 0,
+                        optionsVois: ["Une trottinette en fuite après choc, plaque Foxtrot séparatif Cinq-et-Quatre séparatif Kilo.", "Un piéton écrasé par F-9-K.", "Trotinette Foxtrot Neuf Kilo."], correctVois: 0,
+                        optionsFais: ["Je cours après la trottinette.", "Je protège la zone et je réalise le bilan d'urgence vitale.", "Je prends des photos."], correctFais: 1,
+                        optionsDemande: ["Appelez la police !", "Je demande l'appel immédiat du SAMU et d'un agent SST. Parlez.", "Amenez la trousse de secours. Terminé."], correctDemande: 1,
+                        explanation: "Le chiffre 9 se dit 'Cinq et Quatre'. L'action est le secours à personne (bilan vital)."
+                    },
+                    {
+                        q: "Situation 5 : Un visiteur s'énerve à l'accueil. Son badge indique 'VIP'. Vous êtes 'Accueil 1'.",
+                        optionsSuis: ["Ici l'accueil.", "Ici Accueil Unité.", "Accueil 1 en ligne."], correctSuis: 1,
+                        optionsVois: ["Un mec VIP très énervé.", "Un visiteur avec un badge Victor India Papa qui se montre agressif verbalement.", "Un VIP qui crie."], correctVois: 1,
+                        optionsFais: ["J'applique la méthode DESC pour tenter de le calmer.", "Je le frappe.", "Je fuis."], correctFais: 0,
+                        optionsDemande: ["Je demande à un agent de se tenir prêt en retrait. Parlez.", "Au secours, terminé.", "Virez-le !"], correctDemande: 0,
+                        explanation: "Le chiffre 1 se dit 'Unité'. VIP s'épelle Victor India Papa. Le DESC est l'action immédiate."
+                    },
+                    {
+                        q: "Situation 6 : Colis suspect repéré (sac noir) en zone 'G-3'. Vous êtes 'Ronde 1'.",
+                        optionsSuis: ["Ici Ronde Unité, en zone Golf séparatif Deux-et-Un.", "Ici Ronde 1 en zone G-3.", "Ronde Unité en Golf Trois."], correctSuis: 0,
+                        optionsVois: ["Un colis suspect.", "Un sac à dos noir abandonné sous un siège sans propriétaire.", "Un sac Golf Trois."], correctVois: 1,
+                        optionsFais: ["Je l'ouvre pour vérifier.", "Je le déplace dehors.", "Je fait évacuer le public à distance de sécurité sans toucher le sac."], correctFais: 2,
+                        optionsDemande: ["Appelez les démineurs.", "Je demande l'application de la procédure Vigipirate. Parlez.", "Terminé."], correctDemande: 1,
+                        explanation: "Le chiffre 3 se dit 'Deux et Un'. Ne jamais toucher un colis suspect (Gel des lieux)."
+                    },
+                    {
+                        q: "Situation 7 : Malaise d'une personne dans l'allée 'D-5'. Vous êtes 'Secours 1'.",
+                        optionsSuis: ["Ici Secours Unité, dans l'allée Delta séparatif Trois-et-Deux.", "Secours 1 en Delta 5.", "Secours Unité dans le rayon D."], correctSuis: 0,
+                        optionsVois: ["Une personne consciente au sol se plaignant de fortes douleurs à la poitrine.", "Quelqu'un qui a mal au cœur.", "Une crise cardiaque."], correctVois: 0,
+                        optionsFais: ["Je la mets au repos et la rassure en attendant.", "Je lui donne des médicaments.", "Je lui fais un massage cardiaque."], correctFais: 0,
+                        optionsDemande: ["Appelez le 18.", "Je demande l'appel du centre 15 et qu'on m'apporte le défibrillateur. Parlez.", "Terminé, besoin d'aide."], correctDemande: 1,
+                        explanation: "Le 5 se dit 'Trois et Deux'. On ne donne jamais de médicaments. Appel au 15 (SAMU) prioritaire."
+                    },
+                    {
+                        q: "Situation 8 : Départ de feu dans le local 'TGBT'. Vous êtes 'Delta 1'.",
+                        optionsSuis: ["Ici Delta 1, devant le local Tango Golf Bravo Tango.", "Ici Delta 1 au local électrique.", "Delta 1 au TGBT."], correctSuis: 0,
+                        optionsVois: ["Il y a le feu !", "Une épaisse fumée noire et des étincelles sortant de la porte.", "Des flammes Tango Golf Bravo Tango."], correctVois: 1,
+                        optionsFais: ["Je sécurise les abords sans utiliser d'eau (risque électrique).", "Je jette un seau d'eau.", "J'ouvre la porte en grand."], correctFais: 0,
+                        optionsDemande: ["Au feu !", "Je demande l'évacuation de la zone et l'appel aux pompiers. Parlez.", "Appelez les secours. Terminé."], correctDemande: 1,
+                        explanation: "TGBT = Tango Golf Bravo Tango. Pas d'eau sur un feu d'origine électrique."
+                    },
+                    {
+                        q: "Situation 9 : Un camion de livraison bloque la rue, immatriculé 'W-8-Z'. Vous êtes au 'Filtrage'.",
+                        optionsSuis: ["Ici le poste de Filtrage.", "C'est la barrière.", "Poste de filtrage en ligne."], correctSuis: 0,
+                        optionsVois: ["Un camion bloquant la circulation, plaque Whiskey séparatif Deux-fois-Quatre séparatif Zulu.", "Un camion W-8-Z.", "Un véhicule Whiskey Huit Zulu."], correctVois: 0,
+                        optionsFais: ["Je crève les pneus.", "Je recherche le chauffeur dans les environs immédiats.", "J'appelle la fourrière."], correctFais: 1,
+                        optionsDemande: ["Faites une annonce.", "Je demande une annonce micro générale pour déplacer le véhicule. Parlez.", "Que quelqu'un vienne. Terminé."], correctDemande: 1,
+                        explanation: "Le 8 se dit 'Deux fois Quatre'. On cherche d'abord le conducteur avant l'enlèvement."
+                    },
+                    {
+                        q: "Situation 10 : Intrusion par le portail 'Q-2' visionnée sur les caméras. Vous êtes 'Vidéo 1'.",
+                        optionsSuis: ["Ici Vidéo Unité au PCS.", "Caméra 1 en alerte.", "PCS vidéo."], correctSuis: 0,
+                        optionsVois: ["Un voleur qui entre.", "Un individu vêtu de sombre vient de franchir le portail Quebec séparatif Deux-fois-Un.", "Un gars en Quebec Deux."], correctVois: 1,
+                        optionsFais: ["Je crie dans le micro.", "Je continue le suivi vidéo de l'individu et je verrouille les accès distants.", "Je descends l'arrêter."], correctFais: 1,
+                        optionsDemande: ["Allez l'attraper !", "Je demande à Delta 1 et Delta 2 d'intervenir pour l'appréhender. Parlez.", "Intervention demandée. Terminé."], correctDemande: 1,
+                        explanation: "Le 2 se dit 'Deux fois Un'. L'agent vidéo (PCS) coordonne l'action des équipes sur le terrain."
+                    }
+                ]
+            },
+            juridique: {
+                title: "4. L'Arène Juridique",
+                type: "dual",
+                questions: [
+                    {
+                        q: "Un client glisse une bouteille d'alcool dans son sac et passe la ligne de caisse sans payer. Vous l'interceptez.",
+                        optionsAction: ["L'appréhender avec une force proportionnée et appeler la police.", "Le fouiller de force pour récupérer la bouteille.", "Lui donner une amende de 135 euros."], correctAction: 0,
+                        optionsJustif: ["Légitime défense des biens.", "Article L613-3 du CSI (Palpation).", "Article 73 du CPP (Délit flagrant puni d'emprisonnement)."], correctJustif: 2,
+                        explanation: "Le vol simple est un délit flagrant. L'Article 73 du CPP autorise l'appréhension avec une force strictement nécessaire dans le but de remettre l'auteur à l'OPJ."
+                    },
+                    {
+                        q: "Un intrus armé d'un couteau se jette sur vous lors d'une ronde de nuit. Vous le neutralisez par une percussion qui lui fracture la mâchoire.",
+                        optionsAction: ["L'action de neutralisation physique est justifiée.", "Vous êtes en tort pour violences volontaires graves.", "Vous deviez impérativement fuir sans vous défendre."], correctAction: 0,
+                        optionsJustif: ["Article 122-5 du CP (Légitime défense des personnes).", "Article 73 du CPP (Appréhension).", "État de nécessité (Article 122-7 du CP)."], correctJustif: 0,
+                        explanation: "La riposte face à une attaque au couteau avec une technique de percussion est immédiate, nécessaire et proportionnée à la menace vitale (Légitime défense)."
+                    },
+                    {
+                        q: "Dans le cadre du plan Vigipirate, un visiteur refuse l'inspection visuelle de son sac à dos à l'entrée du site.",
+                        optionsAction: ["Refuser l'accès à l'établissement.", "Forcer l'ouverture du sac pour garantir la sécurité.", "Le retenir de force en attendant la police."], correctAction: 0,
+                        optionsJustif: ["Le plan Vigipirate annule le besoin de consentement.", "L'inspection nécessite le consentement exprès (Art L613-2 CSI).", "Article 73 du CPP."], correctJustif: 1,
+                        explanation: "Le refus de contrôle n'est pas un délit, on ne peut pas forcer ni retenir la personne. La seule sanction est l'interdiction d'accès au site."
+                    },
+                    {
+                        q: "Fin de service, vous voyez une personne s'effondrer en détresse respiratoire sur le parking public. Pressé, vous ne vous arrêtez pas.",
+                        optionsAction: ["L'agent est dans son droit car il a fini son service.", "L'agent n'est responsable que dans l'enceinte de son site.", "L'agent commet une infraction pénale grave."], correctAction: 2,
+                        optionsJustif: ["Déontologie professionnelle.", "Article 223-6 du CP (Non-assistance à personne en danger).", "Article 1240 du Code civil."], correctJustif: 1,
+                        explanation: "L'omission de porter secours (Art 223-6) s'apply à tout citoyen pouvant aider (ex: appeler le 15) sans risque pour lui-même, peu importe ses horaires."
+                    },
+                    {
+                        q: "Un tagueur fuit. Vous le rattrapez, le plaquez violemment et le menottez de force alors qu'il est soumis et ne se débat pas.",
+                        optionsAction: ["L'intervention est légale et justifiée.", "L'intervention est illégale et abusive.", "Le menottage est obligatoire pour tout délit."], correctAction: 1,
+                        optionsJustif: ["Article 53 du CPP (Flagrance).", "Légitime défense des biens.", "Violences volontaires : la force doit être proportionnée (Art 73) et le menottage (Art 803) exige un risque actif."], correctJustif: 2,
+                        explanation: "Appréhender oui (Art 73), mais plaquer et menotter un individu soumis qui ne présente pas de dangerosité ou de risque de fuite actif est une violence illégitime."
+                    },
+                    {
+                        q: "Vous séparez deux clients qui se battent. Vous exigez de photographier leurs cartes d'identité avec votre téléphone pour votre rapport.",
+                        optionsAction: ["Vous êtes en tort, vous ne pouvez pas exiger ni photographier leurs papiers.", "Vous êtes dans votre droit pour prouver les faits dans la main courante.", "Vous devez les retenir 4h maximum au PCS."], correctAction: 0,
+                        optionsJustif: ["Article 78-2 du CPP : Le contrôle d'identité est réservé aux OPJ/APJ.", "Article 73 du CPP.", "Code de déontologie de la sécurité privée."], correctJustif: 0,
+                        explanation: "L'agent privé n'a pas le pouvoir de contrôle d'identité coercitif. Prendre en photo des documents officiels avec un téléphone personnel est illégal (atteinte vie privée/RGPD)."
+                    },
+                    {
+                        q: "Lors d'une palpation consentie, vous sentez une arme à feu à la ceinture du visiteur.",
+                        optionsAction: ["Saisir l'arme et le laisser partir du site.", "Maintenir l'individu, geler la situation et alerter immédiatement l'OPJ.", "Le désarmer et confisquer l'arme à l'accueil."], correctAction: 1,
+                        optionsJustif: ["Article 122-5 du CP.", "Article L613-3 du CSI.", "Article 73 du CPP (Délit continu de port d'arme illégal)."], correctJustif: 2,
+                        explanation: "Le port d'arme illégal est un délit flagrant. On appréhende (Art 73) et on alerte. On ne saisit pas l'arme soi-même (sauf urgence vitale) pour préserver les traces pour l'OPJ."
+                    },
+                    {
+                        q: "Un cynophile lâche son chien mordant sans sommation sur des voleurs de cuivre. Un voleur est gravement mordu.",
+                        optionsAction: ["L'agent est dans son droit absolu de protéger le site.", "L'action est valide car le vol de cuivre coûte très cher.", "L'agent commet des violences volontaires aggravées (arme par destination)."], correctAction: 2,
+                        optionsJustif: ["Article 122-5 al. 2 (Défense des biens) : interdit l'homicide ou les blessures graves.", "Article 122-7 (État de nécessité).", "Article 73 du CPP."], correctJustif: 0,
+                        explanation: "On ne peut pas justifier des blessures graves par morsure canine (assimilé à l'usage d'une arme) pour protéger de simples biens matériels. Il y a disproportion manifeste."
+                    },
+                    {
+                        q: "Un individu déchire légèrement une affiche (simple contravention de dégradation). Vous le ceinturez et l'enfermez au PCS.",
+                        optionsAction: ["Vous agissez légalement en attendant la police.", "Vous commettez une séquestration et des violences volontaires.", "Vous devez juste le menotter sur place et non au PCS."], correctAction: 1,
+                        optionsJustif: ["L'Article 73 du CPP ne s'applique qu'aux crimes et délits punis d'emprisonnement, pas aux contraventions.", "Article 53 du CPP (Flagrance).", "Article 122-5 du CP."], correctJustif: 0,
+                        explanation: "Pour une contravention, l'agent n'a aucun pouvoir coercitif. S'il retient la personne de force, c'est une privation illégale de liberté (séquestration)."
+                    },
+                    {
+                        q: "Vous surprenez un jeune de 13 ans en train de fracturer une portière de voiture (délit de vol à la roulotte).",
+                        optionsAction: ["Le laisser partir car il est mineur.", "Appeler ses parents pour régler ça à l'amiable sans la police.", "Appréhender le mineur et appeler immédiatement les forces de l'ordre."], correctAction: 2,
+                        optionsJustif: ["Article L511-1 du CSI (Police municipale).", "Article 122-6 du CP (Légitime défense présumée).", "L'Article 73 du CPP s'applique à 'toute personne' face à un délit flagrant, sans limite d'âge."], correctJustif: 2,
+                        explanation: "La minorité n'empêche pas l'appréhension physique par un agent privé lors d'un délit flagrant. C'est l'OPJ qui gérera ensuite la procédure spécifique aux mineurs."
+                    }
+                ]
+            },
             rapport: {
                 title: "5. Chrono-Rapport",
                 type: "report_builder",
                 questions: [
                     {
                         q: "SITUATION 1 : LE VOL À LA ROULOTTE (Agent de sûreté)\nLe mardi 14 nov. à 15h30, au PCS avec Marc. M. Martin (comptable) arrive en courant : \"Venez vite, j'ai entendu du verre cassé, un gars fouille une voiture au parking Nord !\". Vous y allez, l'individu fuit. Vous le rattrapez. Vous constatez la vitre brisée (Peugeot 208) et un tournevis. Remise à la police.",
-                        options1: [ "Le mardi 14 novembre à 15h30, au PCS avec l'agent Marc, Monsieur Martin s'est présenté à nous pour signaler une effraction.", "Mardi au PCS, le comptable est venu crier qu'il y avait un vol.", "M. Martin a appelé le PCS pour une vitre cassée." ], correct1: 0,
-                        options2: [ "Un gars cassait une voiture.", "Le témoin a signalé qu'un individu brisait la vitre d'un véhicule au parking Nord pour y dérober des objets.", "C'est un vol à la roulotte flagrant." ], correct2: 1,
-                        options3: [ "Je suis allé au parking Nord et j'ai couru après le voleur.", "Je me suis immédiatement rendu sur les lieux. J'ai constaté la fuite de l'individu, que j'ai poursuivi et appréhendé.", "On l'a vu fuir alors on a appelé la police." ], correct3: 1,
-                        options4: [ "La voiture était cassée et y'avait un tournevis.", "J'ai constaté que la vitre droite d'une Peugeot 208 était brisée et j'ai vu un tournevis au sol.", "Le tournevis a servi à casser la Peugeot." ], correct4: 1,
-                        options5: [ "Le témoin est M. Martin, comptable. L'auteur a déclaré s'appeler Jean Dupont.", "M. Martin a vu Jean Dupont voler.", "Le comptable s'appelle Martin." ], correct5: 0,
-                        options6: [ "Le témoin m'a déclaré : « J'ai entendu un bruit de verre cassé et je l'ai vu fouiller la voiture. »", "Le témoin a dit qu'il a entendu un grand bruit.", "M. Martin m'a déclaré : J'ai vu le voleur." ], correct6: 0,
-                        options7: [ "J'ai attrapé le gars et appelé la police.", "J'ai interpellé l'individu selon l'Art. 73 du CPP, gelé les lieux et avisé le chef de poste.", "J'ai réparé la vitre." ], correct7: 1,
-                        options8: [ "J'ai remis l'individu à la police à leur arrivée, regagné le PCS et rédigé ce rapport.", "J'ai donné le voleur à la police.", "Fin de l'intervention." ], correct8: 0,
+                        optionsD1: [ "Le mardi 14 novembre à 15h30, au PCS avec l'agent Marc, Monsieur Martin s'est présenté à nous pour signaler une effraction.", "Mardi au PCS, le comptable est venu crier qu'il y avait un vol.", "M. Martin a appelé le PCS pour une vitre cassée." ], correctD1: 0,
+                        optionsD2: [ "Un gars cassait une voiture.", "Le témoin a signalé qu'un individu brisait la vitre d'un véhicule au parking Nord pour y dérober des objets.", "C'est un vol à la roulotte flagrant." ], correctD2: 1,
+                        optionsD3: [ "Je suis allé au parking Nord et j'ai couru après le voleur.", "Je me suis immédiatement rendu sur les lieux. J'ai constaté la fuite de l'individu, que j'ai poursuivi et appréhendé.", "On l'a vu fuir alors on a appelé la police." ], correctD3: 1,
+                        optionsD4: [ "La voiture était cassée et y'avait un tournevis.", "J'ai constaté que la vitre droite d'une Peugeot 208 était brisée et j'ai vu un tournevis au sol.", "Le tournevis a servi à casser la Peugeot." ], correctD4: 1,
+                        optionsD5: [ "Le témoin est M. Martin, comptable. L'auteur a déclaré s'appeler Jean Dupont.", "M. Martin a vu Jean Dupont voler.", "Le comptable s'appelle Martin." ], correctD5: 0,
+                        optionsD6: [ "Le témoin m'a déclaré : « J'ai entendu un bruit de verre cassé et je l'ai vu fouiller la voiture. »", "Le témoin a dit qu'il a entendu un grand bruit.", "M. Martin m'a déclaré : J'ai vu le voleur." ], correctD6: 0,
+                        optionsD7: [ "J'ai attrapé le gars et appelé la police.", "J'ai interpellé l'individu selon l'Art. 73 du CPP, gelé les lieux et avisé le chef de poste.", "J'ai réparé la vitre." ], correctD7: 1,
+                        optionsD8: [ "J'ai remis l'individu à la police à leur arrivée, regagné le PCS et rédigé ce rapport.", "J'ai donné le voleur à la police.", "Fin de l'intervention." ], correctD8: 0,
                         explanation: "Un rapport est purement factuel. Il précise l'heure exacte, l'état des lieux, les propos entre guillemets et s'appuie sur l'Art. 73 CPP."
                     },
                     {
                         q: "SITUATION 2 : L'AGRESSION VERBALE À L'ACCUEIL (Agent de sûreté)\nLe jeudi 10 mai à 09h00. Vous êtes à l'accueil avec l'hôtesse (Mme Sophie). Un visiteur s'énerve car il n'a pas de rendez-vous. Il crie : \"Je vais tous vous buter !\" et tape dans la banque d'accueil. Vous vous interposez, il se calme et part.",
-                        options1: [ "Ce matin à l'accueil, un type s'est énervé.", "Le jeudi 10 mai à 09h00, étant en poste à l'accueil avec Mme Sophie, j'ai été témoin direct d'un incident.", "Jeudi 9h, j'étais prévenu par l'hôtesse d'un problème." ], correct1: 1,
-                        options2: [ "Un individu sans rendez-vous a agressé verbalement l'hôtesse d'accueil et frappé le mobilier.", "Un fou a voulu nous taper dessus.", "Il y a eu un outrage." ], correct2: 0,
-                        options3: [ "Je suis sorti de mon bureau pour lui dire de se calmer.", "Je me suis immédiatement interposé entre l'individu et l'hôtesse pour sécuriser la zone.", "J'ai frappé l'individu pour protéger l'hôtesse." ], correct3: 1,
-                        options4: [ "J'ai constaté que l'individu était hystérique.", "J'ai constaté que la banque d'accueil ne présentait aucune dégradation matérielle visible.", "Y'avait pas de casse." ], correct4: 1,
-                        options5: [ "La victime est l'hôtesse. L'auteur est inconnu.", "La victime est Mme Sophie, hôtesse d'accueil. L'auteur des faits n'a pas pu être identifié.", "Mme Sophie a été agressée par un mec." ], correct5: 1,
-                        options6: [ "L'individu a déclaré : « Je vais tous vous buter ! »", "L'individu a dit qu'il allait nous buter.", "Il a crié des menaces de mort." ], correct6: 0,
-                        options7: [ "Je l'ai viré dehors.", "J'ai procédé à la mise à distance de l'individu par la méthode DESC, entraînant son départ.", "Je l'ai calmé avec mes mots." ], correct7: 1,
-                        options8: [ "L'individu a quitté le site. J'ai rédigé ce rapport et informé la direction.", "Il est parti et c'est tout.", "La police n'est pas venue." ], correct8: 0,
+                        optionsD1: [ "Ce matin à l'accueil, un type s'est énerve.", "Le jeudi 10 mai à 09h00, étant en poste à l'accueil avec Mme Sophie, j'ai été témoin direct d'un incident.", "Jeudi 9h, j'étais prévenu par l'hôtesse d'un problème." ], correctD1: 1,
+                        optionsD2: [ "Un individu sans rendez-vous a agressé verbalement l'hôtesse d'accueil et frappé le mobilier.", "Un fou a voulu nous taper dessus.", "Il y a eu un outrage." ], correctD2: 0,
+                        optionsD3: [ "Je suis sorti de mon bureau pour lui dire de se calmer.", "Je me suis immédiatement interposé entre l'individu et l'hôtesse pour sécuriser la zone.", "J'ai frappé l'individu pour protéger l'hôtesse." ], correctD3: 1,
+                        optionsD4: [ "J'ai constaté que l'individu était hystérique.", "J'ai constaté que la banque d'accueil ne présentait aucune dégradation matérielle visible.", "Y'avait pas de casse." ], correctD4: 1,
+                        optionsD5: [ "La victime est l'hôtesse. L'auteur est inconnu.", "La victime est Mme Sophie, hôtesse d'accueil. L'auteur des faits n'a pas pu être identifié.", "Mme Sophie a été agressée par un mec." ], correctD5: 1,
+                        optionsD6: [ "L'individu a déclaré : « Je vais tous vous buter ! »", "L'individu a dit qu'il allait nous buter.", "Il a crié des menaces de mort." ], correctD6: 0,
+                        optionsD7: [ "Je l'ai viré dehors.", "J'ai procédé à la mise à distance de l'individu par la méthode DESC, entraînant son départ.", "Je l'ai calmé avec mes mots." ], correctD7: 1,
+                        optionsD8: [ "L'individu a quitté le site. J'ai rédigé ce rapport et informé la direction.", "Il est parti et c'est tout.", "La police n'est pas venue." ], correctD8: 0,
                         explanation: "Il faut identifier l'absence de dégradation (constatation négative), utiliser le discours direct pour les menaces et identifier l'hôtesse par sa fonction."
                     },
                     {
                         q: "SITUATION 3 : INTRUSION NOCTURNE SUR SITE (Agent de sûreté)\nLe samedi 2 juillet à 02h15. En ronde extérieure avec le maître-chien Luc. Vous entendez du bruit. Vous trouvez le grillage Ouest découpé. Deux ombres fuient dans le bois. Impossible de les rattraper.",
-                        options1: [ "Le samedi 2 juillet à 02h15, en ronde extérieure avec l'agent cynophile Luc, j'ai entendu un bruit suspect.", "Samedi nuit, on faisait la ronde et on a entendu un truc.", "A 2h15, j'ai été prévenu par le chien." ], correct1: 0,
-                        options2: [ "Des voleurs essayaient de rentrer.", "Deux individus se sont introduits sur le site après avoir dégradé la clôture périphérique.", "Il y a eu une intrusion." ], correct2: 1,
-                        options3: [ "Nous nous sommes dirigés vers le bruit. Les individus ont pris la fuite et n'ont pu être rattrapés.", "On a couru mais ils allaient trop vite.", "Le chien n'a pas pu les mordre." ], correct3: 0,
-                        options4: [ "Le grillage était cassé.", "J'ai constaté la présence d'une ouverture d'environ 1 mètre carré découpée dans le grillage secteur Ouest.", "Je pense qu'ils ont utilisé une pince." ], correct4: 1,
-                        options5: [ "Les mecs sont inconnus.", "Les auteurs de l'intrusion ont pris la fuite et demeurent non identifiés.", "Je ne connais pas les voleurs." ], correct5: 1,
-                        options6: [ "Ils n'ont rien dit.", "Néant (aucune déclaration recueillie).", "L'agent Luc a dit qu'ils couraient vite." ], correct6: 1,
-                        options7: [ "J'ai fait un balisage provisoire de la clôture et j'ai prévenu le PCS.", "J'ai mis des barrières.", "J'ai attendu que le chef arrive." ], correct7: 0,
-                        options8: [ "J'ai fait un rapport pour que l'entreprise porte plainte.", "J'ai regagné le poste central de sécurité pour rédiger ce compte rendu d'incident.", "J'ai appelé la police." ], correct8: 1,
+                        optionsD1: [ "Le samedi 2 juillet à 02h15, en ronde extérieure avec l'agent cynophile Luc, j'ai entendu un bruit suspect.", "Samedi nuit, on faisait la ronde et on a entendu un truc.", "A 2h15, j'ai été prévenu par le chien." ], correctD1: 0,
+                        optionsD2: [ "Des voleurs essayaient de rentrer.", "Deux individus se sont introduits sur le site après avoir dégradé la clôture périphérique.", "Il y a eu une intrusion." ], correctD2: 1,
+                        optionsD3: [ "Nous nous sommes dirigés vers le bruit. Les individus ont pris la fuite et n'ont pu être rattrapés.", "On a couru mais ils allaient trop vite.", "Le chien n'a pas pu les mordre." ], correctD3: 0,
+                        optionsD4: [ "Le grillage était cassé.", "J'ai constaté la présence d'une ouverture d'environ 1 mètre carré découpée dans le grillage secteur Ouest.", "Je pense qu'ils ont utilisé une pince." ], correctD4: 1,
+                        optionsD5: [ "Les mecs sont inconnus.", "Les auteurs de l'intrusion ont pris la fuite et demeurent non identifiés.", "Je ne connais pas les voleurs." ], correctD5: 1,
+                        optionsD6: [ "Ils n'ont rien dit.", "Néant (aucune déclaration recueillie).", "L'agent Luc a dit qu'ils couraient vite." ], correctD6: 1,
+                        optionsD7: [ "J'ai fait un balisage provisoire de la clôture et j'ai prévenu le PCS.", "J'ai mis des barrières.", "J'ai attendu que le chef arrive." ], correctD7: 0,
+                        optionsD8: [ "J'ai fait un rapport pour que l'entreprise porte plainte.", "J'ai regagné le poste central de sécurité pour rédiger ce compte rendu d'incident.", "J'ai appelé la police." ], correctD8: 1,
                         explanation: "La constatation doit inclure la localisation exacte et la taille de l'ouverture. Si aucune parole n'est échangée, on écrit 'Néant'."
                     },
                     {
                         q: "SITUATION 4 : VOL À L'ÉTALAGE (Agent de sûreté magasin)\nLundi 5 avril, 14h00. Vous êtes en surveillance vidéo. Vous voyez M. Paul mettre un parfum dans sa poche. Vous l'interceptez après les caisses. Il coopère et paie l'article au PC sécurité.",
-                        options1: [ "Le lundi 5 avril à 14h00, étant en poste à la vidéosurveillance, j'ai repéré un individu dissimulant un article.", "Lundi, j'ai vu un voleur à la caméra.", "A 14h, prévenu par la vidéo d'un vol." ], correct1: 0,
-                        options2: [ "Un vol simple a été commis dans le rayon parfumerie.", "Un client a mis un parfum dans sa poche et a franchi la ligne de caisse sans régler l'article.", "M. Paul a volé un parfum." ], correct2: 1,
-                        options3: [ "Je suis descendu et je l'ai bloqué.", "Je me suis rendu derrière les caisses et j'ai interpellé l'individu à sa sortie du magasin.", "J'ai appelé la police tout de suite." ], correct3: 1,
-                        options4: [ "J'ai constaté que l'individu détenait un flacon de parfum non payé dans la poche droite de sa veste.", "Il avait le parfum sur lui.", "Le parfum était dans sa poche." ], correct4: 0,
-                        options5: [ "L'auteur est Monsieur Paul. La victime est le magasin.", "Le voleur s'appelle Paul.", "M. Paul, client du magasin." ], correct5: 0,
-                        options6: [ "L'individu a déclaré : « Je suis désolé, j'ai oublié de le payer, je vais le régler. »", "Il s'est excusé et a voulu payer.", "Il a dit qu'il avait oublié." ], correct6: 0,
-                        options7: [ "Je l'ai fait payer.", "J'ai conduit l'individu au PC sécurité où il a procédé au règlement de l'article.", "Je l'ai relâché." ], correct7: 1,
-                        options8: [ "L'enseigne n'ayant pas déposé plainte suite au règlement, l'individu a quitté les lieux.", "Il est parti car il a payé.", "Fin de procédure." ], correct8: 0,
-                        explanation: "Dans le cas d'un règlement amiable (toléré par les enseignes), le rapport acte que le préjudice a été réparé et explique l'absence de dépôt de plainte."
+                        optionsD1: [ "Le lundi 5 avril à 14h00, étant en poste à la vidéosurveillance, j'ai repéré un individu dissimulant un article.", "Lundi, j'ai vu un voleur à la caméra.", "A 14h, prévenu par la vidéo d'un vol." ], correctD1: 0,
+                        optionsD2: [ "Un vol simple a été commis dans le rayon parfumerie.", "Un client a mis un parfum dans sa poche et a franchi la ligne de caisse sans régler l'article.", "M. Paul a volé un parfum." ], correctD2: 1,
+                        optionsD3: [ "Je suis descendu et je l'ai bloqué.", "Je me suis rendu derrière les caisses et j'ai interpellé l'individu à sa sortie du magasin.", "J'ai appelé la police tout de suite." ], correctD3: 1,
+                        optionsD4: [ "J'ai constaté que l'individu détenait un flacon de parfum non payé dans la poche droite de sa veste.", "Il avait le parfum sur lui.", "Le parfum était dans sa poche." ], correctD4: 0,
+                        optionsD5: [ "L'auteur est Monsieur Paul. La victime est le magasin.", "Le voleur s'appelle Paul.", "M. Paul, client du magasin." ], correctD5: 0,
+                        optionsD6: [ "L'individu a déclaré : « Je suis désolé, j'ai oublié de le payer, je vais le régler. »", "Il s'est excusé et a voulu payer.", "Il a dit qu'il avait oublié." ], correctD6: 0,
+                        optionsD7: [ "Je l'ai fait payer.", "J'ai conduit l'individu au PC sécurité où il a procédé au règlement de l'article.", "Le directeur l'a laissé partir." ], correctD7: 1,
+                        optionsD8: [ "L'enseigne n'ayant pas déposé plainte suite au règlement, l'individu a quitté les lieux.", "Il est parti car il a payé.", "Fin de procédure." ], correctD8: 0,
+                        explanation: "Dans le cas d'un règlement amiable, le rapport acte que le préjudice a été réparé et explique l'absence de dépôt de plainte."
                     },
                     {
                         q: "SITUATION 5 : SECOURS À PERSONNE / MALAISE (Agent de sûreté SST)\nMercredi 12 juin, 10h15. Patrouille dans le centre commercial. Vous voyez une dame (Mme Dubois) s'effondrer, inconsciente mais qui respire. Vous la mettez en PLS et appelez les secours.",
-                        options1: [ "Le mercredi 12 juin à 10h15, en patrouille dans l'allée centrale, j'ai été témoin direct de la chute d'une personne.", "Mercredi 10h15, une dame est tombée.", "J'étais en ronde quand une femme a fait un malaise." ], correct1: 0,
-                        options2: [ "Une cliente a fait un malaise.", "Une cliente a été victime d'un malaise soudain entraînant une perte de connaissance.", "Elle est tombée dans les pommes." ], correct2: 1,
-                        options3: [ "Je me suis précipité pour réaliser un bilan d'urgence vitale en tant que Sauveteur Secouriste du Travail (SST).", "J'ai couru pour l'aider.", "J'ai appelé les pompiers direct." ], correct3: 0,
-                        options4: [ "J'ai constaté que la victime était inconsciente, que ses voies aériennes étaient libres et qu'elle respirait.", "Elle respirait mais elle dormait.", "Je crois qu'elle a fait une crise cardiaque." ], correct4: 0,
-                        options5: [ "La dame s'appelle Dubois.", "La victime a été identifiée ultérieurement par les secours comme étant Madame Dubois.", "Victime : Mme Dubois." ], correct5: 1,
-                        options6: [ "Elle a rien dit vu qu'elle était inconsciente.", "Néant (victime inconsciente).", "Elle n'a pas parlé." ], correct6: 1,
-                        options7: [ "Je l'ai mise en PLS.", "J'ai placé la victime en Position Latérale de Sécurité (PLS) et j'ai fait alerter le SAMU (15).", "Je l'ai allongée sur le côté." ], correct7: 1,
-                        options8: [ "Les secours l'ont emmenée.", "Les sapeurs-pompiers ont pris la victime en charge à 10h30. J'ai rédigé ce rapport d'intervention SST.", "Fin de l'incident." ], correct8: 1,
-                        explanation: "Le rapport d'un agent SST doit utiliser le vocabulaire médical de premier secours (inconscient, ventile, PLS, bilan vital)."
+                        optionsD1: [ "Le mercredi 12 juin à 10h15, en patrouille dans l'allée centrale, j'ai été témoin direct de la chute d'une personne.", "Mercredi 10h15, une dame est tombée.", "J'étais en ronde quand une femme a fait un malaise." ], correctD1: 0,
+                        optionsD2: [ "Une cliente a fait un malaise.", "Une cliente a été victime d'un malaise soudain entraînant une perte de connaissance.", "Elle est tombée dans les pommes." ], correctD2: 1,
+                        optionsD3: [ "Je me suis précipité pour réaliser un bilan d'urgence vitale en tant que Sauveteur Secouriste du Travail (SST).", "J'ai couru pour l'aider.", "J'ai appelé les pompiers direct." ], correctD3: 0,
+                        optionsD4: [ "J'ai constaté que la victime était inconsciente, que ses voies aériennes étaient libres et qu'elle respirait.", "Elle respirait mais elle dormait.", "Je crois qu'elle a fait une crise cardiaque." ], correctD4: 0,
+                        optionsD5: [ "La dame s'appelle Dubois.", "La victime a été identifiée ultérieurement par les secours comme étant Madame Dubois.", "Victime : Mme Dubois." ], correctD5: 1,
+                        optionsD6: [ "Elle a rien dit vu qu'elle était inconsciente.", "Néant (victime inconsciente).", "Elle n'a pas parlé." ], correctD6: 1,
+                        optionsD7: [ "Je l'ai mise en PLS.", "J'ai placé la victime en Position Latérale de Sécurité (PLS) et j'ai fait alerter le SAMU (15).", "Je l'ai allongée sur le côté." ], correctD7: 1,
+                        optionsD8: [ "Les secours l'ont emmenée.", "Les sapeurs-pompiers ont pris la victime en charge à 10h30. J'ai rédigé ce rapport d'intervention SST.", "Fin de l'incident." ], correctD8: 1,
+                        explanation: "Le rapport d'un agent SST utilise le vocabulaire médical de premier secours (inconscient, ventile, PLS, bilan vital)."
                     },
                     {
                         q: "SITUATION 6 : COLIS SUSPECT / VIGIPIRATE (Agent de sûreté)\nVendredi 20 août, 17h00. Événement sportif. Un spectateur signale un sac à dos abandonné sous la tribune. Vous constatez l'absence de propriétaire, gelez les lieux et appelez les démineurs.",
-                        options1: [ "Le vendredi 20 août à 17h00, en poste fixe, un spectateur s'est présenté à moi pour signaler un objet abandonné.", "Vendredi, on m'a dit qu'il y avait un sac.", "A 17h, un mec a vu une bombe." ], correct1: 0,
-                        options2: [ "Un sac était sous la tribune.", "Découverte d'un bagage abandonné, assimilé à un colis suspect dans le cadre du plan Vigipirate.", "Quelqu'un a oublié son sac." ], correct2: 1,
-                        options3: [ "Je suis allé voir le sac.", "Je me suis rendu sur les lieux indiqués et j'ai procédé à la recherche du propriétaire à voix haute.", "J'ai cherché à qui c'était." ], correct3: 1,
-                        options4: [ "J'ai constaté la présence d'un sac à dos de sport bleu, fermé, glissé sous le siège numéro 42 de la tribune Est.", "Le sac était bleu sous un siège.", "Y'avait un sac à dos suspect." ], correct4: 0,
-                        options5: [ "Propriétaire inconnu.", "Le spectateur (témoin) est anonyme. Le propriétaire du sac demeure inconnu.", "Le témoin s'est barré." ], correct5: 1,
-                        options6: [ "Le spectateur a dit qu'il y avait un sac.", "Le spectateur m'a déclaré : « Il y a un sac tout seul sous les sièges depuis 20 minutes. »", "Le témoin a déclaré voir un sac." ], correct6: 1,
-                        options7: [ "J'ai fait évacuer.", "J'ai immédiatement établi un périmètre de sécurité, fait évacuer la zone et avisé la force publique.", "J'ai reculé le public." ], correct7: 1,
-                        options8: [ "Les démineurs ont fait exploser le sac. Fin du rapport.", "L'équipe de déminage est intervenue et a levé le doute à 18h15. Reprise du service.", "La police est venue." ], correct8: 1,
-                        explanation: "Pour un colis suspect, la description précise de l'objet et du lieu est capitale, tout comme la mention du 'périmètre de sécurité' et de l'alerte 'force publique'."
+                        optionsD1: [ "Le vendredi a 20 août à 17h00, en poste fixe, un spectateur s'est présenté à moi pour signaler un objet abandonné.", "Vendredi, on m'a dit qu'il y avait un sac.", "A 17h, un mec a vu une bombe." ], correctD1: 0,
+                        optionsD2: [ "Un sac était sous la tribune.", "Découverte d'un bagage abandonné, assimilé à un colis suspect dans le cadre du plan Vigipirate.", "Quelqu'un a oublié son sac." ], correctD2: 1,
+                        optionsD3: [ "Je suis allé voir le sac.", "Je me suis rendu sur les lieux indiqués et j'ai procédé à la recherche du propriétaire à voix haute.", "J'ai cherché à qui c'était." ], correctD3: 1,
+                        optionsD4: [ "J'ai constaté la présence d'un sac à dos de sport bleu, fermé, glissé sous le siège numéro 42 de la tribune Est.", "Le sac était bleu sous un siège.", "Y'avait un sac à dos suspect." ], correctD4: 0,
+                        optionsD5: [ "Propriétaire inconnu.", "Le spectateur (témoin) est anonyme. Le propriétaire du sac demeure inconnu.", "Le témoin s'est barré." ], correctD5: 1,
+                        optionsD6: [ "Le spectateur a dit qu'il y avait un sac.", "Le spectateur m'a déclaré : « Il y a un sac tout seul sous les sièges depuis 20 minutes. »", "Le témoin a déclaré voir un sac." ], correctD6: 1,
+                        optionsD7: [ "J'ai fait évacuer.", "J'ai immédiatement établi un périmètre de sécurité, fait évacuer la zone et avisé la force publique.", "J'ai reculé le public." ], correctD7: 1,
+                        optionsD8: [ "Les démineurs ont fait exploser le sac. Fin du rapport.", "L'équipe de déminage est intervenue et a levé le doute à 18h15. Reprise du service.", "La police est venue." ], correctD8: 1,
+                        explanation: "Pour un colis suspect, la description précise de l'objet et du lieu est capitale, tout comme le périmètre de sécurité."
                     },
                     {
                         q: "SITUATION 7 : DÉPART DE FEU (Agent de sûreté SSIAP)\nDimanche 3 sept, 05h00. Alarme incendie au PC. Le détecteur indique la salle des archives. Vous y allez, forte odeur de fumée, flammes sur une poubelle. Vous éteignez avec un extincteur à eau.",
-                        options1: [ "Le dimanche 3 septembre à 05h00, au PCS, l'alarme du SDI (Système de Détection Incendie) s'est déclenchée.", "Dimanche 5h, ça a sonné au PC.", "J'étais au PC quand le feu a sonné." ], correct1: 0,
-                        options2: [ "Y'avait le feu aux archives.", "Un départ de feu s'est déclaré dans la salle des archives du bâtiment principal.", "La poubelle a pris feu." ], correct2: 1,
-                        options3: [ "J'ai couru aux archives.", "Je me suis transporté immédiatement sur les lieux pour effectuer la levée de doute.", "Je suis allé vérifier l'alarme." ], correct3: 1,
-                        options4: [ "J'ai constaté un dégagement de fumée et des flammes émanant d'une corbeille à papier.", "Y'avait des flammes dans une poubelle.", "J'ai vu que ça brûlait." ], correct4: 0,
-                        options5: [ "Aucune victime ni auteur à identifier.", "Personne n'était là.", "Identifications : Néant." ], correct5: 2,
-                        options6: [ "Néant.", "Personne n'a parlé.", "Je n'ai rien entendu." ], correct6: 0,
-                        options7: [ "J'ai utilisé un extincteur à eau pulvérisée pour éteindre le feu naissant et aéré la pièce.", "J'ai éteint le feu avec un extincteur.", "J'ai jeté de l'eau." ], correct7: 0,
-                        options8: [ "Le chef est venu.", "J'ai réarmé le système incendie au PCS et rédigé ce rapport de sinistre.", "J'ai fini mon travail." ], correct8: 1,
-                        explanation: "Le vocabulaire SSIAP (SDI, levée de doute, eau pulvérisée, réarmement) montre le professionnalisme de l'agent."
+                        optionsD1: [ "Le dimanche 3 septembre à 05h00, au PCS, l'alarme du SDI (Système de Détection Incendie) s'est déclenchée.", "Dimanche 5h, ça a sonné au PC.", "J'étais au PC quand le feu a sonné." ], correctD1: 0,
+                        optionsD2: [ "Y'avait le feu aux archives.", "Un départ de feu s'est déclaré dans la salle des archives du bâtiment principal.", "La poubelle a pris feu." ], correctD2: 1,
+                        optionsD3: [ "J'ai couru aux archives.", "Je me suis transporté immédiatement sur les lieux pour effectuer la levée de doute.", "Je suis allé vérifier l'alarme." ], correctD3: 1,
+                        optionsD4: [ "J'ai constaté un dégagement de fumée et des flammes émanant d'une corbeille à papier.", "Y'avait des flammes dans une poubelle.", "J'ai vu que ça brûlait." ], correctD4: 0,
+                        optionsD5: [ "Aucune victime ni auteur à identifier.", "Personne n'était là.", "Identifications : Néant." ], correctD5: 2,
+                        optionsD6: [ "Néant.", "Personne n'a parlé.", "Je n'ai rien entendu." ], correctD6: 0,
+                        optionsD7: [ "J'ai utilisé un extincteur à eau pulvérisée pour éteindre le feu naissant et aéré la pièce.", "J'ai éteint le feu avec un extincteur.", "J'ai jeté de l'eau." ], correctD7: 0,
+                        optionsD8: [ "Le chef est venu.", "J'ai réarmé le système incendie au PCS et rédigé ce rapport de sinistre.", "J'ai fini mon travail." ], correctD8: 1,
+                        explanation: "Le vocabulaire SSIAP (SDI, levée de doute, eau pulvérisée, réarmement) formalise l'écrit."
                     },
                     {
                         q: "SITUATION 8 : RIXE SUR LA VOIE PUBLIQUE (Agent de Police)\nSamedi 23h30. En patrouille, vous intervenez sur une bagarre entre deux hommes devant un bar. L'un d'eux saigne du nez. Vous les séparez.",
-                        options1: [ "Samedi soir, on a vu une bagarre.", "Le samedi à 23h30, en patrouille portée, nous avons été requis par des passants pour une altercation.", "On était en voiture et des gens nous ont appelés." ], correct1: 1,
-                        options2: [ "Deux gars se battaient.", "Une rixe éclatait sur la voie publique impliquant deux individus masculins.", "Bagarre devant le bar." ], correct2: 1,
-                        options3: [ "Nous sommes intervenus immédiatement pour séparer les protagonistes par la contrainte physique.", "On les a séparés.", "On a couru pour arrêter la bagarre." ], correct3: 0,
-                        options4: [ "J'ai vu du sang.", "Avons constaté que l'un des individus présentait une plaie saignante au niveau de l'arcade nasale.", "Le mec saignait du nez." ], correct4: 1,
-                        options5: [ "L'individu blessé est M. A, l'autre est M. B.", "Identités relevées : Monsieur A (blessé) et Monsieur B (mis en cause).", "Les gars s'appellent A et B." ], correct5: 1,
-                        options6: [ "Le mis en cause a déclaré : « Il a mal regardé ma femme ! »", "Il a dit qu'il avait regardé sa femme.", "L'auteur a crié pour sa femme." ], correct6: 0,
-                        options7: [ "Avons procédé à l'interpellation de M. B et requis les sapeurs-pompiers pour M. A.", "On a arrêté B et appelé les pompiers.", "On les a emmenés." ], correct7: 0,
-                        options8: [ "Avons ramené l'auteur au commissariat pour placement en Garde à Vue.", "M. B a été conduit au commissariat et présenté à l'Officier de Police Judiciaire. Fin de rapport.", "On a fait la paperasse." ], correct8: 1,
-                        explanation: "En police, on utilise souvent le 'nous' (patrouille), des termes précis (requis, rixe, interpellation, présentation à l'OPJ)."
+                        optionsD1: [ "Samedi soir, on a vu une bagarre.", "Le samedi à 23h30, en patrouille portée, nous avons été requis par des passants pour une altercation.", "On était en voiture et des gens nous ont appelés." ], correctD1: 1,
+                        optionsD2: [ "Deux gars se battaient.", "Une rixe éclatait sur la voie publique impliquant deux individus masculins.", "Bagarre devant le bar." ], correctD2: 1,
+                        optionsD3: [ "Nous sommes intervenus immédiatement pour séparer les protagonistes par la contrainte physique.", "On les a séparés.", "On a couru pour arrêter la bagarre." ], correctD3: 0,
+                        optionsD4: [ "J'ai vu du sang.", "Avons constaté que l'un des individus présentait une plaie saignante au niveau de l'arcade nasale.", "Le mec saignait du nez." ], correctD4: 1,
+                        optionsD5: [ "L'individu blessé est M. A, l'autre est M. B.", "Identités relevées : Monsieur A (blessé) et Monsieur B (mis en cause).", "Les gars s'appellent A et B." ], correctD5: 1,
+                        optionsD6: [ "Le mis en cause a déclaré : « Il a mal regardé ma femme ! »", "Il a dit qu'il avait regardé sa femme.", "L'auteur a crié pour sa femme." ], correctD6: 0,
+                        optionsD7: [ "Avons procédé à l'interpellation de M. B et requis les sapeurs-pompiers pour M. A.", "On a arrêté B et appelé les pompiers.", "On les a emmenés." ], correctD7: 0,
+                        optionsD8: [ "Avons ramené l'auteur au commissariat pour placement en Garde à Vue.", "M. B a été conduit au commissariat et présenté à l'Officier de Police Judiciaire. Fin de rapport.", "On a fait la paperasse." ], correctD8: 1,
+                        explanation: "En police, on utilise le 'nous' de patrouille et des termes précis (rixe, interpellation, présentation à l'OPJ)."
                     },
                     {
                         q: "SITUATION 9 : CONTRÔLE ROUTIER ET STUPÉFIANTS (Agent de Police)\nMardi 16h. Contrôle d'un véhicule ayant grillé un feu rouge. Forte odeur de cannabis. Vous découvrez 50g de résine dans la boîte à gants.",
-                        options1: [ "Le mardi à 16h00, en mission de sécurisation routière, avons constaté une infraction au Code de la Route.", "Mardi on a vu une voiture griller le feu.", "On contrôlait les feux rouges." ], correct1: 0,
-                        options2: [ "Un gars a grillé le feu et avait de la drogue.", "Un automobiliste a franchi un feu rouge fixe, justifiant son contrôle.", "Franchissement de feu." ], correct2: 1,
-                        options3: [ "On a mis le gyrophare.", "Avons intercepté le véhicule à l'aide des avertisseurs spéciaux et procédé au contrôle du conducteur.", "On l'a arrêté plus loin." ], correct3: 1,
-                        options4: [ "Avons constaté une forte odeur de cannabis dans l'habitacle et découvert 50 grammes de résine dans la boîte à gants.", "Y'avait du shit dans la voiture.", "La voiture sentait la drogue." ], correct4: 0,
-                        options5: [ "Le mec s'appelle Y.", "Conducteur identifié comme étant Monsieur Y.", "M. Y au volant." ], correct5: 1,
-                        options6: [ "Il a dit que c'était pour lui.", "M. Y a déclaré : « C'est ma consommation personnelle. »", "Il a avoué fumer." ], correct6: 1,
-                        options7: [ "Avons procédé à la saisie du produit stupéfiant et à l'interpellation du mis en cause.", "On a pris la drogue et on l'a arrêté.", "Saisie et arrestation." ], correct7: 0,
-                        options8: [ "Fin de service.", "Individu ramené au poste.", "Le mis en cause a été remis à l'OPJ de permanence avec les scellés pour la suite de la procédure." ], correct8: 2,
-                        explanation: "Constatations sensorielles (odeur) et factuelles (poids, lieu). La remise des scellés à l'OPJ est la conclusion logique de cette procédure de police."
+                        optionsD1: [ "Le mardi à 16h00, en mission de sécurisation routière, avons constaté une infraction au Code de la Route.", "Mardi on a vu une voiture griller le feu.", "On contrôlait les feux rouges." ], correctD1: 0,
+                        optionsD2: [ "Un gars a grillé le feu et avait de la drogue.", "Un automobiliste a franchi un feu rouge fixe, justifiant son contrôle.", "Franchissement de feu." ], correctD2: 1,
+                        optionsD3: [ "On a mis le gyrophare.", "Avons intercepté le véhicule à l'aide des avertisseurs spéciaux et procédé au contrôle du conducteur.", "On l'a arrêté plus loin." ], correctD3: 1,
+                        optionsD4: [ "Avons constaté une forte odeur de cannabis dans l'habitacle et découvert 50 grammes de résine dans la boîte à gants.", "Y'avait du shit dans la voiture.", "La voiture sentait la drogue." ], correctD4: 0,
+                        optionsD5: [ "Le mec s'appelle Y.", "Conducteur identifié comme étant Monsieur Y.", "M. Y au volant." ], correctD5: 1,
+                        optionsD6: [ "Il a dit que c'était pour lui.", "M. Y a déclaré : « C'est ma consommation personnelle. »", "Il a avoué fumer." ], correctD6: 1,
+                        optionsD7: [ "Avons procédé à la saisie du produit stupéfiant et à l'interpellation du mis en cause.", "On a pris la drogue et on l'a arrêté.", "Saisie et arrestation." ], correctD7: 0,
+                        optionsD8: [ "Fin de service.", "Individu ramené au poste.", "Le mis en cause a été remis à l'OPJ de permanence avec les scellés pour la suite de la procédure." ], correctD8: 2,
+                        explanation: "La mention du poids exact et de la remise des scellés à l'OPJ est capitale en procédure de police."
                     },
                     {
                         q: "SITUATION 10 : VOL À MAIN ARMÉE (Agent de Police)\nVendredi 09h15. Appel radio pour braquage de la Bijouterie Or. Vous arrivez sirènes hurlantes. Les auteurs ont fui en scooter. Le gérant est choqué, la vitrine est brisée.",
-                        options1: [ "Le vendredi à 09h15, en patrouille, avons été requis par la salle de commandement pour un vol à main armée.", "Vendredi 9h, appel pour braquage.", "On nous a appelés pour un vol." ], correct1: 0,
-                        options2: [ "Des voleurs ont braqué la bijouterie.", "Des individus munis d'armes à feu ont commis un braquage au sein de la Bijouterie Or.", "Braquage à la bijouterie." ], correct2: 1,
-                        options3: [ "Nous nous sommes transportés en urgence sur les lieux. Les auteurs avaient déjà pris la fuite.", "On a roulé vite mais ils étaient partis.", "On est arrivé trop tard." ], correct3: 0,
-                        options4: [ "Avons constaté la vitrine brisée et le gérant en état de choc psychologique.", "La vitrine était cassée.", "Le gérant pleurait." ], correct4: 0,
-                        options5: [ "Le gérant c'est M. Z.", "Victime identifiée : Monsieur Z, gérant de la bijouterie.", "M. Z a été braqué." ], correct5: 1,
-                        options6: [ "Le gérant m'a déclaré : « Ils étaient deux sur un scooter noir avec des fusils. »", "Il a dit qu'ils avaient un scooter.", "Il a crié qu'ils étaient deux." ], correct6: 0,
-                        options7: [ "Avons sécurisé la scène de crime (gel des lieux) et diffusé le signalement des fuyards sur les ondes.", "On a mis de la rubalise.", "On a cherché le scooter." ], correct7: 0,
-                        options8: [ "La Police Judiciaire s'est saisie de l'enquête. Avons rédigé nos Procès-Verbaux d'intervention.", "Les enquêteurs sont venus.", "Fin de mission." ], correct8: 0,
-                        explanation: "Sur un crime (VMA), la patrouille de 'prime intervention' gèle les lieux, diffuse le signalement, et la Police Judiciaire prend le relais."
+                        optionsD1: [ "Le vendredi à 09h15, en patrouille, avons été requis par la salle de commandement pour un vol à main armée.", "Vendredi 9h, appel pour braquage.", "On nous a appelés pour un vol." ], correctD1: 0,
+                        optionsD2: [ "Des voleurs ont braqué la bijouterie.", "Des individus munis d'armes à feu ont commis un braquage au sein de la Bijouterie Or.", "Braquage à la bijouterie." ], correctD2: 1,
+                        optionsD3: [ "Nous nous sommes transportés en urgence sur les lieux. Les auteurs avaient déjà pris la fuite.", "On a roulé vite mais ils étaient partis.", "On est arrivé trop tard." ], correctD3: 0,
+                        optionsD4: [ "Avons constaté la vitrine brisée et le gérant en état de choc psychologique.", "La vitrine était cassée.", "Le gérant pleurait." ], correctD4: 0,
+                        optionsD5: [ "Le gérant c'est M. Z.", "Victime identifiée : Monsieur Z, gérant de la bijouterie.", "M. Z a été braqué." ], correctD5: 1,
+                        optionsD6: [ "Le gérant m'a déclaré : « Ils étaient deux sur un scooter noir avec des fusils. »", "Il a dit qu'ils avaient un scooter.", "Il a crié qu'ils étaient deux." ], correctD6: 0,
+                        optionsD7: [ "Avons sécurisé la scène de crime (gel des lieux) et diffusé le signalement des fuyards sur les ondes.", "On a mis de la rubalise.", "On a cherché le scooter." ], correctD7: 0,
+                        optionsD8: [ "La Police Judiciaire s'est saisie de l'enquête. Avons rédigé nos Procès-Verbaux d'intervention.", "Les enquêteurs sont venus.", "Fin de mission." ], correctD8: 0,
+                        explanation: "Sur un crime (VMA), la première équipe sécurise la zone (gel des lieux) et la PJ prend la direction de l'enquête."
                     }
                 ]
             }
@@ -372,10 +673,8 @@
         }
 
         function updateLiveScore() {
-            let total = 0;
-            if(currentModuleId === 'rapport') total = 10;
-            else total = db[currentModuleId].questions.length;
-            document.getElementById('live-score').innerText = `Score : ${score} / ${total}`;
+            let total = db[currentModuleId].questions.length;
+            document.getElementById('live-score').innerText = `Score : ${score.toFixed(1)} / ${total}`;
         }
 
         function startModule(moduleId) {
@@ -397,11 +696,10 @@
             const module = db[currentModuleId];
             const qData = module.questions[currentQuestionIndex];
             
-            document.getElementById('progress-text').innerText = module.type === 'report_builder' ? `Rédaction ${currentQuestionIndex + 1} / ${module.questions.length}` : `Situation ${currentQuestionIndex + 1} / ${module.questions.length}`;
-            const progressPercent = ((currentQuestionIndex) / module.questions.length) * 100;
-            document.getElementById('progress-fill').style.width = module.type === 'report_builder' ? `${((currentQuestionIndex)/10)*100}%` : `${progressPercent}%`;
+            document.getElementById('progress-text').innerText = `Situation ${currentQuestionIndex + 1} / ${module.questions.length}`;
+            const progressPercent = (currentQuestionIndex / module.questions.length) * 100;
+            document.getElementById('progress-fill').style.width = `${progressPercent}%`;
             
-            // Text conversion for line breaks in Mod 5
             document.getElementById('question-text').innerHTML = qData.q.replace(/\n/g, '<br>');
             
             document.getElementById('feedback-area').classList.remove('active', 'success', 'error', 'partial');
@@ -414,7 +712,7 @@
             document.getElementById('report-builder-container').style.display = 'none';
             
             if (module.type === "report_builder") {
-                // MOD 5
+                // LOGIQUE MODULE 5 CORRIGÉE
                 document.getElementById('report-builder-container').style.display = 'flex';
                 document.getElementById('validate-btn').style.display = 'block';
                 document.getElementById('validate-btn').disabled = true;
@@ -425,14 +723,13 @@
                 selectionReport = { s1: null, s2: null, s3: null, s4: null, s5: null, s6: null, s7: null, s8: null };
                 
                 for(let i=1; i<=8; i++) {
-                    const optKey = 'options' + i;
-                    const correctKey = 'correct' + i;
-                    
-                    const shuffled = qData[optKey].map((text, idx) => ({ text: text, isCorrect: (idx === qData[correctKey]) }));
-                    const randomOpts = shuffleArray(shuffled);
-                    
+                    const optKey = 'optionsD' + i;
                     const container = document.getElementById('report-options-' + i);
                     container.innerHTML = '';
+                    
+                    const shuffled = qData[optKey].map((text, idx) => ({ text: text, isCorrect: (idx === qData['correctD' + i]) }));
+                    const randomOpts = shuffleArray(shuffled);
+                    
                     randomOpts.forEach(item => {
                         const btn = document.createElement('button');
                         btn.className = 'choice-btn';
@@ -443,7 +740,7 @@
                     });
                 }
             } else if (module.type === "dual") {
-                // Mod 1 & 4 (Dual QCM)
+                // LOGIQUE MOD 1 & 4
                 document.getElementById('dual-qcm-container').style.display = 'grid';
                 document.getElementById('validate-btn').style.display = 'block';
                 document.getElementById('validate-btn').disabled = true;
@@ -479,86 +776,193 @@
                     justifContainer.appendChild(btn);
                 });
             } else if (module.type === "desc_builder") {
-                // Mod 2
+                // LOGIQUE MOD 2
+                document.getElementById('desc-builder-container').style.display = 'flex';
+                document.getElementById('validate-btn').style.display = 'block';
+                document.getElementById('validate-btn').disabled = true;
+                document.getElementById('validate-btn').style.opacity = '0.5';
+                document.getElementById('validate-btn').innerText = "Valider ma méthode DESC";
+                document.getElementById('validate-btn').onclick = validateDesc;
+                
+                selectionDesc = { d: null, e: null, s: null, c: null };
+                
+                const steps = ['d', 'e', 's', 'c'];
+                steps.forEach(step => {
+                    const optKey = 'options' + step.toUpperCase();
+                    const container = document.getElementById('desc-options-' + step);
+                    container.innerHTML = '';
+                    
+                    const shuffled = qData[optKey].map((text, idx) => ({ text: text, isCorrect: (idx === qData['correct' + step.toUpperCase()]) }));
+                    const randomOpts = shuffleArray(shuffled);
+                    
+                    randomOpts.forEach(item => {
+                        const btn = document.createElement('button');
+                        btn.className = 'choice-btn';
+                        btn.innerText = item.text;
+                        btn.dataset.correct = item.isCorrect;
+                        btn.onclick = () => selectDesc(step, item.isCorrect, btn);
+                        container.appendChild(btn);
+                    });
+                });
             } else if (module.type === "radio_builder") {
-                // Mod 3
+                // LOGIQUE MOD 3
+                document.getElementById('radio-builder-container').style.display = 'flex';
+                document.getElementById('validate-btn').style.display = 'block';
+                document.getElementById('validate-btn').disabled = true;
+                document.getElementById('validate-btn').style.opacity = '0.5';
+                document.getElementById('validate-btn').innerText = "Émettre le message radio";
+                document.getElementById('validate-btn').onclick = validateRadio;
+                
+                selectionRadio = { suis: null, vois: null, fais: null, demande: null };
+                
+                const steps = ['Suis', 'Vois', 'Fais', 'Demande'];
+                steps.forEach(step => {
+                    const optKey = 'options' + step;
+                    const container = document.getElementById('radio-options-' + step.toLowerCase());
+                    container.innerHTML = '';
+                    
+                    const shuffled = qData[optKey].map((text, idx) => ({ text: text, isCorrect: (idx === qData['correct' + step]) }));
+                    const randomOpts = shuffleArray(shuffled);
+                    
+                    randomOpts.forEach(item => {
+                        const btn = document.createElement('button');
+                        btn.className = 'choice-btn';
+                        btn.innerText = item.text;
+                        btn.dataset.correct = item.isCorrect;
+                        btn.onclick = () => selectRadio(step.toLowerCase(), item.isCorrect, btn);
+                        container.appendChild(btn);
+                    });
+                });
             }
         }
 
-        /* --- MOD 5 (REPORT BUILDER) --- */
-        function selectReport(step, isCorrect, btn) {
-            const containerNum = step.replace('s', '');
-            const container = document.getElementById('report-options-' + containerNum);
-            const btns = container.querySelectorAll('.choice-btn');
-            btns.forEach(b => b.classList.remove('selected'));
-            
+        /* --- LOGIQUE MUTUALISÉE CLICS --- */
+        function selectDual(type, isCorrect, btn) {
+            const container = document.getElementById(type === 'action' ? 'options-action' : 'options-justif');
+            container.querySelectorAll('.choice-btn').forEach(b => b.classList.remove('selected'));
             btn.classList.add('selected');
-            selectionReport[step] = { isCorrect: isCorrect, btn: btn };
-            
-            let allSelected = true;
-            for(let i=1; i<=8; i++) {
-                if(selectionReport['s'+i] === null) allSelected = false;
-            }
-            
-            if (allSelected) {
+            selectionDual[type + 'Correct'] = isCorrect;
+            selectionDual[type + 'Btn'] = btn;
+            if (selectionDual.actionCorrect !== null && selectionDual.justifCorrect !== null) {
                 document.getElementById('validate-btn').disabled = false;
                 document.getElementById('validate-btn').style.opacity = '1';
             }
         }
 
-        function validateReport() {
-            document.getElementById('validate-btn').style.display = 'none';
-            const module = db[currentModuleId];
-            const qData = module.questions[currentQuestionIndex];
-            
-            let pts = 0;
-            for(let i=1; i<=8; i++) {
-                if(selectionReport['s'+i] && selectionReport['s'+i].isCorrect) pts += 0.125; // 8 étapes * 0.125 = 1 pt par question (10 pts total pour 10 situations)
+        function selectDesc(step, isCorrect, btn) {
+            document.getElementById('desc-options-' + step).querySelectorAll('.choice-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            selectionDesc[step] = { isCorrect: isCorrect, btn: btn };
+            if (selectionDesc.d && selectionDesc.e && selectionDesc.s && selectionDesc.c) {
+                document.getElementById('validate-btn').disabled = false;
+                document.getElementById('validate-btn').style.opacity = '1';
             }
-            score += pts;
-            
-            const allBtns = document.querySelectorAll('#report-builder-container .choice-btn');
-            allBtns.forEach(b => {
-                b.disabled = true;
-                if (b.dataset.correct === "true") b.classList.add('correct');
-            });
+        }
 
-            for(let i=1; i<=8; i++) {
-                if (selectionReport['s'+i] && !selectionReport['s'+i].isCorrect) {
-                    selectionReport['s'+i].btn.classList.add('wrong');
-                }
+        function selectRadio(step, isCorrect, btn) {
+            document.getElementById('radio-options-' + step).querySelectorAll('.choice-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            selectionRadio[step] = { isCorrect: isCorrect, btn: btn };
+            if (selectionRadio.suis && selectionRadio.vois && selectionRadio.fais && selectionRadio.demande) {
+                document.getElementById('validate-btn').disabled = false;
+                document.getElementById('validate-btn').style.opacity = '1';
             }
+        }
+
+        function selectReport(step, isCorrect, btn) {
+            const num = step.replace('s', '');
+            document.getElementById('report-options-' + num).querySelectorAll('.choice-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            selectionReport[step] = { isCorrect: isCorrect, btn: btn };
+            
+            let ready = true;
+            for(let i=1; i<=8; i++) { if(!selectionReport['s'+i]) ready = false; }
+            if (ready) {
+                document.getElementById('validate-btn').disabled = false;
+                document.getElementById('validate-btn').style.opacity = '1';
+            }
+        }
+
+        /* --- LOGIQUE MUTUALISÉE VALIDATIONS --- */
+        function validateDual() {
+            document.getElementById('validate-btn').style.display = 'none';
+            const qData = db[currentModuleId].questions[currentQuestionIndex];
+            const isActionCorrect = (selectionDual.actionCorrect === true);
+            const isJustifCorrect = (selectionDual.justifCorrect === true);
+            
+            userAnswers.push({ q: qData.q, userAction: selectionDual.actionBtn.innerText, isActionCorrect: isActionCorrect, correctAction: qData.optionsAction[qData.correctAction], userJustif: selectionDual.justifBtn.innerText, isJustifCorrect: isJustifCorrect, correctJustif: qData.optionsJustif[qData.correctJustif], explanation: qData.explanation });
+            document.querySelectorAll('#dual-qcm-container .choice-btn').forEach(b => { b.disabled = true; if(b.dataset.correct === "true") b.classList.add('correct'); });
+            if (!isActionCorrect) selectionDual.actionBtn.classList.add('wrong');
+            if (!isJustifCorrect) selectionDual.justifBtn.classList.add('wrong');
             
             const fb = document.getElementById('feedback-area');
             fb.classList.remove('success', 'error', 'partial');
-            if (pts === 1) {
-                fb.classList.add('active', 'success');
-                fb.innerHTML = `<strong>✓ RAPPORT EXCELLENT (1/1)</strong><br>${qData.explanation}`;
-            } else if (pts >= 0.5) {
-                fb.classList.add('active', 'partial');
-                fb.innerHTML = `<strong>⚠ RAPPORT PARTIELLEMENT EXPLOITABLE (${pts}/1)</strong><br>Certaines formulations sont subjectives ou incomplètes.<br><br><em>Rappel :</em> ${qData.explanation}`;
-            } else {
-                fb.classList.add('active', 'error');
-                fb.innerHTML = `<strong>✗ RAPPORT NON PROFESSIONNEL (${pts}/1)</strong><br>Ce rapport est juridiquement inexploitable.<br>${qData.explanation}`;
-            }
-            
-            updateLiveScore();
-            setupNextButton();
+            if (isActionCorrect && isJustifCorrect) { score++; fb.classList.add('active', 'success'); fb.innerHTML = `<strong>✓ OPÉRATION VALIDÉE (1 pt)</strong><br>${qData.explanation}`; }
+            else if (isActionCorrect || isJustifCorrect) { score += 0.5; fb.classList.add('active', 'partial'); fb.innerHTML = `<strong>⚠ ANALYSE PARTIELLE (+0.5 pt)</strong><br>${qData.explanation}`; }
+            else { fb.classList.add('active', 'error'); fb.innerHTML = `<strong>✗ ÉCHEC TACTIQUE (0 pt)</strong><br>${qData.explanation}`; }
+            updateLiveScore(); setupNextButton();
         }
 
-        function selectDual(type, isCorrect, btn) {
-            // [Code Dual conservé intact pour les modules 1 et 4]
+        function validateDesc() {
+            document.getElementById('validate-btn').style.display = 'none';
+            const qData = db[currentModuleId].questions[currentQuestionIndex];
+            let pts = 0;
+            ['d','e','s','c'].forEach(s => { if(selectionDesc[s].isCorrect) pts += 0.25; });
+            
+            userAnswers.push({ q: qData.q, score: pts, d_user: selectionDesc.d.btn.innerText, d_correct: selectionDesc.d.isCorrect, d_exp: qData.optionsD[qData.correctD], e_user: selectionDesc.e.btn.innerText, e_correct: selectionDesc.e.isCorrect, e_exp: qData.optionsE[qData.correctE], s_user: selectionDesc.s.btn.innerText, s_correct: selectionDesc.s.isCorrect, s_exp: qData.optionsS[qData.correctS], c_user: selectionDesc.c.btn.innerText, c_correct: selectionDesc.c.isCorrect, c_exp: qData.optionsC[qData.correctC], explanation: qData.explanation });
+            document.querySelectorAll('#desc-builder-container .choice-btn').forEach(b => { b.disabled = true; if (b.dataset.correct === "true") b.classList.add('correct'); });
+            ['d','e','s','c'].forEach(s => { if(!selectionDesc[s].isCorrect) selectionDesc[s].btn.classList.add('wrong'); });
+            
+            score += pts;
+            const fb = document.getElementById('feedback-area');
+            fb.classList.remove('success', 'error', 'partial');
+            if(pts===1){ fb.classList.add('active','success'); fb.innerHTML=`<strong>✓ DIALOGUE PARFAIT (1 pt)</strong><br>${qData.explanation}`; }
+            else if(pts>0){ fb.classList.add('active','partial'); fb.innerHTML=`<strong>⚠ ÉTAPES IMPARFAITES (+${pts} pt)</strong><br>${qData.explanation}`; }
+            else { fb.classList.add('active','error'); fb.innerHTML=`<strong>✗ CONFLIT ENVENIMÉ</strong><br>${qData.explanation}`; }
+            updateLiveScore(); setupNextButton();
         }
-        function validateDual() {
-            // [Code Dual conservé intact pour les modules 1 et 4]
+
+        function validateRadio() {
+            document.getElementById('validate-btn').style.display = 'none';
+            const qData = db[currentModuleId].questions[currentQuestionIndex];
+            let pts = 0;
+            ['suis','vois','fais','demande'].forEach(s => { if(selectionRadio[s].isCorrect) pts += 0.25; });
+            
+            userAnswers.push({ q: qData.q, score: pts, suis_user: selectionRadio.suis.btn.innerText, suis_correct: selectionRadio.suis.isCorrect, suis_exp: qData.optionsSuis[qData.correctSuis], vois_user: selectionRadio.vois.btn.innerText, vois_correct: selectionRadio.vois.isCorrect, vois_exp: qData.optionsVois[qData.correctVois], fais_user: selectionRadio.fais.btn.innerText, fais_correct: selectionRadio.fais.isCorrect, fais_exp: qData.optionsFais[qData.correctFais], demande_user: selectionRadio.demande.btn.innerText, demande_correct: selectionRadio.demande.isCorrect, demande_exp: qData.optionsDemande[qData.correctDemande], explanation: qData.explanation });
+            document.querySelectorAll('#radio-builder-container .choice-btn').forEach(b => { b.disabled = true; if (b.dataset.correct === "true") b.classList.add('correct'); });
+            ['suis','vois','fais','demande'].forEach(s => { if(!selectionRadio[s].isCorrect) selectionRadio[s].btn.classList.add('wrong'); });
+            
+            score += pts;
+            const fb = document.getElementById('feedback-area');
+            fb.classList.remove('success', 'error', 'partial');
+            if(pts===1){ fb.classList.add('active','success'); fb.innerHTML=`<strong>✓ TRANSMISSION PARFAITE (1 pt)</strong><br>${qData.explanation}`; }
+            else { fb.classList.add('active','partial'); fb.innerHTML=`<strong>⚠ ERREUR DE PROCÉDURE (+${pts} pt)</strong><br>${qData.explanation}`; }
+            updateLiveScore(); setupNextButton();
+        }
+
+        function validateReport() {
+            document.getElementById('validate-btn').style.display = 'none';
+            const qData = db[currentModuleId].questions[currentQuestionIndex];
+            let pts = 0;
+            for(let i=1; i<=8; i++) { if(selectionReport['s'+i].isCorrect) pts += 0.125; } // 8 étapes * 0.125 = 1 point max par scénario
+            
+            userAnswers.push({ q: qData.q, score: pts, explanation: qData.explanation });
+            document.querySelectorAll('#report-builder-container .choice-btn').forEach(b => { b.disabled = true; if (b.dataset.correct === "true") b.classList.add('correct'); });
+            for(let i=1; i<=8; i++) { if(!selectionReport['s'+i].isCorrect) selectionReport['s'+i].btn.classList.add('wrong'); }
+            
+            score += pts;
+            const fb = document.getElementById('feedback-area');
+            fb.classList.remove('success', 'error', 'partial');
+            if(pts === 1) { fb.classList.add('active', 'success'); fb.innerHTML = `<strong>✓ STYLE ET STRUCTURE EXCELLENTS (1/1)</strong><br>${qData.explanation}`; }
+            else if(pts >= 0.5) { fb.classList.add('active', 'partial'); fb.innerHTML = `<strong>⚠ FORMULATION PARTIELLE (${pts}/1)</strong><br>${qData.explanation}`; }
+            else { fb.classList.add('active', 'error'); fb.innerHTML = `<strong>✗ INEXPLOITABLE JURIDIQUEMENT (${pts}/1)</strong><br>${qData.explanation}`; }
+            updateLiveScore(); setupNextButton();
         }
 
         function setupNextButton() {
-            const module = db[currentModuleId];
             const nextBtn = document.getElementById('next-btn');
             nextBtn.classList.add('active');
-            
-            if (currentQuestionIndex === module.questions.length - 1) {
+            if (currentQuestionIndex === db[currentModuleId].questions.length - 1) {
                 document.getElementById('progress-fill').style.width = `100%`;
                 nextBtn.innerText = "Aller au débriefing de mission";
             } else {
@@ -567,42 +971,30 @@
         }
 
         function nextQuestion() {
-            const module = db[currentModuleId];
             currentQuestionIndex++;
-            if (currentQuestionIndex < module.questions.length) loadQuestion();
+            if (currentQuestionIndex < db[currentModuleId].questions.length) loadQuestion();
             else showResults();
         }
 
         function showResults() {
             document.getElementById('module').classList.remove('active');
             document.getElementById('result').classList.add('active');
-            
-            let total = 10;
-            
+            const total = db[currentModuleId].questions.length;
             const scoreDisplay = document.getElementById('score-display');
             const scoreMessage = document.getElementById('score-message');
             
-            scoreDisplay.innerText = `Évaluation finale : ${score} / ${total}`;
-            
-            if (score === total) {
-                scoreDisplay.style.color = "#27ae60";
-                scoreMessage.innerText = "Excellent ! Votre rédaction professionnelle est parfaite.";
-            } else if (score >= total * 0.7) {
-                scoreDisplay.style.color = "#d35400";
-                scoreMessage.innerText = "Opérationnel. La structure y est, mais attention aux détails de formulation.";
-            } else {
-                scoreDisplay.style.color = "#c0392b";
-                scoreMessage.innerText = "Vos erreurs de rédaction annulent la valeur juridique de vos actes. Reprenez le manuel.";
-            }
+            scoreDisplay.innerText = `Évaluation finale : ${score.toFixed(1)} / ${total}`;
+            if (score >= total * 0.8) { scoreDisplay.style.color = "#27ae60"; scoreMessage.innerText = "Parfait ! Rigueur professionnelle validée."; }
+            else if (score >= total * 0.6) { scoreDisplay.style.color = "#d35400"; scoreMessage.innerText = "Opérationnel, mais des failles persistent."; }
+            else { scoreDisplay.style.color = "#c0392b"; scoreMessage.innerText = "Échec. Reprenez les manuels du Lycée Arago."; }
 
             const debriefContainer = document.getElementById('debriefing-container');
             debriefContainer.innerHTML = '';
             
             if (currentModuleId === 'rapport') {
-                let html = "<h4 style='font-size: 1.3em; color: #2c3e50; border-bottom: 2px solid #34495e; padding-bottom: 10px;'>Rapport détaillé de votre rédaction :</h4>";
-                html += `<div class="debrief-advice"><h4>Conseils de l'Instructeur :</h4><p>L'écrit reste ! Un mauvais compte rendu peut faire annuler une procédure pénale (vice de forme) et se retourner contre vous. Relisez la partie sur le <strong>Compte Rendu (QQOQCP)</strong> de votre manuel.</p></div>`;
-                debriefContainer.innerHTML = html;
-                debriefContainer.style.display = 'block';
+                let html = "<h4 style='font-size: 1.3em; color: #2c3e50; border-bottom: 2px solid #34495e; padding-bottom: 10px;'>Débriefing de l'Instructeur :</h4>";
+                html += `<div class="debrief-advice"><h4>Conseil de Rédaction Obligatoire :</h4><p>N'oubliez jamais la structure des 8 piliers théoriques. Un compte rendu brouillon ou contenant des suppositions subjectives (« je pense que », « il avait l'air ») détruit la validité juridique de votre travail sur le terrain.</p></div>`;
+                debriefContainer.innerHTML = html; debriefContainer.style.display = 'block';
             }
         }
 
