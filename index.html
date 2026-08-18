@@ -11,17 +11,21 @@
         .header-titles h1 { margin: 0; font-size: 1.5em; }
         .header-titles h2 { margin: 0; font-weight: normal; font-size: 1.1em; color: #bdc3c7; }
         
-        main { max-width: 1200px; margin: 30px auto; padding: 20px; display: flex; gap: 20px; }
+        main { max-width: 1200px; margin: 30px auto; padding: 20px; display: flex; gap: 20px; flex-wrap: wrap; }
         .container-box { background: white; border-radius: 8px; padding: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
         
         /* LAYOUT DOUBLE COLONNE ACCUEIL */
-        #left-sidebar { flex: 1; min-width: 320px; }
-        #right-content { flex: 2; }
+        #left-sidebar { flex: 1; min-width: 300px; max-width: 350px; }
+        #right-content { flex: 2; min-width: 300px; }
         
         .screen { display: none; width: 100%; box-sizing: border-box; }
         .screen.active { display: block; }
         
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
+        @media (max-width: 768px) {
+            .grid { grid-template-columns: 1fr; }
+        }
+
         button { cursor: pointer; padding: 15px; font-size: 1.1em; border: none; border-radius: 5px; transition: 0.3s; }
         .module-btn { background-color: #2c3e50; color: white; width: 100%; text-align: left;}
         .module-btn:hover { background-color: #34495e; transform: translateY(-2px); }
@@ -36,6 +40,7 @@
         .choice-btn.wrong { background-color: #f8d7da; border-color: #c0392b; color: #721c24; }
         
         /* COMPOSANTS DES MODULES INTERACTIFS */
+        #options-container { display: none; }
         #dual-qcm-container { display: none; grid-template-columns: 1fr 1fr; gap: 20px; }
         .column-title { text-align: center; color: #2c3e50; font-size: 1.1em; border-bottom: 2px solid #bdc3c7; padding-bottom: 10px; margin-bottom: 15px;}
         #desc-builder-container { display: none; flex-direction: column; gap: 15px; }
@@ -105,13 +110,16 @@
     </header>
     
     <main>
+        <!-- NAVIGATION GAUCHE PERMANENTE SUR L'ACCUEIL -->
         <div id="left-sidebar" class="container-box">
             <h3 style="margin-top: 0; color: #1a252f; border-bottom: 2px solid #e74c3c; padding-bottom: 8px;">Tableau de Bord Général</h3>
             <div id="sidebar-progress-list"></div>
         </div>
 
+        <!-- ESPACE CENTRAL CONTENU DIRECT -->
         <div id="right-content" class="container-box">
             
+            <!-- ECRAN D'ACCUEIL -->
             <div id="menu" class="screen active">
                 <h3 style="margin-top:0;">Salles de Simulation Tactique</h3>
                 <p style="color: #7f8c8d;">Sélectionnez une qualification réglementaire ci-dessous pour lancer l'analyse de crise de 10 scénarios opérationnels.</p>
@@ -120,10 +128,11 @@
                     <button class="module-btn" onclick="startModule('desc')">2. Simulateur DESC (Conflit)</button>
                     <button class="module-btn" onclick="startModule('radio')">3. Radio Express (Com.)</button>
                     <button class="module-btn" onclick="startModule('juridique')">4. L'Arène Juridique (Droit)</button>
-                    <button class="module-btn" onclick="startModule('rapport')" style="grid-column: span 2;">5. Chrono-Rapport (Rédaction)</button>
+                    <button class="module-btn" onclick="startModule('rapport')" style="grid-column: 1 / -1;">5. Chrono-Rapport (Rédaction)</button>
                 </div>
             </div>
 
+            <!-- ECRAN DU MODULE INTERACTIF -->
             <div id="module" class="screen">
                 <div class="module-header-status">
                     <h3 id="module-title" style="margin: 0;">Titre</h3>
@@ -136,6 +145,9 @@
                     <h4 id="question-title" style="color: #2980b9; margin-top: 0; border-bottom: 2px solid #ecf0f1; padding-bottom: 10px;">Situation</h4>
                     <div id="question-text" style="font-size: 1.1em; margin-bottom: 20px; font-weight: 500; background: #fdfefe; padding: 15px; border-left: 4px solid #34495e;"></div>
                     
+                    <!-- AJOUT CRUCIAL ICI POUR CORRIGER LE BUG -->
+                    <div id="options-container"></div>
+
                     <div id="dual-qcm-container">
                         <div><div class="column-title">1. Action à entreprendre</div><div id="options-action"></div></div>
                         <div><div class="column-title">2. Justification tactique/légale</div><div id="options-justif"></div></div>
@@ -173,6 +185,7 @@
                 <button class="back-btn" onclick="quitEarly()">Quitter le module et voir le débriefing</button>
             </div>
 
+            <!-- ECRAN DES RESULTATS -->
             <div id="result" class="screen">
                 <h3>Mission Terminée !</h3>
                 <div id="score-display" class="score-display"></div>
@@ -210,7 +223,7 @@
                     { q: "Situation 4 : Un individu refuse la palpation de sécurité obligatoire.", optionsD: ["Vous cachez une arme, c'est sûr.", "Je vois bien que vous refusez de vous faire palper.", "Monsieur, je constate que vous refusez la palpation de sécurité."], correctD: 2, optionsE: ["Sans ce contrôle, je ne peux pas garantir l'absence d'objets dangereux.", "Vous m'empêchez de faire mon travail.", "Si je ne vous palpe pas, on va tous mourir."], correctE: 0, optionsS: ["Laissez-moi vous fouiller de force.", "Je vous invite soit à accepter ce contrôle, soit à quitter la file d'attente.", "Appelez votre avocat."], correctS: 1, optionsC: ["Si vous refusez, je vous enferme.", "Si vous persistez dans votre refus, je devrai vous refuser définitivement l'accès.", "Si vous restez, je vous passe les menottes."], correctC: 1, explanation: "Refus de palpation = simple interdiction d'accès (pas un délit, donc pas d'entrave)." },
                     { q: "Situation 5 : Vol à l'étalage. Interception d'une personne après les caisses.", optionsD: ["Vous êtes un voleur, je vous ai vu.", "Monsieur, j'ai constaté que vous avez passé les caisses sans régler l'article dissimulé dans votre veste.", "Avouez que vous avez volé !"], correctD: 1, optionsE: ["Cela m'énerve que les gens volent.", "Vous allez aller en prison.", "Ceci constitue un vol, ce qui pose un préjudice financier à l'entreprise."], correctE: 2, optionsS: ["Je vous propose de régler l'article immédiatement en caisse centrale.", "Rendez l'article et donnez 50 euros de plus.", "Laissez votre carte d'identité en garantie."], correctS: 0, optionsC: ["Si vous payez, l'incident est clos. Sinon, appel à la police pour procédure judiciaire.", "Si vous refusez, je vous frappe.", "Dans le cas contraire, je vous séquestre toute la nuit."], correctC: 0, explanation: "Règlement amiable : constat du fait, proposition de réparation civile (paiement), rappel de la conséquence pénale." },
                     { q: "Situation 6 : Un apprenti du lycée refuse de présenter son badge de manière insolente.", optionsD: ["Tu es mal élevé, montre ton badge.", "Jeune homme, je constate que tu refuses de me présenter ton badge d'accès.", "Tu te prends pour qui ?"], correctD: 1, optionsE: ["Sans ce badge, je ne peux pas vérifier ton identité.", "Ton comportement m'insupporte.", "Tu vas avoir des problèmes."], correctE: 0, optionsS: ["Repars chez toi.", "Je te demande de le chercher dans ton sac ou de passer par la vie scolaire.", "Donne-moi ton sac que je cherche."], correctS: 1, optionsC: ["Si tu t'obstines, tu resteras à l'extérieur et l'administration sera prévenue.", "Sinon, commissariat.", "Dans le cas contraire, je te confisque ton téléphone."], correctC: 0, explanation: "L'agent ne répond pas à l'insolence. Il rappelle la règle objective (vérification d'identité)." },
-                    { q: "Situation 7 : Véhicule stationné sur une place handicapée sans macaron sur un parking privé.", optionsD: ["Bougez votre voiture.", "Monsieur, je constate que vous êtes stationné sur une place réservée sans macaron visible.", "Vous n'avez pas honte ?"], correctD: 1, optionsE: ["Cela bloque l'accès à une personne qui en a besoin.", "Je déteste les gens comme vous.", "Ça va vous coûter cher."], correctE: 0, optionsS: ["Je vous demande de déplacer votre véhicule immédiatement.", "Donnez-moi vos clés.", "Quittez le parking."], correctS: 0, optionsC: ["Sinon, je crève vos pneus.", "Si vous refusez, je devrai demander l'enlèvement du véhicule.", "Si vous la laissez, je vous blocks."], correctC: 1, explanation: "Conséquence légale sur site privé = demande d'enlèvement." },
+                    { q: "Situation 7 : Véhicule stationné sur une place handicapée sans macaron sur un parking privé.", optionsD: ["Bougez votre voiture.", "Monsieur, je constate que vous êtes stationné sur une place réservée sans macaron visible.", "Vous n'avez pas honte ?"], correctD: 1, optionsE: ["Cela bloque l'accès à une personne qui en a besoin.", "Je déteste les gens comme vous.", "Ça va vous coûter cher."], correctE: 0, optionsS: ["Je vous demande de déplacer votre véhicule immédiatement.", "Donnez-moi vos clés.", "Quittez le parking."], correctS: 0, optionsC: ["Sinon, je crève vos pneus.", "Si vous refusez, je devrai demander l'enlèvement du véhicule.", "Si vous la laissez, je vous bloque."], correctC: 1, explanation: "Conséquence légale sur site privé = demande d'enlèvement." },
                     { q: "Situation 8 : Un usager s'énerve à l'accueil et vous insulte violemment (Outrage).", optionsD: ["Vous venez de prononcer des insultes à mon encontre.", "Vous êtes fou de m'insulter.", "Répétez ça pour voir ?"], correctD: 0, optionsE: ["Vos propos me blessent.", "Ces propos constituent un délit d'outrage et troublent la tranquillité.", "Vous allez regretter."], correctE: 1, optionsS: ["Battez-vous avec moi.", "Je vous demande de vous calmer et de cesser ces insultes.", "Taisez-vous ou je frappe."], correctS: 1, optionsC: ["Si vous continuez, je serai contraint de vous appréhender et de vous remettre à la Police.", "Si vous n'arrêtez pas, je vous insulte en retour.", "Dans le cas contraire, je refuse de vous parler."], correctC: 0, explanation: "Face à un outrage (délit), l'agent formule une sommation claire." },
                     { q: "Situation 9 : Un livreur décharge ses cartons en bloquant totalement une issue de secours.", optionsD: ["Vous bloquez la porte, dégagez ça.", "Monsieur, je constate que vous déposez vos cartons devant l'issue de secours.", "C'est interdit de livrer ici."], correctD: 1, optionsE: ["Cet encombrement bloque l'évacuation en cas d'incendie et met tout le monde en danger.", "C'est pénible pour ma ronde.", "Amende par l'inspection du travail."], correctE: 0, optionsS: ["Je vous demande de décaler votre livraison vers la zone dédiée.", "Remballez tout.", "Je vais jeter vos cartons."], correctS: 0, optionsC: ["Si vous refusez, je devrai stopper votre réception et informer votre direction.", "Sinon, j'appelle la police.", "Dans le cas contraire, je ferme la porte."], correctC: 0, explanation: "On rappelle le risque sécurité (évacuation) et l'impact professionnel au livreur." },
                     { q: "Situation 10 : Un individu alcoolisé refuse de sortir à la fermeture.", optionsD: ["Vous êtes ivre, dehors !", "Tu as trop bu, pars.", "Monsieur, je constate que vous refusez de quitter le bâtiment alors que nous fermons."], correctD: 2, optionsE: ["Vous me faites perdre mon temps.", "Votre présence non autorisée empêche la mise sous alarme du site.", "Vous sentez l'alcool."], correctE: 1, optionsS: ["Je vous demande de vous diriger calmement vers la sortie principale.", "Sortez en courant.", "Je vais vous porter."], correctS: 0, optionsC: ["Si vous ne sortez pas, je vous pousse.", "Si vous restez, je serai obligé de faire intervenir les forces de l'ordre pour intrusion.", "Sinon, je vous enferme ici."], correctC: 1, explanation: "On évite le jugement ('vous êtes ivre') qui génère la violence." }
@@ -221,13 +234,13 @@
                 questions: [
                     { q: "Situation 1 : Véhicule suspect garé devant une issue de secours. Immatriculation : AB-12-CD. Vous êtes l'agent 'Delta 1'.", optionsSuis: ["Ici Delta 1, devant l'issue de secours Nord.", "Je suis l'agent Delta 1 au parking.", "C'est Delta 1."], correctSuis: 0, optionsVois: ["Un véhicule AB-12-CD.", "Un véhicule suspect, plaque Alpha Bravo séparatif Unité Deux-fois-Un séparatif Charlie Delta.", "Voiture suspecte, immatriculée Alpha Bravo Douze Charlie Delta."], correctVois: 1, optionsFais: ["Je crève les pneus.", "J'inspecte visuellement l'habitacle sans rien toucher.", "Je force la porte."], correctFais: 1, optionsDemande: ["Je demande au PCS une vérification de la plaque. Parlez.", "Au secours, terminé.", "Je demande à mon chef de venir."], correctDemande: 0, explanation: "Structure 'Je suis, je vois, je fais, je demande'. Les chiffres 1 et 2 se prononcent Unité et 2 fois 1." },
                     { q: "Situation 2 : Un individu a été appréhendé sans pièce d'identité. Il dit s'appeler 'KANY'. Vous êtes au 'PCS'.", optionsSuis: ["C'est la salle vidéo.", "Ici l'agent d'accueil au PCS.", "Appel du PCS."], correctSuis: 1, optionsVois: ["Individu appréhendé sans papiers, nom déclaré Kilo Alpha November Yankee.", "Un voleur qui s'appelle Kilo Alpha Novembre Yvettes.", "Le suspect KANY."], correctVois: 0, optionsFais: ["Je le maintiens sous surveillance dans le local de sécurité.", "Je l'interroge de force.", "Je le laisse partir."], correctFais: 0, optionsDemande: ["Appelez la police svp.", "Je demande l'appel immédiat des forces de l'ordre. Parlez.", "Venez vite, terminé."], correctDemande: 1, explanation: "Le nom doit être épelé avec l'alphabet radio international strict." },
-                    { q: "Situation 3 : Vitre fracturée détectée sur le bâtiment C, secteur 'T-8'. Vous êtes la patrouille 'Alpha'.", optionsSuis: ["Ici Alpha, au T-8.", "Ici la patrouille Alpha, au bâtiment C, secteur Tango séparatif Deux-fois-Quatre.", "Alpha en position vitre cassée."], correctSuis: 1, optionsVois: ["Une vitre fracturée avec des traces de pesée sur le chambranle.", "Il y a des bris de glace partout.", "Une vitre Tango Huit brisée."], correctVois: 0, optionsFais: ["Je ramasse le verre.", "Je mets en place un périmètre de sécurité pour geler les lieux.", "Je rentre par la fenêtre."], correctFais: 1, optionsDemande: ["Envoyez le chef !", "Je demande la présence du chef de poste pour constatation. Parlez.", "Rien à signaler. Terminé."], correctDemande: 1, explanation: "Le chiffre 8 en radio se prononce '2 fois 4'. L'action prioritaire est le gel des lieux." },
+                    { q: "Situation 3 : Vitre fracturée détectée sur le bâtiment C, secteur 'T-8'. Vous êtes la patrouille 'Alpha'.", optionsSuis: ["Ici Alpha, au T-8.", "Ici la patrouille Alpha, au bâtiment C, secteur Tango séparatif Deux-fois-Quatre.", "Alpha en position vitre cassée."], correctSuis: 1, optionsVois: ["Une vitre fracturée avec des traces de pesée sur le chambranle.", "Il y a des bris de glace partout.", "Une vitre Tango Huit brisée."], correctVois: 0, optionsFais: ["Je ramasse le verre.", "Je mets en place un périmètre de sécurité pour geler les lieux.", "Je rentre par la fenêtre."], correctFais: 1, optionsDemande: ["Envoyez le chef !", "Je demande la présence du chef de poste pour constatation. Parlez.", "Rien à signaler. Terminé."], correctDemande: 1, explanation: "Le chiffre 8 en radio se prononce '2 fois 4'." },
                     { q: "Situation 4 : Trottinette renversant un piéton au parking. Plaque visible : 'F-9-K'. Vous êtes 'Delta 2'.", optionsSuis: ["Ici Delta 2, sur le parking principal.", "Delta 2 à l'appareil.", "C'est moi Delta 2."], correctSuis: 0, optionsVois: ["Une trottinette en fuite après choc, plaque Foxtrot séparatif Cinq-et-Quatre séparatif Kilo.", "Un piéton écrasé par F-9-K.", "Trotinette Foxtrot Neuf Kilo."], correctVois: 0, optionsFais: ["Je cours après la trottinette.", "Je protège la zone et je réalise le bilan d'urgence vitale.", "Je prends des photos."], correctFais: 1, optionsDemande: ["Appelez la police !", "Je demande l'appel immédiat du SAMU et d'un agent SST. Parlez.", "Amenez la trousse de secours. Terminé."], correctDemande: 1, explanation: "Le chiffre 9 se dit 'Cinq et Quatre'. L'action est le secours à personne (bilan vital)." },
-                    { q: "Situation 5 : Un visiteur s'énerve à l'accueil. Son badge indique 'VIP'. Vous êtes 'Accueil 1'.", optionsSuis: ["Ici l'accueil.", "Ici Accueil Unité.", "Accueil 1 en ligne."], correctSuis: 1, optionsVois: ["Un mec VIP très énervé.", "Un visiteur avec un badge Victor India Papa qui se montre agressif verbalement.", "Un VIP qui crie."], correctVois: 1, optionsFais: ["J'applique la méthode DESC pour tenter de le calmer.", "Je le frappe.", "Je fuis."], correctFais: 0, optionsDemande: ["Je demande à un agent de se tenir prêt en retrait. Parlez.", "Au secours, terminé.", "Virez-le !"], correctDemande: 0, explanation: "Le chiffre 1 se dit 'Unité'. VIP s'épelle Victor India Papa. Le DESC est l'action immédiate." },
+                    { q: "Situation 5 : Un visiteur s'énerve à l'accueil. Son badge indique 'VIP'. Vous êtes 'Accueil 1'.", optionsSuis: ["Ici l'accueil.", "Ici Accueil Unité.", "Accueil 1 en ligne."], correctSuis: 1, optionsVois: ["Un mec VIP très énervé.", "Un visiteur avec un badge Victor India Papa qui se montre agressif verbalement.", "Un VIP qui crie."], correctVois: 1, optionsFais: ["J'applique la méthode DESC pour tenter de le calmer.", "Je le frappe.", "Je fuis."], correctFais: 0, optionsDemande: ["Je demande à un agent de se tenir prêt en retrait. Parlez.", "Au secours, terminé.", "Virez-le !"], correctDemande: 0, explanation: "Le chiffre 1 se dit 'Unité'. VIP s'épelle Victor India Papa." },
                     { q: "Situation 6 : Colis suspect repéré (sac noir) en zone 'G-3'. Vous êtes 'Ronde 1'.", optionsSuis: ["Ici Ronde Unité, en zone Golf séparatif Deux-et-Un.", "Ici Ronde 1 en zone G-3.", "Ronde Unité en Golf Trois."], correctSuis: 0, optionsVois: ["Un colis suspect.", "Un sac à dos noir abandonné sous un siège sans propriétaire.", "Un sac Golf Trois."], correctVois: 1, optionsFais: ["Je l'ouvre pour vérifier.", "Je le déplace dehors.", "Je fais évacuer le public à distance de sécurité sans toucher le sac."], correctFais: 2, optionsDemande: ["Appelez les démineurs.", "Je demande l'application de la procédure Vigipirate. Parlez.", "Terminé."], correctDemande: 1, explanation: "Le chiffre 3 se dit 'Deux et Un'. Ne jamais toucher un colis suspect (Gel des lieux)." },
-                    { q: "Situation 7 : Malaise d'une personne dans l'allée 'D-5'. Vous êtes 'Secours 1'.", optionsSuis: ["Ici Secours Unité, dans l'allée Delta séparatif Trois-et-Deux.", "Secours 1 en Delta 5.", "Secours Unité dans le rayon D."], correctSuis: 0, optionsVois: ["Une personne consciente au sol se plaignant de fortes douleurs à la poitrine.", "Quelqu'un qui a mal au cœur.", "Une crise cardiaque."], correctVois: 0, optionsFais: ["Je la mets au repos et la rassure en attendant.", "Je lui donne des médicaments.", "Je lui fais un massage cardiaque."], correctFais: 0, optionsDemande: ["Appelez le 18.", "Je demande l'appel du centre 15 et qu'on m'apporte le défibrillateur. Parlez.", "Terminé, besoin d'aide."], correctDemande: 1, explanation: "Le 5 se dit 'Trois et Deux'. On ne donne jamais de médicaments. Appel au 15 (SAMU) prioritaire." },
+                    { q: "Situation 7 : Malaise d'une personne dans l'allée 'D-5'. Vous êtes 'Secours 1'.", optionsSuis: ["Ici Secours Unité, dans l'allée Delta séparatif Trois-et-Deux.", "Secours 1 en Delta 5.", "Secours Unité dans le rayon D."], correctSuis: 0, optionsVois: ["Une personne consciente au sol se plaignant de fortes douleurs à la poitrine.", "Quelqu'un qui a mal au cœur.", "Une crise cardiaque."], correctVois: 0, optionsFais: ["Je la mets au repos et la rassure en attendant.", "Je lui donne des médicaments.", "Je lui fais un massage cardiaque."], correctFais: 0, optionsDemande: ["Appelez le 18.", "Je demande l'appel du centre 15 et qu'on m'apporte le défibrillateur. Parlez.", "Terminé, besoin d'aide."], correctDemande: 1, explanation: "Le 5 se dit 'Trois et Deux'. Appel au 15 (SAMU) prioritaire." },
                     { q: "Situation 8 : Départ de feu dans le local 'TGBT'. Vous êtes 'Delta 1'.", optionsSuis: ["Ici Delta 1, devant le local Tango Golf Bravo Tango.", "Ici Delta 1 au local électrique.", "Delta 1 au TGBT."], correctSuis: 0, optionsVois: ["Il y a le feu !", "Une épaisse fumée noire et des étincelles sortant de la porte.", "Des flammes Tango Golf Bravo Tango."], correctVois: 1, optionsFais: ["Je sécurise les abords sans utiliser d'eau (risque électrique).", "Je jette un seau d'eau.", "J'ouvre la porte en grand."], correctFais: 0, optionsDemande: ["Au feu !", "Je demande l'évacuation de la zone et l'appel aux pompiers. Parlez.", "Appelez les secours. Terminé."], correctDemande: 1, explanation: "TGBT = Tango Golf Bravo Tango. Pas d'eau sur un feu d'origine électrique." },
-                    { q: "Situation 9 : Un camion de livraison bloque la rue, immatriculé 'W-8-Z'. Vous êtes au 'Filtrage'.", optionsSuis: ["Ici le poste de Filtrage.", "C'est la barrière.", "Poste de filtrage en ligne."], correctSuis: 0, optionsVois: ["Un camion bloquant la circulation, plaque Whiskey séparatif Deux-fois-Quatre séparatif Zulu.", "Un camion W-8-Z.", "Un véhicule Whiskey Huit Zulu."], correctVois: 0, optionsFais: ["Je crève les pneus.", "Je recherche le chauffeur dans les environs immédiats.", "J'appelle la fourrière."], correctFais: 1, optionsDemande: ["Faites une annonce.", "Je demande une annonce micro générale pour déplacer le véhicule. Parlez.", "Que quelqu'un vienne. Terminé."], correctDemande: 1, explanation: "Le 8 se dit 'Deux fois Quatre'. On cherche d'abord le conducteur avant l'enlèvement." },
+                    { q: "Situation 9 : Un camion de livraison bloque la rue, immatriculé 'W-8-Z'. Vous êtes au 'Filtrage'.", optionsSuis: ["Ici le poste de Filtrage.", "C'est la barrière.", "Poste de filtrage en ligne."], correctSuis: 0, optionsVois: ["Un camion bloquant la circulation, plaque Whiskey séparatif Deux-fois-Quatre séparatif Zulu.", "Un camion W-8-Z.", "Un véhicule Whiskey Huit Zulu."], correctVois: 0, optionsFais: ["Je crève les pneus.", "Je recherche le chauffeur dans les environs immédiats.", "J'appelle la fourrière."], correctFais: 1, optionsDemande: ["Faites une annonce.", "Je demande une annonce micro générale pour déplacer le véhicule. Parlez.", "Que quelqu'un vienne. Terminé."], correctDemande: 1, explanation: "Le 8 se dit 'Deux fois Quatre'." },
                     { q: "Situation 10 : Intrusion par le portail 'Q-2' visionnée sur les caméras. Vous êtes 'Vidéo 1'.", optionsSuis: ["Ici Vidéo Unité au PCS.", "Caméra 1 en alerte.", "PCS vidéo."], correctSuis: 0, optionsVois: ["Un voleur qui entre.", "Un individu vêtu de sombre vient de franchir le portail Quebec séparatif Deux-fois-Un.", "Un gars en Quebec Deux."], correctVois: 1, optionsFais: ["Je crie dans le micro.", "Je continue le suivi vidéo de l'individu et je verrouille les accès distants.", "Je descends l'arrêter."], correctFais: 1, optionsDemande: ["Allez l'attraper !", "Je demande à Delta 1 et Delta 2 d'intervenir pour l'appréhender. Parlez.", "Intervention demandée. Terminé."], correctDemande: 1, explanation: "Le 2 se dit 'Deux fois Un'. L'agent vidéo (PCS) coordonne l'action des équipes sur le terrain." }
                 ]
             },
@@ -305,7 +318,7 @@
                         optionsD4: [ "J'ai constaté que la pauvre dame ne bougeait plus du tout mais heureusement elle respirait encore un peu.", "Je crois qu'elle a fait une crise d'épilepsie.", "J'ai constaté que la victime était inconsciente, voies aériennes libres, ventilation présente." ], correctD4: 2,
                         optionsD5: [ "La dame s'appelle Dubois.", "La victime a été identifiée ultérieurement par les secours comme étant Madame Dubois.", "Victime : Mme Dubois, qui fait souvent des malaises ici." ], correctD5: 1,
                         optionsD6: [ "Elle n'a rien dit vu qu'elle était totalement inconsciente et évanouie.", "Néant.", "Elle n'a pas parlé." ], correctD6: 1,
-                        optionsD7: [ "J'ai placé la victime en Position Latérale de Seccurité (PLS) et fait alerter le SAMU (15).", "Je l'ai allongée sur le côté pour ne pas qu'elle s'étouffe avec sa langue.", "J'ai secoué la victime pour la réveiller." ], correctD7: 0,
+                        optionsD7: [ "J'ai placé la victime en Position Latérale de Sécurité (PLS) et fait alerter le SAMU (15).", "Je l'ai allongée sur le côté pour ne pas qu'elle s'étouffe avec sa langue.", "J'ai secoué la victime pour la réveiller." ], correctD7: 0,
                         optionsD8: [ "Les secours l'ont emmenée à l'hôpital le plus proche.", "Les sapeurs-pompiers ont pris la victime en charge à 10h30. J'ai rédigé ce rapport SST.", "Fin de l'incident." ], correctD8: 1,
                         explanation: "En tant que SST, le rapport doit employer les termes médicaux exacts (inconsciente, ventilation, PLS)."
                     },
@@ -343,7 +356,7 @@
                         optionsD6: [ "Le mis en cause a déclaré : « Il a mal regardé ma femme ! »", "Il a dit qu'il avait regardé sa femme donc il l'a frappé.", "L'auteur a crié des trucs sur sa femme." ], correctD6: 0,
                         optionsD7: [ "On a arrêté B en lui mettant les menottes serrées et on a appelé les pompiers pour A.", "Avons procédé à l'interpellation du mis en cause et requis les sapeurs-pompiers pour la victime.", "On les a emmenés de force au commissariat." ], correctD7: 1,
                         optionsD8: [ "Avons ramené l'auteur au commissariat pour placement en Garde à Vue devant l'OPJ.", "M. B a été jeté en cellule de dégrisement au commissariat. Fin de rapport.", "On a fait la paperasse de fin de service habituelle." ], correctD8: 0,
-                        explanation: "En procédure de Police, on utilise le 'Nous' de patrouille, des termes précis ('requis', 'rixe', 'mis en cause') sans aucun jugement moral."
+                        explanation: "En procédure de Police, on utilise le 'Nous' de patrouille, des termes précis ('requis', 'rixe', 'mis en cause', 'OPJ') sans aucun jugement moral."
                     },
                     {
                         q: "SITUATION 9 : CONTRÔLE ROUTIER ET STUPÉFIANTS (Agent de Police)\nMardi 16h. Un véhicule grille un feu rouge. Lors du contrôle, forte odeur de cannabis. Vous découvrez 50g de résine dans la boîte à gants.",
@@ -373,7 +386,6 @@
             }
         };
 
-        // OBJET STATUT DE TOUS LES MODULES POUR L'ACCUEIL LÉGÈREMENT PERSISTANT
         let globalModuleTracking = {
             vidocq: { playedCount: 0, totalPts: 0, array: new Array(10).fill(null).map(() => ({played:false, score:0})) },
             desc: { playedCount: 0, totalPts: 0, array: new Array(10).fill(null).map(() => ({played:false, score:0})) },
@@ -391,7 +403,15 @@
         let selectionRadio = { suis: null, vois: null, fais: null, demande: null };
         let selectionReport = { s1: null, s2: null, s3: null, s4: null, s5: null, s6: null, s7: null, s8: null };
 
-        // INITIALISATION LOGIQUE ACCUEIL DE DEGRADÉ HYDROGÈNE TACTIQUE
+        function shuffleArray(array) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
         function renderGlobalSidebar() {
             const list = document.getElementById('sidebar-progress-list');
             list.innerHTML = '';
@@ -401,16 +421,14 @@
                 const card = document.createElement('div');
                 card.className = 'sidebar-module-card';
                 
-                // Calculer pourcentage d'avancement par rapport aux 10 situations
                 let totalPlayed = track.array.filter(q => q.played).length;
                 let pct = (totalPlayed / 10) * 100;
                 let sumPts = track.array.reduce((a,c) => a + c.score, 0);
                 
-                // Dégradé linéaire CSS natif selon le pourcentage
-                let barColor = "#c0392b"; // Rouge à 0%
-                if (pct > 0 && pct < 50) barColor = "#e67e22"; // Orange transitoire
-                else if (pct >= 50 && pct < 100) barColor = "#f1c40f"; // Jaune d'avancement
-                else if (pct === 100) barColor = "#27ae60"; // Vert strict à 100%
+                let barColor = "#c0392b"; 
+                if (pct > 0 && pct < 50) barColor = "#e67e22"; 
+                else if (pct >= 50 && pct < 100) barColor = "#f1c40f"; 
+                else if (pct === 100) barColor = "#27ae60"; 
                 
                 card.innerHTML = `
                     <h5>${db[id].title}</h5>
@@ -455,10 +473,10 @@
             document.getElementById('result').classList.remove('active');
             document.getElementById('module').classList.add('active');
             
-            // Rechercher la première non jouée au démarrage
             let firstUnplayed = globalModuleTracking[moduleId].array.findIndex(q => !q.played);
             if(firstUnplayed !== -1) currentQuestionIndex = firstUnplayed;
 
+            document.getElementById('module-title').innerText = db[moduleId].title;
             renderModuleDashboard();
             loadQuestion();
             updateLiveScore();
@@ -497,7 +515,7 @@
             const qData = module.questions[currentQuestionIndex];
             
             document.getElementById('question-area').style.display = 'block';
-            
+            document.getElementById('question-title').innerText = module.type === 'report_builder' ? `Rédaction ${currentQuestionIndex + 1}` : `Situation ${currentQuestionIndex + 1}`;
             document.getElementById('question-text').innerHTML = qData.q.replace(/\n/g, '<br>');
             
             document.getElementById('feedback-area').classList.remove('active', 'success', 'error', 'partial');
@@ -621,7 +639,7 @@
             }
         }
 
-        /* --- SÉLECTIONS --- */
+        /* --- CLICS --- */
         function selectDual(type, isCorrect, btn) {
             const container = document.getElementById(type === 'action' ? 'options-action' : 'options-justif');
             container.querySelectorAll('.choice-btn').forEach(b => b.classList.remove('selected'));
@@ -664,7 +682,7 @@
             }
         }
 
-        /* --- ENREGISTREMENTS DES SCORES PAR TYPE --- */
+        /* --- VALIDATIONS --- */
         function validateDual() {
             document.getElementById('validate-btn').style.display = 'none';
             const qData = db[currentModuleId].questions[currentQuestionIndex];
@@ -739,9 +757,12 @@
             userAnswers.push({ q: qData.q, score: pts, explanation: qData.explanation });
             
             document.querySelectorAll('#report-builder-container .choice-btn').forEach(b => { 
-                b.disabled = true; if (b.dataset.correct === "true") b.classList.add('correct'); 
+                b.disabled = true; 
+                if (b.dataset.correct === "true") b.classList.add('correct'); 
             });
-            for(let i=1; i<=8; i++) { if(!selectionReport['s'+i].isCorrect) selectionReport['s'+i].btn.classList.add('wrong'); }
+            for(let i=1; i<=8; i++) { 
+                if(!selectionReport['s'+i].isCorrect) selectionReport['s'+i].btn.classList.add('wrong'); 
+            }
             
             const fb = document.getElementById('feedback-area');
             fb.classList.remove('success', 'error', 'partial');
@@ -752,6 +773,7 @@
             updateLiveScore(); renderModuleDashboard(); checkCompletion();
         }
 
+        /* --- NAVIGATION --- */
         function checkCompletion() {
             const nextBtn = document.getElementById('next-btn');
             nextBtn.classList.add('active');
