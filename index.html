@@ -10,9 +10,17 @@
         .logo { font-size: 2em; font-weight: bold; background: #e74c3c; padding: 10px 15px; border-radius: 5px; margin-right: 20px; }
         .header-titles h1 { margin: 0; font-size: 1.5em; }
         .header-titles h2 { margin: 0; font-weight: normal; font-size: 1.1em; color: #bdc3c7; }
-        main { max-width: 900px; margin: 30px auto; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        .screen { display: none; }
+        
+        main { max-width: 1200px; margin: 30px auto; padding: 20px; display: flex; gap: 20px; }
+        .container-box { background: white; border-radius: 8px; padding: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        
+        /* LAYOUT DOUBLE COLONNE ACCUEIL */
+        #left-sidebar { flex: 1; min-width: 320px; }
+        #right-content { flex: 2; }
+        
+        .screen { display: none; width: 100%; box-sizing: border-box; }
         .screen.active { display: block; }
+        
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
         button { cursor: pointer; padding: 15px; font-size: 1.1em; border: none; border-radius: 5px; transition: 0.3s; }
         .module-btn { background-color: #2c3e50; color: white; width: 100%; text-align: left;}
@@ -27,7 +35,7 @@
         .choice-btn.correct { background-color: #d4edda; border-color: #27ae60; color: #155724; }
         .choice-btn.wrong { background-color: #f8d7da; border-color: #c0392b; color: #721c24; }
         
-        /* Conteneurs Spécifiques */
+        /* COMPOSANTS DES MODULES INTERACTIFS */
         #dual-qcm-container { display: none; grid-template-columns: 1fr 1fr; gap: 20px; }
         .column-title { text-align: center; color: #2c3e50; font-size: 1.1em; border-bottom: 2px solid #bdc3c7; padding-bottom: 10px; margin-bottom: 15px;}
         #desc-builder-container { display: none; flex-direction: column; gap: 15px; }
@@ -51,18 +59,19 @@
         #validate-btn { background-color: #f39c12; color: white; width: 100%; margin-top: 20px; display: none; font-weight: bold;}
         #validate-btn:hover { background-color: #e67e22; }
 
-        /* DASHBOARD ET SCORE */
+        /* BLOCS DU MODULE EN COURS */
         .module-header-status { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
         .live-score-badge { background-color: #2c3e50; color: #ecf0f1; padding: 6px 14px; border-radius: 20px; font-size: 0.95em; font-weight: bold; border: 1px solid #34495e; }
+        .dashboard-container { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; padding: 10px; background: #ecf0f1; border-radius: 8px; justify-content: center; }
+        .sit-block { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background-color: #bdc3c7; color: white; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .sit-block.active { border: 3px solid #2c3e50; transform: scale(1.05); }
+        .sit-block.played { cursor: not-allowed; opacity: 0.9; }
         
-        .dashboard-container { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 25px; padding: 15px; background: #ecf0f1; border-radius: 8px; justify-content: center; }
-        .sit-block { width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; background-color: #bdc3c7; color: white; border-radius: 8px; font-weight: bold; font-size: 1.2em; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .sit-block:hover:not(.played) { background-color: #95a5a6; transform: translateY(-3px); }
-        .sit-block.active { border: 3px solid #2c3e50; transform: scale(1.1); box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
-        .sit-block.played { cursor: not-allowed; opacity: 0.9; border: 2px solid rgba(0,0,0,0.1); }
-        .sit-green { background-color: #27ae60 !important; }
-        .sit-yellow { background-color: #f1c40f !important; color: #2c3e50; }
-        .sit-red { background-color: #c0392b !important; }
+        /* COULEURS STATUTS */
+        .color-green { background-color: #27ae60 !important; color: white !important; }
+        .color-yellow { background-color: #f1c40f !important; color: #2c3e50 !important; }
+        .color-red { background-color: #c0392b !important; color: white !important; }
+        .color-gray { background-color: #bdc3c7 !important; color: white !important; }
 
         .feedback { margin-top: 15px; padding: 15px; border-radius: 5px; display: none; font-size: 1.05em; line-height: 1.4; }
         .feedback.active { display: block; }
@@ -74,16 +83,16 @@
         .next-btn.active { display: block; }
         .next-btn:hover { background-color: #3498db; }
         .score-display { font-size: 1.5em; text-align: center; margin: 20px 0; padding: 20px; background: #ecf0f1; border-radius: 8px; }
-
         #debriefing-container { margin-top: 30px; display: none; }
-        .debrief-item { background-color: #fdfefe; border-left: 4px solid #34495e; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .debrief-item h4 { margin-top: 0; color: #2c3e50; }
-        .debrief-item p { margin: 5px 0; }
-        .correct-text { color: #27ae60; font-weight: bold; }
-        .wrong-text { color: #c0392b; font-weight: bold; text-decoration: line-through; }
-        .expected-text { color: #2980b9; font-weight: bold; }
-        .debrief-advice { background-color: #e8f8f5; border: 2px dashed #1abc9c; padding: 20px; border-radius: 8px; margin-top: 20px; }
-        .debrief-advice h4 { color: #16a085; margin-top: 0; font-size: 1.2em;}
+        .debrief-item { background-color: #fdfefe; border-left: 4px solid #34495e; padding: 15px; margin-bottom: 15px; }
+
+        /* SIDEBAR INTERFACE ACCUEIL (BARRE DE DEGRADÉ HYDROGÈNE PEDAGOGIQUE) */
+        .sidebar-module-card { background: #fdfefe; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px; margin-bottom: 12px; }
+        .sidebar-module-card h5 { margin: 0 0 8px 0; color: #2c3e50; font-size: 0.95em; }
+        .progress-wrapper { background-color: #e2e8f0; border-radius: 12px; height: 16px; width: 100%; overflow: hidden; position: relative; margin-bottom: 8px; }
+        .progress-inner-bar { height: 100%; width: 0%; text-align: center; color: white; font-size: 10px; font-weight: bold; line-height: 16px; transition: width 0.4s ease, background-color 0.4s ease; }
+        .mini-dots-row { display: flex; gap: 4px; }
+        .mini-dot { width: 10px; height: 10px; border-radius: 50%; background-color: #bdc3c7; }
     </style>
 </head>
 <body>
@@ -94,83 +103,91 @@
             <h2>Opération VIDOCQ</h2>
         </div>
     </header>
+    
     <main>
-        <div id="menu" class="screen active">
-            <h3>Sélectionnez un module d'entraînement</h3>
-            <div class="grid">
-                <button class="module-btn" onclick="startModule('vidocq')">1. L'Œil de Vidocq (Observation)</button>
-                <button class="module-btn" onclick="startModule('desc')">2. Simulateur DESC (Conflit)</button>
-                <button class="module-btn" onclick="startModule('radio')">3. Radio Express (Com.)</button>
-                <button class="module-btn" onclick="startModule('juridique')">4. L'Arène Juridique (Droit)</button>
-                <button class="module-btn" onclick="startModule('rapport')" style="grid-column: span 2;">5. Chrono-Rapport (Rédaction)</button>
-            </div>
+        <div id="left-sidebar" class="container-box">
+            <h3 style="margin-top: 0; color: #1a252f; border-bottom: 2px solid #e74c3c; padding-bottom: 8px;">Tableau de Bord Général</h3>
+            <div id="sidebar-progress-list"></div>
         </div>
 
-        <div id="module" class="screen">
-            <div class="module-header-status">
-                <h3 id="module-title" style="margin: 0;">Titre</h3>
-                <div id="live-score" class="live-score-badge">Score : 0.0 / 10</div>
+        <div id="right-content" class="container-box">
+            
+            <div id="menu" class="screen active">
+                <h3 style="margin-top:0;">Salles de Simulation Tactique</h3>
+                <p style="color: #7f8c8d;">Sélectionnez une qualification réglementaire ci-dessous pour lancer l'analyse de crise de 10 scénarios opérationnels.</p>
+                <div class="grid">
+                    <button class="module-btn" onclick="startModule('vidocq')">1. L'Œil de Vidocq (Observation)</button>
+                    <button class="module-btn" onclick="startModule('desc')">2. Simulateur DESC (Conflit)</button>
+                    <button class="module-btn" onclick="startModule('radio')">3. Radio Express (Com.)</button>
+                    <button class="module-btn" onclick="startModule('juridique')">4. L'Arène Juridique (Droit)</button>
+                    <button class="module-btn" onclick="startModule('rapport')" style="grid-column: span 2;">5. Chrono-Rapport (Rédaction)</button>
+                </div>
             </div>
-            
-            <p style="text-align: center; color: #7f8c8d; font-size: 0.9em; margin-bottom: 5px;">Tableau de bord des interventions (Cliquez pour sélectionner) :</p>
-            <div id="dashboard" class="dashboard-container"></div>
-            
-            <div id="question-area" style="display: none;">
-                <h4 id="question-title" style="color: #2980b9; margin-top: 0; border-bottom: 2px solid #ecf0f1; padding-bottom: 10px;">Situation</h4>
-                <div id="question-text" style="font-size: 1.1em; margin-bottom: 20px; font-weight: 500; background: #fdfefe; padding: 15px; border-left: 4px solid #34495e;"></div>
-                
-                <div id="dual-qcm-container">
-                    <div><div class="column-title">1. Action à entreprendre</div><div id="options-action"></div></div>
-                    <div><div class="column-title">2. Justification tactique/légale</div><div id="options-justif"></div></div>
-                </div>
 
-                <div id="desc-builder-container">
-                    <div class="desc-step D"><h4>Étape D : Décrire les faits</h4><div id="desc-options-d"></div></div>
-                    <div class="desc-step E"><h4>Étape E : Exprimer les conséquences</h4><div id="desc-options-e"></div></div>
-                    <div class="desc-step S"><h4>Étape S : Spécifier une solution</h4><div id="desc-options-s"></div></div>
-                    <div class="desc-step C"><h4>Étape C : Conclure</h4><div id="desc-options-c"></div></div>
-                </div>
-
-                <div id="radio-builder-container">
-                    <div class="radio-step suis"><h4>1. Appel & Je suis</h4><div id="radio-options-suis"></div></div>
-                    <div class="radio-step vois"><h4>2. Je vois</h4><div id="radio-options-vois"></div></div>
-                    <div class="radio-step fais"><h4>3. Je fais</h4><div id="radio-options-fais"></div></div>
-                    <div class="radio-step demande"><h4>4. Je demande</h4><div id="radio-options-demande"></div></div>
-                </div>
-
-                <div id="report-builder-container">
-                    <div class="report-step"><h4>1) INFORMATION (Quand, où, avec qui, par qui)</h4><div id="report-options-1"></div></div>
-                    <div class="report-step"><h4>2) CIRCONSTANCES (Résumé des faits)</h4><div id="report-options-2"></div></div>
-                    <div class="report-step"><h4>3) DILIGENCES (Action de transport)</h4><div id="report-options-3"></div></div>
-                    <div class="report-step"><h4>4) CONSTATATIONS (État des lieux)</h4><div id="report-options-4"></div></div>
-                    <div class="report-step"><h4>5) IDENTIFICATIONS (Noms, statuts)</h4><div id="report-options-5"></div></div>
-                    <div class="report-step"><h4>6) DÉCLARATIONS (Discours direct)</h4><div id="report-options-6"></div></div>
-                    <div class="report-step"><h4>7) MESURES PRISES (Vos actions)</h4><div id="report-options-7"></div></div>
-                    <div class="report-step"><h4>8) SUITES DONNÉES (Fin d'intervention)</h4><div id="report-options-8"></div></div>
+            <div id="module" class="screen">
+                <div class="module-header-status">
+                    <h3 id="module-title" style="margin: 0;">Titre</h3>
+                    <div id="live-score" class="live-score-badge">Score : 0.0 / 10</div>
                 </div>
                 
-                <button id="validate-btn">Valider ma décision</button>
-                <div id="feedback-area" class="feedback"></div>
-                <button id="next-btn" class="next-btn" onclick="nextUnplayedQuestion()">Situation suivante</button>
-            </div>
-            <button class="back-btn" onclick="quitEarly()">Quitter le module et voir le débriefing</button>
-        </div>
+                <div id="dashboard" class="dashboard-container"></div>
+                
+                <div id="question-area" style="display: none;">
+                    <h4 id="question-title" style="color: #2980b9; margin-top: 0; border-bottom: 2px solid #ecf0f1; padding-bottom: 10px;">Situation</h4>
+                    <div id="question-text" style="font-size: 1.1em; margin-bottom: 20px; font-weight: 500; background: #fdfefe; padding: 15px; border-left: 4px solid #34495e;"></div>
+                    
+                    <div id="dual-qcm-container">
+                        <div><div class="column-title">1. Action à entreprendre</div><div id="options-action"></div></div>
+                        <div><div class="column-title">2. Justification tactique/légale</div><div id="options-justif"></div></div>
+                    </div>
 
-        <div id="result" class="screen">
-            <h3>Mission Terminée !</h3>
-            <div id="score-display" class="score-display"></div>
-            <p id="score-message" style="text-align: center; font-weight: bold;"></p>
-            <div id="debriefing-container"></div>
-            <button class="module-btn" style="margin-top: 30px;" onclick="goHome()">Retour au Menu Principal</button>
+                    <div id="desc-builder-container">
+                        <div class="desc-step D"><h4>Étape D : Décrire les faits</h4><div id="desc-options-d"></div></div>
+                        <div class="desc-step E"><h4>Étape E : Exprimer les conséquences</h4><div id="desc-options-e"></div></div>
+                        <div class="desc-step S"><h4>Étape S : Spécifier une solution</h4><div id="desc-options-s"></div></div>
+                        <div class="desc-step C"><h4>Étape C : Conclure</h4><div id="desc-options-c"></div></div>
+                    </div>
+
+                    <div id="radio-builder-container">
+                        <div class="radio-step suis"><h4>1. Appel & Je suis</h4><div id="radio-options-suis"></div></div>
+                        <div class="radio-step vois"><h4>2. Je vois</h4><div id="radio-options-vois"></div></div>
+                        <div class="radio-step fais"><h4>3. Je fais</h4><div id="radio-options-fais"></div></div>
+                        <div class="radio-step demande"><h4>4. Je demande</h4><div id="radio-options-demande"></div></div>
+                    </div>
+
+                    <div id="report-builder-container">
+                        <div class="report-step"><h4>1) INFORMATION</h4><div id="report-options-1"></div></div>
+                        <div class="report-step"><h4>2) CIRCONSTANCES</h4><div id="report-options-2"></div></div>
+                        <div class="report-step"><h4>3) DILIGENCES</h4><div id="report-options-3"></div></div>
+                        <div class="report-step"><h4>4) CONSTATATIONS</h4><div id="report-options-4"></div></div>
+                        <div class="report-step"><h4>5) IDENTIFICATIONS</h4><div id="report-options-5"></div></div>
+                        <div class="report-step"><h4>6) DÉCLARATIONS</h4><div id="report-options-6"></div></div>
+                        <div class="report-step"><h4>7) MESURES PRISES</h4><div id="report-options-7"></div></div>
+                        <div class="report-step"><h4>8) SUITES DONNÉES</h4><div id="report-options-8"></div></div>
+                    </div>
+                    
+                    <button id="validate-btn">Valider ma décision</button>
+                    <div id="feedback-area" class="feedback"></div>
+                    <button id="next-btn" class="next-btn" onclick="nextUnplayedQuestion()">Situation suivante</button>
+                </div>
+                <button class="back-btn" onclick="quitEarly()">Quitter le module et voir le débriefing</button>
+            </div>
+
+            <div id="result" class="screen">
+                <h3>Mission Terminée !</h3>
+                <div id="score-display" class="score-display"></div>
+                <p id="score-message" style="text-align: center; font-weight: bold;"></p>
+                <div id="debriefing-container"></div>
+                <button class="module-btn" style="margin-top: 30px;" onclick="goHome()">Retour au Menu Principal</button>
+            </div>
         </div>
     </main>
 
     <script>
-        // BANQUE DE DONNEES DES MODULES
+        // ARCHIVE HISTORIQUE DES ENREGISTREMENTS COMPLETS 
         const db = {
             vidocq: {
-                title: "1. L'Œil de Vidocq",
-                type: "dual",
+                title: "1. L'Œil de Vidocq", type: "dual",
                 questions: [
                     { q: "Lors d'une ronde, vous remarquez une poubelle déplacée juste sous une fenêtre du rez-de-chaussée.", optionsAction: ["Ignorer l'anomalie.", "Replacer l'objet et signaler au PCS.", "Monter sur l'objet pour inspecter la fenêtre."], correctAction: 1, optionsJustif: ["Responsabilité des agents d'entretien.", "Outil facilitant l'intrusion par escalade.", "Inspection visuelle interne requise."], correctJustif: 1, explanation: "Méthode Vidocq : La poubelle sert de marchepied (faille environnementale). Il faut la replacer immédiatement et le signaler." },
                     { q: "La porte du TGBT (Tableau Général Basse Tension) est ouverte sans présence technique.", optionsAction: ["Refermer et sécuriser la porte immédiatement.", "Rechercher le technicien dans le bâtiment.", "Fouiller le local pour vérifier les équipements."], correctAction: 0, optionsJustif: ["Point dangereux (électrocution) et vulnérable (coupure).", "L'agent n'est pas habilité à manipuler.", "Zone de flagrance potentielle."], correctJustif: 0, explanation: "Le TGBT concentre un double risque : humain et matériel. La sécurisation est la priorité absolue." },
@@ -185,24 +202,22 @@
                 ]
             },
             desc: {
-                title: "2. Simulateur DESC",
-                type: "desc_builder",
+                title: "2. Simulateur DESC", type: "desc_builder",
                 questions: [
-                    { q: "Situation 1 : À l'entrée d'un concert, le terminal indique que le billet d'un visiteur est une contrefaçon. Le visiteur s'énerve et bloque la file.", optionsD: ["Vous êtes un faussaire, votre billet est faux.", "Monsieur, je viens de scanner votre billet et le terminal indique qu'il s'agit d'une contrefaçon.", "Je constate que vous essayez de frauder l'entrée."], correctD: 1, optionsE: ["Ce titre n'étant pas reconnu, je ne peux pas vous laisser entrer et votre insistance bloque le passage.", "Vous m'énervez à forcer le passage, vous allez créer une émeute.", "Si vous entrez, mon chef va me crier dessus."], correctE: 0, optionsS: ["Allez-vous-en ou je vous frappe.", "Je vous demande de libérer l'accès. Vous pouvez vous rendre au guichet litiges à l'extérieur.", "Restez là en attendant la police."], correctS: 1, optionsC: ["Si vous persistez à bloquer l'accès, je serai contraint de solliciter les OPJ présents pour une interpellation.", "Si vous restez, je vous casse la figure.", "Si vous continuez, je vous laisse entrer mais vous vous cachez."], correctC: 0, explanation: "DESC objectif : On ne juge pas ('faussaire'), on constate le refus machine et on donne une alternative (guichet litige)." },
+                    { q: "Situation 1 : À l'entrée d'un concert, le billet d'un visiteur est une contrefaçon. Le visiteur s'énerve et bloque la file.", optionsD: ["Vous êtes un faussaire, votre billet est faux.", "Monsieur, je viens de scanner votre billet et le terminal indique qu'il s'agit d'une contrefaçon.", "Je constate que vous essayez de frauder l'entrée."], correctD: 1, optionsE: ["Ce titre n'étant pas reconnu, je ne peux pas vous laisser entrer et votre insistance bloque le passage.", "Vous m'énervez à forcer le passage, vous allez créer une émeute.", "Si vous entrez, mon chef va me crier dessus."], correctE: 0, optionsS: ["Allez-vous-en ou je vous frappe.", "Je vous demande de libérer l'accès. Vous pouvez vous rendre au guichet litiges à l'extérieur.", "Restez là en attendant la police."], correctS: 1, optionsC: ["Si vous persistez à bloquer l'accès, je serai contraint de solliciter les OPJ présents pour une interpellation.", "Si vous restez, je vous casse la figure.", "Si vous continuez, je vous laisse entrer mais vous vous cachez."], correctC: 0, explanation: "DESC objectif : On ne juge pas ('faussaire'), on constate le refus machine et on donne une alternative (guichet litige)." },
                     { q: "Situation 2 : Un spectateur fume une cigarette dans une tribune classée zone non-fumeur.", optionsD: ["Vous ne savez pas lire les panneaux 'Interdit de fumer' ?", "Monsieur, je constate que vous fumez dans cette zone.", "Éteignez ça tout de suite, c'est interdit."], correctD: 1, optionsE: ["Votre fumée incommode les autres spectateurs et crée un risque d'incendie.", "La fumée me donne mal à la tête.", "C'est comme ça et pas autrement, c'est le règlement."], correctE: 0, optionsS: ["Donnez-moi votre paquet de cigarettes.", "Sortez du stade immédiatement.", "Je vous demande d'éteindre votre cigarette ou de vous rendre dans la zone fumeur à l'extérieur."], correctS: 2, optionsC: ["Dans le cas contraire, je devrai demander votre exclusion du stade à ma hiérarchie.", "Si vous continuez, je vous vide mon extincteur dessus.", "Sinon, je vous mets une amende de 135 euros."], correctC: 0, explanation: "L'agent propose l'alternative de la zone fumeur avant l'exclusion." },
                     { q: "Situation 3 : Lors d'un filtrage, un visiteur se présente avec une bouteille en verre (interdite).", optionsD: ["Monsieur, vous avez une arme par destination dans votre sac.", "Monsieur, vous avez certainement une bonne raison de l'amener, mais je constate que vous portez une bouteille en verre.", "C'est interdit les bouteilles, vous êtes idiot ?"], correctD: 1, optionsE: ["Cet objet est interdit car il représente un risque de blessure ou de jet dans l'enceinte.", "Je ne veux pas avoir de problèmes avec mon patron.", "Si vous la gardez, vous allez vous saouler."], correctE: 0, optionsS: ["Je vous invite à la jeter dans cette poubelle ou à la ramener dans votre véhicule.", "Donnez-la moi, je vais la boire.", "Je vous la confisque de force."], correctS: 0, optionsC: ["Sinon, je vous tape.", "Si vous refusez de vous en séparer, le règlement m'oblige à vous interdire l'accès au site.", "Si vous refusez, je vous arrête pour vol."], correctC: 1, explanation: "L'empathie en introduction désamorce le conflit. Pas de confiscation de force." },
                     { q: "Situation 4 : Un individu refuse la palpation de sécurité obligatoire.", optionsD: ["Vous cachez une arme, c'est sûr.", "Je vois bien que vous refusez de vous faire palper.", "Monsieur, je constate que vous refusez la palpation de sécurité."], correctD: 2, optionsE: ["Sans ce contrôle, je ne peux pas garantir l'absence d'objets dangereux.", "Vous m'empêchez de faire mon travail.", "Si je ne vous palpe pas, on va tous mourir."], correctE: 0, optionsS: ["Laissez-moi vous fouiller de force.", "Je vous invite soit à accepter ce contrôle, soit à quitter la file d'attente.", "Appelez votre avocat."], correctS: 1, optionsC: ["Si vous refusez, je vous enferme.", "Si vous persistez dans votre refus, je devrai vous refuser définitivement l'accès.", "Si vous restez, je vous passe les menottes."], correctC: 1, explanation: "Refus de palpation = simple interdiction d'accès (pas un délit, donc pas d'entrave)." },
                     { q: "Situation 5 : Vol à l'étalage. Interception d'une personne après les caisses.", optionsD: ["Vous êtes un voleur, je vous ai vu.", "Monsieur, j'ai constaté que vous avez passé les caisses sans régler l'article dissimulé dans votre veste.", "Avouez que vous avez volé !"], correctD: 1, optionsE: ["Cela m'énerve que les gens volent.", "Vous allez aller en prison.", "Ceci constitue un vol, ce qui pose un préjudice financier à l'entreprise."], correctE: 2, optionsS: ["Je vous propose de régler l'article immédiatement en caisse centrale.", "Rendez l'article et donnez 50 euros de plus.", "Laissez votre carte d'identité en garantie."], correctS: 0, optionsC: ["Si vous payez, l'incident est clos. Sinon, appel à la police pour procédure judiciaire.", "Si vous refusez, je vous frappe.", "Dans le cas contraire, je vous séquestre toute la nuit."], correctC: 0, explanation: "Règlement amiable : constat du fait, proposition de réparation civile (paiement), rappel de la conséquence pénale." },
                     { q: "Situation 6 : Un apprenti du lycée refuse de présenter son badge de manière insolente.", optionsD: ["Tu es mal élevé, montre ton badge.", "Jeune homme, je constate que tu refuses de me présenter ton badge d'accès.", "Tu te prends pour qui ?"], correctD: 1, optionsE: ["Sans ce badge, je ne peux pas vérifier ton identité.", "Ton comportement m'insupporte.", "Tu vas avoir des problèmes."], correctE: 0, optionsS: ["Repars chez toi.", "Je te demande de le chercher dans ton sac ou de passer par la vie scolaire.", "Donne-moi ton sac que je cherche."], correctS: 1, optionsC: ["Si tu t'obstines, tu resteras à l'extérieur et l'administration sera prévenue.", "Sinon, commissariat.", "Dans le cas contraire, je te confisque ton téléphone."], correctC: 0, explanation: "L'agent ne répond pas à l'insolence. Il rappelle la règle objective (vérification d'identité)." },
-                    { q: "Situation 7 : Véhicule stationné sur une place handicapée sans macaron sur un parking privé.", optionsD: ["Bougez votre voiture.", "Monsieur, je constate que vous êtes stationné sur une place réservée sans macaron visible.", "Vous n'avez pas honte ?"], correctD: 1, optionsE: ["Cela bloque l'accès à une personne qui en a besoin.", "Je déteste les gens comme vous.", "Ça va vous coûter cher."], correctE: 0, optionsS: ["Je vous demande de déplacer votre véhicule immédiatement.", "Donnez-moi vos clés.", "Quittez le parking."], correctS: 0, optionsC: ["Sinon, je crève vos pneus.", "Si vous refusez, je devrai demander l'enlèvement du véhicule.", "Si vous la laissez, je vous bloque."], correctC: 1, explanation: "Conséquence légale sur site privé = demande d'enlèvement." },
+                    { q: "Situation 7 : Véhicule stationné sur une place handicapée sans macaron sur un parking privé.", optionsD: ["Bougez votre voiture.", "Monsieur, je constate que vous êtes stationné sur une place réservée sans macaron visible.", "Vous n'avez pas honte ?"], correctD: 1, optionsE: ["Cela bloque l'accès à une personne qui en a besoin.", "Je déteste les gens comme vous.", "Ça va vous coûter cher."], correctE: 0, optionsS: ["Je vous demande de déplacer votre véhicule immédiatement.", "Donnez-moi vos clés.", "Quittez le parking."], correctS: 0, optionsC: ["Sinon, je crève vos pneus.", "Si vous refusez, je devrai demander l'enlèvement du véhicule.", "Si vous la laissez, je vous blocks."], correctC: 1, explanation: "Conséquence légale sur site privé = demande d'enlèvement." },
                     { q: "Situation 8 : Un usager s'énerve à l'accueil et vous insulte violemment (Outrage).", optionsD: ["Vous venez de prononcer des insultes à mon encontre.", "Vous êtes fou de m'insulter.", "Répétez ça pour voir ?"], correctD: 0, optionsE: ["Vos propos me blessent.", "Ces propos constituent un délit d'outrage et troublent la tranquillité.", "Vous allez regretter."], correctE: 1, optionsS: ["Battez-vous avec moi.", "Je vous demande de vous calmer et de cesser ces insultes.", "Taisez-vous ou je frappe."], correctS: 1, optionsC: ["Si vous continuez, je serai contraint de vous appréhender et de vous remettre à la Police.", "Si vous n'arrêtez pas, je vous insulte en retour.", "Dans le cas contraire, je refuse de vous parler."], correctC: 0, explanation: "Face à un outrage (délit), l'agent formule une sommation claire." },
                     { q: "Situation 9 : Un livreur décharge ses cartons en bloquant totalement une issue de secours.", optionsD: ["Vous bloquez la porte, dégagez ça.", "Monsieur, je constate que vous déposez vos cartons devant l'issue de secours.", "C'est interdit de livrer ici."], correctD: 1, optionsE: ["Cet encombrement bloque l'évacuation en cas d'incendie et met tout le monde en danger.", "C'est pénible pour ma ronde.", "Amende par l'inspection du travail."], correctE: 0, optionsS: ["Je vous demande de décaler votre livraison vers la zone dédiée.", "Remballez tout.", "Je vais jeter vos cartons."], correctS: 0, optionsC: ["Si vous refusez, je devrai stopper votre réception et informer votre direction.", "Sinon, j'appelle la police.", "Dans le cas contraire, je ferme la porte."], correctC: 0, explanation: "On rappelle le risque sécurité (évacuation) et l'impact professionnel au livreur." },
                     { q: "Situation 10 : Un individu alcoolisé refuse de sortir à la fermeture.", optionsD: ["Vous êtes ivre, dehors !", "Tu as trop bu, pars.", "Monsieur, je constate que vous refusez de quitter le bâtiment alors que nous fermons."], correctD: 2, optionsE: ["Vous me faites perdre mon temps.", "Votre présence non autorisée empêche la mise sous alarme du site.", "Vous sentez l'alcool."], correctE: 1, optionsS: ["Je vous demande de vous diriger calmement vers la sortie principale.", "Sortez en courant.", "Je vais vous porter."], correctS: 0, optionsC: ["Si vous ne sortez pas, je vous pousse.", "Si vous restez, je serai obligé de faire intervenir les forces de l'ordre pour intrusion.", "Sinon, je vous enferme ici."], correctC: 1, explanation: "On évite le jugement ('vous êtes ivre') qui génère la violence." }
                 ]
             },
             radio: {
-                title: "3. Radio Express",
-                type: "radio_builder",
+                title: "3. Radio Express", type: "radio_builder",
                 questions: [
                     { q: "Situation 1 : Véhicule suspect garé devant une issue de secours. Immatriculation : AB-12-CD. Vous êtes l'agent 'Delta 1'.", optionsSuis: ["Ici Delta 1, devant l'issue de secours Nord.", "Je suis l'agent Delta 1 au parking.", "C'est Delta 1."], correctSuis: 0, optionsVois: ["Un véhicule AB-12-CD.", "Un véhicule suspect, plaque Alpha Bravo séparatif Unité Deux-fois-Un séparatif Charlie Delta.", "Voiture suspecte, immatriculée Alpha Bravo Douze Charlie Delta."], correctVois: 1, optionsFais: ["Je crève les pneus.", "J'inspecte visuellement l'habitacle sans rien toucher.", "Je force la porte."], correctFais: 1, optionsDemande: ["Je demande au PCS une vérification de la plaque. Parlez.", "Au secours, terminé.", "Je demande à mon chef de venir."], correctDemande: 0, explanation: "Structure 'Je suis, je vois, je fais, je demande'. Les chiffres 1 et 2 se prononcent Unité et 2 fois 1." },
                     { q: "Situation 2 : Un individu a été appréhendé sans pièce d'identité. Il dit s'appeler 'KANY'. Vous êtes au 'PCS'.", optionsSuis: ["C'est la salle vidéo.", "Ici l'agent d'accueil au PCS.", "Appel du PCS."], correctSuis: 1, optionsVois: ["Individu appréhendé sans papiers, nom déclaré Kilo Alpha November Yankee.", "Un voleur qui s'appelle Kilo Alpha Novembre Yvettes.", "Le suspect KANY."], correctVois: 0, optionsFais: ["Je le maintiens sous surveillance dans le local de sécurité.", "Je l'interroge de force.", "Je le laisse partir."], correctFais: 0, optionsDemande: ["Appelez la police svp.", "Je demande l'appel immédiat des forces de l'ordre. Parlez.", "Venez vite, terminé."], correctDemande: 1, explanation: "Le nom doit être épelé avec l'alphabet radio international strict." },
@@ -217,8 +232,7 @@
                 ]
             },
             juridique: {
-                title: "4. L'Arène Juridique",
-                type: "dual",
+                title: "4. L'Arène Juridique", type: "dual",
                 questions: [
                     { q: "Un client glisse une bouteille d'alcool dans son sac et passe la ligne de caisse sans payer. Vous l'interceptez.", optionsAction: ["L'appréhender avec une force proportionnée et appeler la police.", "Le fouiller de force pour récupérer la bouteille.", "Lui donner une amende de 135 euros."], correctAction: 0, optionsJustif: ["Légitime défense des biens.", "Article L613-3 du CSI (Palpation).", "Article 73 du CPP (Délit flagrant)."], correctJustif: 2, explanation: "Le vol simple est un délit flagrant. L'Article 73 du CPP autorise l'appréhension avec une force strictement nécessaire." },
                     { q: "Un intrus armé d'un couteau se jette sur vous lors d'une ronde de nuit. Vous le neutralisez par une percussion qui lui fracture la mâchoire.", optionsAction: ["L'action de neutralisation physique est justifiée.", "Vous êtes en tort pour violences volontaires graves.", "Vous deviez impérativement fuir sans vous défendre."], correctAction: 0, optionsJustif: ["Article 122-5 du CP (Légitime défense des personnes).", "Article 73 du CPP (Appréhension).", "État de nécessité (Article 122-7 du CP)."], correctJustif: 0, explanation: "La riposte face à une attaque au couteau avec une technique de percussion est immédiate, nécessaire et proportionnée à la menace vitale." },
@@ -233,8 +247,7 @@
                 ]
             },
             rapport: {
-                title: "5. Chrono-Rapport",
-                type: "report_builder",
+                title: "5. Chrono-Rapport", type: "report_builder",
                 questions: [
                     {
                         q: "SITUATION 1 : LE VOL À LA ROULOTTE (Agent de Sûreté)\nLe 14 nov. à 15h30, au PCS avec Marc. M. Martin (comptable) arrive en courant : \"Venez vite, un gars fouille une voiture au parking Nord !\". Vous y allez, l'individu fuit. Vous l'appréhendez. Vitre brisée, tournevis au sol. Remise à la police.",
@@ -292,7 +305,7 @@
                         optionsD4: [ "J'ai constaté que la pauvre dame ne bougeait plus du tout mais heureusement elle respirait encore un peu.", "Je crois qu'elle a fait une crise d'épilepsie.", "J'ai constaté que la victime était inconsciente, voies aériennes libres, ventilation présente." ], correctD4: 2,
                         optionsD5: [ "La dame s'appelle Dubois.", "La victime a été identifiée ultérieurement par les secours comme étant Madame Dubois.", "Victime : Mme Dubois, qui fait souvent des malaises ici." ], correctD5: 1,
                         optionsD6: [ "Elle n'a rien dit vu qu'elle était totalement inconsciente et évanouie.", "Néant.", "Elle n'a pas parlé." ], correctD6: 1,
-                        optionsD7: [ "J'ai placé la victime en Position Latérale de Sécurité (PLS) et fait alerter le SAMU (15).", "Je l'ai allongée sur le côté pour ne pas qu'elle s'étouffe avec sa langue.", "J'ai secoué la victime pour la réveiller." ], correctD7: 0,
+                        optionsD7: [ "J'ai placé la victime en Position Latérale de Seccurité (PLS) et fait alerter le SAMU (15).", "Je l'ai allongée sur le côté pour ne pas qu'elle s'étouffe avec sa langue.", "J'ai secoué la victime pour la réveiller." ], correctD7: 0,
                         optionsD8: [ "Les secours l'ont emmenée à l'hôpital le plus proche.", "Les sapeurs-pompiers ont pris la victime en charge à 10h30. J'ai rédigé ce rapport SST.", "Fin de l'incident." ], correctD8: 1,
                         explanation: "En tant que SST, le rapport doit employer les termes médicaux exacts (inconsciente, ventilation, PLS)."
                     },
@@ -306,7 +319,7 @@
                         optionsD6: [ "Le spectateur a dit qu'il y avait un sac bizarre.", "Le témoin m'a déclaré : « Il y a un sac tout seul sous les sièges depuis 20 minutes. »", "Le témoin a déclaré voir un sac." ], correctD6: 1,
                         optionsD7: [ "J'ai immédiatement établi un périmètre de sécurité, fait évacuer la zone et avisé la force publique.", "J'ai crié à tout le monde de reculer car c'était peut-être une bombe et j'ai mis de la rubalise.", "J'ai reculé le public le plus loin possible." ], correctD7: 0,
                         optionsD8: [ "Les démineurs ont fait exploser le sac. Fin du rapport.", "L'équipe de déminage est intervenue et a levé le doute à 18h15. Reprise du service.", "La police est venue tout fouiller." ], correctD8: 1,
-                        explanation: "Le terme 'colis suspect' nécessite de la froideur : pas de supposition sur le contenu ('bombe', 'fils'), simple description visuelle et gel des lieux."
+                        explanation: "Le terme 'colis suspect' nécessite de la froideur : pas de supposition sur le contenu, simple description visuelle et gel des lieux."
                     },
                     {
                         q: "SITUATION 7 : DÉPART DE FEU (Agent de Sûreté SSIAP)\nLe 3 sept, 05h00. Alarme incendie au PC (salle des archives). Vous y allez, forte odeur de fumée, flammes sur une poubelle. Éteint avec un extincteur à eau.",
@@ -330,7 +343,7 @@
                         optionsD6: [ "Le mis en cause a déclaré : « Il a mal regardé ma femme ! »", "Il a dit qu'il avait regardé sa femme donc il l'a frappé.", "L'auteur a crié des trucs sur sa femme." ], correctD6: 0,
                         optionsD7: [ "On a arrêté B en lui mettant les menottes serrées et on a appelé les pompiers pour A.", "Avons procédé à l'interpellation du mis en cause et requis les sapeurs-pompiers pour la victime.", "On les a emmenés de force au commissariat." ], correctD7: 1,
                         optionsD8: [ "Avons ramené l'auteur au commissariat pour placement en Garde à Vue devant l'OPJ.", "M. B a été jeté en cellule de dégrisement au commissariat. Fin de rapport.", "On a fait la paperasse de fin de service habituelle." ], correctD8: 0,
-                        explanation: "En procédure de Police, on utilise le 'Nous' de patrouille, des termes précis ('requis', 'rixe', 'mis en cause', 'OPJ') sans aucun jugement moral."
+                        explanation: "En procédure de Police, on utilise le 'Nous' de patrouille, des termes précis ('requis', 'rixe', 'mis en cause') sans aucun jugement moral."
                     },
                     {
                         q: "SITUATION 9 : CONTRÔLE ROUTIER ET STUPÉFIANTS (Agent de Police)\nMardi 16h. Un véhicule grille un feu rouge. Lors du contrôle, forte odeur de cannabis. Vous découvrez 50g de résine dans la boîte à gants.",
@@ -342,7 +355,7 @@
                         optionsD6: [ "Il a bafouillé que c'était juste pour lui fumer.", "M. Y a déclaré spontanément : « C'est ma consommation personnelle. »", "Il a avoué fumer du cannabis tous les jours." ], correctD6: 1,
                         optionsD7: [ "Avons procédé à la saisie du produit stupéfiant et à l'interpellation du mis en cause.", "On a pris la drogue et on l'a arrêté direct.", "Saisie et arrestation musclée." ], correctD7: 0,
                         optionsD8: [ "Fin de service après l'avoir interrogé rudement.", "Individu ramené au poste et jeté en GAV.", "Le mis en cause a été remis à l'OPJ de permanence avec les scellés pour la suite de la procédure." ], correctD8: 2,
-                        explanation: "Dans les affaires de stupéfiants, la qualification des constatations matérielles (odeur, pesée des scellés) valide la légalité de la fouille."
+                        explanation: "Dans les affaires de stupéfiants, la qualification des constatations matérielles (odeur, pesée) valide la légalité de la fouille."
                     },
                     {
                         q: "SITUATION 10 : VOL À MAIN ARMÉE (Agent de Police)\nVendredi 09h15. Appel radio pour braquage de la Bijouterie Or. Vous arrivez sirènes hurlantes. Les auteurs ont fui en scooter. Le gérant est choqué, la vitrine est brisée.",
@@ -354,34 +367,81 @@
                         optionsD6: [ "Le gérant m'a déclaré : « Ils étaient deux sur un scooter noir avec des fusils à pompe. »", "Il a balbutié qu'ils avaient un scooter noir et de gros fusils.", "Il a crié de terreur qu'ils étaient deux sur une moto." ], correctD6: 0,
                         optionsD7: [ "Avons sécurisé la scène de crime (gel des lieux) et diffusé le signalement des fuyards sur les ondes.", "On a mis de la rubalise partout pour empêcher les curieux de filmer avec leurs téléphones.", "On a cherché le scooter noir dans tout le quartier sans succès." ], correctD7: 0,
                         optionsD8: [ "Nous sommes restés sur place le temps que les experts de la police scientifique et les inspecteurs de la PJ arrivent pour leur expliquer tout ce qu'on avait vu avant de partir.", "La Police Judiciaire s'étant saisie de l'enquête, avons rédigé nos Procès-Verbaux d'intervention en qualité de primo-intervenants.", "Fin de mission difficile et retour au commissariat très tristes." ], correctD8: 1,
-                        explanation: "Sur une scène de crime (VMA), la patrouille de 'prime intervention' gèle les lieux, préserve les traces et rend compte factuellement à la PJ qui prend la direction de l'enquête."
+                        explanation: "Sur une scène de crime (VMA), la patrouille de 'prime intervention' gèle les lieux, préserve les traces et rend compte factuellement à la PJ."
                     }
                 ]
             }
+        };
+
+        // OBJET STATUT DE TOUS LES MODULES POUR L'ACCUEIL LÉGÈREMENT PERSISTANT
+        let globalModuleTracking = {
+            vidocq: { playedCount: 0, totalPts: 0, array: new Array(10).fill(null).map(() => ({played:false, score:0})) },
+            desc: { playedCount: 0, totalPts: 0, array: new Array(10).fill(null).map(() => ({played:false, score:0})) },
+            radio: { playedCount: 0, totalPts: 0, array: new Array(10).fill(null).map(() => ({played:false, score:0})) },
+            juridique: { playedCount: 0, totalPts: 0, array: new Array(10).fill(null).map(() => ({played:false, score:0})) },
+            rapport: { playedCount: 0, totalPts: 0, array: new Array(10).fill(null).map(() => ({played:false, score:0})) }
         };
 
         let currentModuleId = "";
         let currentQuestionIndex = 0;
         let score = 0;
         let userAnswers = [];
-        let questionStatus = []; 
         let selectionDual = { actionCorrect: null, justifCorrect: null, actionBtn: null, justifBtn: null };
         let selectionDesc = { d: null, e: null, s: null, c: null };
         let selectionRadio = { suis: null, vois: null, fais: null, demande: null };
         let selectionReport = { s1: null, s2: null, s3: null, s4: null, s5: null, s6: null, s7: null, s8: null };
 
-        function shuffleArray(array) {
-            const arr = [...array];
-            for (let i = arr.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [arr[i], arr[j]] = [arr[j], arr[i]];
-            }
-            return arr;
+        // INITIALISATION LOGIQUE ACCUEIL DE DEGRADÉ HYDROGÈNE TACTIQUE
+        function renderGlobalSidebar() {
+            const list = document.getElementById('sidebar-progress-list');
+            list.innerHTML = '';
+            
+            Object.keys(globalModuleTracking).forEach(id => {
+                const track = globalModuleTracking[id];
+                const card = document.createElement('div');
+                card.className = 'sidebar-module-card';
+                
+                // Calculer pourcentage d'avancement par rapport aux 10 situations
+                let totalPlayed = track.array.filter(q => q.played).length;
+                let pct = (totalPlayed / 10) * 100;
+                let sumPts = track.array.reduce((a,c) => a + c.score, 0);
+                
+                // Dégradé linéaire CSS natif selon le pourcentage
+                let barColor = "#c0392b"; // Rouge à 0%
+                if (pct > 0 && pct < 50) barColor = "#e67e22"; // Orange transitoire
+                else if (pct >= 50 && pct < 100) barColor = "#f1c40f"; // Jaune d'avancement
+                else if (pct === 100) barColor = "#27ae60"; // Vert strict à 100%
+                
+                card.innerHTML = `
+                    <h5>${db[id].title}</h5>
+                    <div class="progress-wrapper">
+                        <div class="progress-inner-bar" style="width: ${pct}%; background-color: ${barColor};">
+                            ${pct > 0 ? pct.toFixed(0)+'%' : ''}
+                        </div>
+                    </div>
+                `;
+                
+                const dotsRow = document.createElement('div');
+                dotsRow.className = 'mini-dots-row';
+                track.array.forEach(q => {
+                    const dot = document.createElement('div');
+                    dot.className = 'mini-dot';
+                    if (q.played) {
+                        if (q.score === 1) dot.classList.add('color-green');
+                        else if (q.score >= 0.5) dot.classList.add('color-yellow');
+                        else dot.classList.add('color-red');
+                    }
+                    dotsRow.appendChild(dot);
+                });
+                
+                card.appendChild(dotsRow);
+                list.appendChild(card);
+            });
         }
 
         function updateLiveScore() {
             let total = db[currentModuleId].questions.length;
-            score = questionStatus.reduce((acc, curr) => acc + curr.score, 0);
+            score = globalModuleTracking[currentModuleId].array.reduce((acc, curr) => acc + curr.score, 0);
             document.getElementById('live-score').innerText = `Score : ${score.toFixed(1)} / ${total}`;
         }
 
@@ -390,22 +450,26 @@
             currentQuestionIndex = 0;
             score = 0;
             userAnswers = [];
-            questionStatus = new Array(db[moduleId].questions.length).fill(null).map(() => ({played: false, score: 0}));
             
             document.getElementById('menu').classList.remove('active');
             document.getElementById('result').classList.remove('active');
             document.getElementById('module').classList.add('active');
             
-            document.getElementById('module-title').innerText = db[moduleId].title;
-            renderDashboard();
+            // Rechercher la première non jouée au démarrage
+            let firstUnplayed = globalModuleTracking[moduleId].array.findIndex(q => !q.played);
+            if(firstUnplayed !== -1) currentQuestionIndex = firstUnplayed;
+
+            renderModuleDashboard();
             loadQuestion();
             updateLiveScore();
         }
 
-        function renderDashboard() {
+        function renderModuleDashboard() {
             const dash = document.getElementById('dashboard');
             dash.innerHTML = '';
-            questionStatus.forEach((status, index) => {
+            const track = globalModuleTracking[currentModuleId];
+            
+            track.array.forEach((status, index) => {
                 const block = document.createElement('div');
                 block.className = 'sit-block';
                 block.innerText = index + 1;
@@ -414,14 +478,14 @@
                 
                 if (status.played) {
                     block.classList.add('played');
-                    if (status.score === 1) block.classList.add('sit-green');
-                    else if (status.score >= 0.5) block.classList.add('sit-yellow');
-                    else block.classList.add('sit-red');
+                    if (status.score === 1) block.classList.add('color-green');
+                    else if (status.score >= 0.5) block.classList.add('color-yellow');
+                    else block.classList.add('color-red');
                 } else {
                     block.onclick = () => {
                         currentQuestionIndex = index;
                         loadQuestion();
-                        renderDashboard();
+                        renderModuleDashboard();
                     };
                 }
                 dash.appendChild(block);
@@ -433,13 +497,13 @@
             const qData = module.questions[currentQuestionIndex];
             
             document.getElementById('question-area').style.display = 'block';
-            document.getElementById('question-title').innerText = module.type === 'report_builder' ? `Rédaction ${currentQuestionIndex + 1}` : `Situation ${currentQuestionIndex + 1}`;
             
             document.getElementById('question-text').innerHTML = qData.q.replace(/\n/g, '<br>');
             
             document.getElementById('feedback-area').classList.remove('active', 'success', 'error', 'partial');
             document.getElementById('next-btn').classList.remove('active');
             document.getElementById('validate-btn').style.display = 'none';
+            document.getElementById('options-container').style.display = 'none';
             document.getElementById('dual-qcm-container').style.display = 'none';
             document.getElementById('desc-builder-container').style.display = 'none';
             document.getElementById('radio-builder-container').style.display = 'none';
@@ -557,7 +621,7 @@
             }
         }
 
-        /* --- CLICS --- */
+        /* --- SÉLECTIONS --- */
         function selectDual(type, isCorrect, btn) {
             const container = document.getElementById(type === 'action' ? 'options-action' : 'options-justif');
             container.querySelectorAll('.choice-btn').forEach(b => b.classList.remove('selected'));
@@ -600,7 +664,7 @@
             }
         }
 
-        /* --- VALIDATIONS --- */
+        /* --- ENREGISTREMENTS DES SCORES PAR TYPE --- */
         function validateDual() {
             document.getElementById('validate-btn').style.display = 'none';
             const qData = db[currentModuleId].questions[currentQuestionIndex];
@@ -608,7 +672,7 @@
             const isJustifCorrect = (selectionDual.justifCorrect === true);
             let pts = (isActionCorrect && isJustifCorrect) ? 1 : (isActionCorrect || isJustifCorrect ? 0.5 : 0);
             
-            questionStatus[currentQuestionIndex] = { played: true, score: pts };
+            globalModuleTracking[currentModuleId].array[currentQuestionIndex] = { played: true, score: pts };
             userAnswers.push({ q: qData.q, userAction: selectionDual.actionBtn.innerText, isActionCorrect: isActionCorrect, correctAction: qData.optionsAction[qData.correctAction], userJustif: selectionDual.justifBtn.innerText, isJustifCorrect: isJustifCorrect, correctJustif: qData.optionsJustif[qData.correctJustif], explanation: qData.explanation });
             
             document.querySelectorAll('#dual-qcm-container .choice-btn').forEach(b => { b.disabled = true; if(b.dataset.correct === "true") b.classList.add('correct'); });
@@ -621,7 +685,7 @@
             else if (pts === 0.5) { fb.classList.add('active', 'partial'); fb.innerHTML = `<strong>⚠ ANALYSE PARTIELLE (+0.5 pt)</strong><br>${qData.explanation}`; }
             else { fb.classList.add('active', 'error'); fb.innerHTML = `<strong>✗ ÉCHEC TACTIQUE (0 pt)</strong><br>${qData.explanation}`; }
             
-            updateLiveScore(); renderDashboard(); checkCompletion();
+            updateLiveScore(); renderModuleDashboard(); checkCompletion();
         }
 
         function validateDesc() {
@@ -630,7 +694,7 @@
             let pts = 0;
             ['d','e','s','c'].forEach(s => { if(selectionDesc[s].isCorrect) pts += 0.25; });
             
-            questionStatus[currentQuestionIndex] = { played: true, score: pts };
+            globalModuleTracking[currentModuleId].array[currentQuestionIndex] = { played: true, score: pts };
             userAnswers.push({ q: qData.q, score: pts, d_user: selectionDesc.d.btn.innerText, d_correct: selectionDesc.d.isCorrect, d_exp: qData.optionsD[qData.correctD], e_user: selectionDesc.e.btn.innerText, e_correct: selectionDesc.e.isCorrect, e_exp: qData.optionsE[qData.correctE], s_user: selectionDesc.s.btn.innerText, s_correct: selectionDesc.s.isCorrect, s_exp: qData.optionsS[qData.correctS], c_user: selectionDesc.c.btn.innerText, c_correct: selectionDesc.c.isCorrect, c_exp: qData.optionsC[qData.correctC], explanation: qData.explanation });
             
             document.querySelectorAll('#desc-builder-container .choice-btn').forEach(b => { b.disabled = true; if (b.dataset.correct === "true") b.classList.add('correct'); });
@@ -642,7 +706,7 @@
             else if(pts>0){ fb.classList.add('active','partial'); fb.innerHTML=`<strong>⚠ ÉTAPES IMPARFAITES (+${pts} pt)</strong><br>${qData.explanation}`; }
             else { fb.classList.add('active','error'); fb.innerHTML=`<strong>✗ CONFLIT ENVENIMÉ</strong><br>${qData.explanation}`; }
             
-            updateLiveScore(); renderDashboard(); checkCompletion();
+            updateLiveScore(); renderModuleDashboard(); checkCompletion();
         }
 
         function validateRadio() {
@@ -651,7 +715,7 @@
             let pts = 0;
             ['suis','vois','fais','demande'].forEach(s => { if(selectionRadio[s].isCorrect) pts += 0.25; });
             
-            questionStatus[currentQuestionIndex] = { played: true, score: pts };
+            globalModuleTracking[currentModuleId].array[currentQuestionIndex] = { played: true, score: pts };
             userAnswers.push({ q: qData.q, score: pts, suis_user: selectionRadio.suis.btn.innerText, suis_correct: selectionRadio.suis.isCorrect, suis_exp: qData.optionsSuis[qData.correctSuis], vois_user: selectionRadio.vois.btn.innerText, vois_correct: selectionRadio.vois.isCorrect, vois_exp: qData.optionsVois[qData.correctVois], fais_user: selectionRadio.fais.btn.innerText, fais_correct: selectionRadio.fais.isCorrect, fais_exp: qData.optionsFais[qData.correctFais], demande_user: selectionRadio.demande.btn.innerText, demande_correct: selectionRadio.demande.isCorrect, demande_exp: qData.optionsDemande[qData.correctDemande], explanation: qData.explanation });
             
             document.querySelectorAll('#radio-builder-container .choice-btn').forEach(b => { b.disabled = true; if (b.dataset.correct === "true") b.classList.add('correct'); });
@@ -662,7 +726,7 @@
             if(pts===1){ fb.classList.add('active','success'); fb.innerHTML=`<strong>✓ TRANSMISSION PARFAITE (1 pt)</strong><br>${qData.explanation}`; }
             else { fb.classList.add('active','partial'); fb.innerHTML=`<strong>⚠ ERREUR DE PROCÉDURE (+${pts} pt)</strong><br>${qData.explanation}`; }
             
-            updateLiveScore(); renderDashboard(); checkCompletion();
+            updateLiveScore(); renderModuleDashboard(); checkCompletion();
         }
 
         function validateReport() {
@@ -671,16 +735,13 @@
             let pts = 0;
             for(let i=1; i<=8; i++) { if(selectionReport['s'+i].isCorrect) pts += 0.125; }
             
-            questionStatus[currentQuestionIndex] = { played: true, score: pts };
+            globalModuleTracking[currentModuleId].array[currentQuestionIndex] = { played: true, score: pts };
             userAnswers.push({ q: qData.q, score: pts, explanation: qData.explanation });
             
             document.querySelectorAll('#report-builder-container .choice-btn').forEach(b => { 
-                b.disabled = true; 
-                if (b.dataset.correct === "true") b.classList.add('correct'); 
+                b.disabled = true; if (b.dataset.correct === "true") b.classList.add('correct'); 
             });
-            for(let i=1; i<=8; i++) { 
-                if(!selectionReport['s'+i].isCorrect) selectionReport['s'+i].btn.classList.add('wrong'); 
-            }
+            for(let i=1; i<=8; i++) { if(!selectionReport['s'+i].isCorrect) selectionReport['s'+i].btn.classList.add('wrong'); }
             
             const fb = document.getElementById('feedback-area');
             fb.classList.remove('success', 'error', 'partial');
@@ -688,14 +749,13 @@
             else if(pts >= 0.5) { fb.classList.add('active', 'partial'); fb.innerHTML = `<strong>⚠ FORMULATION PARTIELLE (${pts}/1)</strong><br>${qData.explanation}`; }
             else { fb.classList.add('active', 'error'); fb.innerHTML = `<strong>✗ INEXPLOITABLE JURIDIQUEMENT (${pts}/1)</strong><br>${qData.explanation}`; }
             
-            updateLiveScore(); renderDashboard(); checkCompletion();
+            updateLiveScore(); renderModuleDashboard(); checkCompletion();
         }
 
-        /* --- NAVIGATION --- */
         function checkCompletion() {
             const nextBtn = document.getElementById('next-btn');
             nextBtn.classList.add('active');
-            let allPlayed = questionStatus.every(q => q.played);
+            let allPlayed = globalModuleTracking[currentModuleId].array.every(q => q.played);
             if (allPlayed) {
                 nextBtn.innerText = "Aller au débriefing de mission";
             } else {
@@ -704,18 +764,18 @@
         }
 
         function nextUnplayedQuestion() {
-            let nextIndex = questionStatus.findIndex(q => !q.played);
+            let nextIndex = globalModuleTracking[currentModuleId].array.findIndex(q => !q.played);
             if (nextIndex !== -1) {
                 currentQuestionIndex = nextIndex;
                 loadQuestion();
-                renderDashboard();
+                renderModuleDashboard();
             } else {
                 showResults(false);
             }
         }
 
         function quitEarly() {
-            let hasPlayedAny = questionStatus.some(q => q.played);
+            let hasPlayedAny = globalModuleTracking[currentModuleId].array.some(q => q.played);
             if (!hasPlayedAny) {
                 goHome();
             } else {
@@ -802,16 +862,21 @@
                         <p style="background-color: #f4f6f7; padding: 10px; border-radius: 4px;"><em>Rappel de correction : ${ans.explanation}</em></p>
                     </div>`;
                 });
-                html += `<div class="debrief-advice"><h4>Conseil de Rédaction Obligatoire :</h4><p>N'oubliez jamais la structure des 8 piliers théoriques. Un compte rendu brouillon ou contenant des suppositions subjectives (« je pense que », « il avait l'air », « le voleur ») détruit la validité juridique de votre travail sur le terrain devant un juge. L'écrit doit être neutre, factuel et précis.</p></div>`;
+                html += `<div class="debrief-advice"><h4>Conseil de Rédaction Obligatoire :</h4><p>N'oubliez jamais la structure des 8 piliers théoriques. L'écrit doit être neutre, factuel et précis.</p></div>`;
                 debriefContainer.innerHTML = html; debriefContainer.style.display = 'block';
             }
+            renderGlobalSidebar();
         }
 
         function goHome() {
             document.getElementById('module').classList.remove('active');
             document.getElementById('result').classList.remove('active');
             document.getElementById('menu').classList.add('active');
+            renderGlobalSidebar();
         }
+
+        // INITIALISATION AU CHARGEMENT DE LA PAGE
+        renderGlobalSidebar();
     </script>
 </body>
 </html>
