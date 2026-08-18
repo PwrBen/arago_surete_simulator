@@ -90,7 +90,7 @@
     </header>
     <main>
         <div id="menu" class="screen active">
-            <h3>Sélectionnez un module d'entraînement</h3>
+            <h3>Sélectionnez un module d'entraînement (10 situations par module)</h3>
             <div class="grid">
                 <button class="module-btn" onclick="startModule('vidocq')">1. L'Œil de Vidocq (Observation)</button>
                 <button class="module-btn" onclick="startModule('desc')">2. Simulateur DESC (Conflit)</button>
@@ -146,7 +146,7 @@
             <button id="validate-btn">Valider ma décision</button>
             <div id="feedback-area" class="feedback"></div>
             <button id="next-btn" class="next-btn" onclick="nextQuestion()">Situation suivante</button>
-            <button class="back-btn" onclick="goHome()">Quitter le module</button>
+            <button class="back-btn" onclick="quitEarly()">Quitter le module et voir le débriefing</button>
         </div>
 
         <div id="result" class="screen">
@@ -352,7 +352,6 @@
             }
         };
 
-        // VARIABLES GLOBALES
         let currentModuleId = "";
         let currentQuestionIndex = 0;
         let score = 0;
@@ -362,7 +361,6 @@
         let selectionRadio = { suis: null, vois: null, fais: null, demande: null };
         let selectionReport = { s1: null, s2: null, s3: null, s4: null, s5: null, s6: null, s7: null, s8: null };
 
-        // FONCTION DE MELANGE ALEATOIRE
         function shuffleArray(array) {
             const arr = [...array];
             for (let i = arr.length - 1; i > 0; i--) {
@@ -411,7 +409,6 @@
             document.getElementById('report-builder-container').style.display = 'none';
             
             if (module.type === "report_builder") {
-                // LOGIQUE MOD 5
                 document.getElementById('report-builder-container').style.display = 'flex';
                 document.getElementById('validate-btn').style.display = 'block';
                 document.getElementById('validate-btn').disabled = true;
@@ -425,10 +422,8 @@
                     const optKey = 'optionsD' + i;
                     const container = document.getElementById('report-options-' + i);
                     container.innerHTML = '';
-                    
                     const shuffled = qData[optKey].map((text, idx) => ({ text: text, isCorrect: (idx === qData['correctD' + i]) }));
                     const randomOpts = shuffleArray(shuffled);
-                    
                     randomOpts.forEach(item => {
                         const btn = document.createElement('button');
                         btn.className = 'choice-btn';
@@ -439,7 +434,6 @@
                     });
                 }
             } else if (module.type === "dual") {
-                // LOGIQUE MOD 1 & 4
                 document.getElementById('dual-qcm-container').style.display = 'grid';
                 document.getElementById('validate-btn').style.display = 'block';
                 document.getElementById('validate-btn').disabled = true;
@@ -448,7 +442,6 @@
                 document.getElementById('validate-btn').onclick = validateDual;
                 
                 selectionDual = { actionCorrect: null, justifCorrect: null, actionBtn: null, justifBtn: null };
-                
                 const actionsShuffled = qData.optionsAction.map((text, idx) => ({ text: text, isCorrect: (idx === qData.correctAction) }));
                 const randomActions = shuffleArray(actionsShuffled);
                 const actionContainer = document.getElementById('options-action');
@@ -475,7 +468,6 @@
                     justifContainer.appendChild(btn);
                 });
             } else if (module.type === "desc_builder") {
-                // LOGIQUE MOD 2
                 document.getElementById('desc-builder-container').style.display = 'flex';
                 document.getElementById('validate-btn').style.display = 'block';
                 document.getElementById('validate-btn').disabled = true;
@@ -484,16 +476,13 @@
                 document.getElementById('validate-btn').onclick = validateDesc;
                 
                 selectionDesc = { d: null, e: null, s: null, c: null };
-                
                 const steps = ['d', 'e', 's', 'c'];
                 steps.forEach(step => {
                     const optKey = 'options' + step.toUpperCase();
                     const container = document.getElementById('desc-options-' + step);
                     container.innerHTML = '';
-                    
                     const shuffled = qData[optKey].map((text, idx) => ({ text: text, isCorrect: (idx === qData['correct' + step.toUpperCase()]) }));
                     const randomOpts = shuffleArray(shuffled);
-                    
                     randomOpts.forEach(item => {
                         const btn = document.createElement('button');
                         btn.className = 'choice-btn';
@@ -504,7 +493,6 @@
                     });
                 });
             } else if (module.type === "radio_builder") {
-                // LOGIQUE MOD 3
                 document.getElementById('radio-builder-container').style.display = 'flex';
                 document.getElementById('validate-btn').style.display = 'block';
                 document.getElementById('validate-btn').disabled = true;
@@ -513,16 +501,13 @@
                 document.getElementById('validate-btn').onclick = validateRadio;
                 
                 selectionRadio = { suis: null, vois: null, fais: null, demande: null };
-                
                 const steps = ['Suis', 'Vois', 'Fais', 'Demande'];
                 steps.forEach(step => {
                     const optKey = 'options' + step;
                     const container = document.getElementById('radio-options-' + step.toLowerCase());
                     container.innerHTML = '';
-                    
                     const shuffled = qData[optKey].map((text, idx) => ({ text: text, isCorrect: (idx === qData['correct' + step]) }));
                     const randomOpts = shuffleArray(shuffled);
-                    
                     randomOpts.forEach(item => {
                         const btn = document.createElement('button');
                         btn.className = 'choice-btn';
@@ -535,7 +520,7 @@
             }
         }
 
-        /* --- LOGIQUE MUTUALISÉE CLICS --- */
+        /* --- CLICS --- */
         function selectDual(type, isCorrect, btn) {
             const container = document.getElementById(type === 'action' ? 'options-action' : 'options-justif');
             container.querySelectorAll('.choice-btn').forEach(b => b.classList.remove('selected'));
@@ -543,8 +528,7 @@
             selectionDual[type + 'Correct'] = isCorrect;
             selectionDual[type + 'Btn'] = btn;
             if (selectionDual.actionCorrect !== null && selectionDual.justifCorrect !== null) {
-                document.getElementById('validate-btn').disabled = false;
-                document.getElementById('validate-btn').style.opacity = '1';
+                document.getElementById('validate-btn').disabled = false; document.getElementById('validate-btn').style.opacity = '1';
             }
         }
 
@@ -553,8 +537,7 @@
             btn.classList.add('selected');
             selectionDesc[step] = { isCorrect: isCorrect, btn: btn };
             if (selectionDesc.d && selectionDesc.e && selectionDesc.s && selectionDesc.c) {
-                document.getElementById('validate-btn').disabled = false;
-                document.getElementById('validate-btn').style.opacity = '1';
+                document.getElementById('validate-btn').disabled = false; document.getElementById('validate-btn').style.opacity = '1';
             }
         }
 
@@ -563,8 +546,7 @@
             btn.classList.add('selected');
             selectionRadio[step] = { isCorrect: isCorrect, btn: btn };
             if (selectionRadio.suis && selectionRadio.vois && selectionRadio.fais && selectionRadio.demande) {
-                document.getElementById('validate-btn').disabled = false;
-                document.getElementById('validate-btn').style.opacity = '1';
+                document.getElementById('validate-btn').disabled = false; document.getElementById('validate-btn').style.opacity = '1';
             }
         }
 
@@ -577,12 +559,11 @@
             let ready = true;
             for(let i=1; i<=8; i++) { if(!selectionReport['s'+i]) ready = false; }
             if (ready) {
-                document.getElementById('validate-btn').disabled = false;
-                document.getElementById('validate-btn').style.opacity = '1';
+                document.getElementById('validate-btn').disabled = false; document.getElementById('validate-btn').style.opacity = '1';
             }
         }
 
-        /* --- LOGIQUE MUTUALISÉE VALIDATIONS --- */
+        /* --- VALIDATIONS --- */
         function validateDual() {
             document.getElementById('validate-btn').style.display = 'none';
             const qData = db[currentModuleId].questions[currentQuestionIndex];
@@ -643,7 +624,7 @@
             document.getElementById('validate-btn').style.display = 'none';
             const qData = db[currentModuleId].questions[currentQuestionIndex];
             let pts = 0;
-            for(let i=1; i<=8; i++) { if(selectionReport['s'+i].isCorrect) pts += 0.125; } // 8 étapes * 0.125 = 1 point max par scénario
+            for(let i=1; i<=8; i++) { if(selectionReport['s'+i].isCorrect) pts += 0.125; }
             
             userAnswers.push({ q: qData.q, score: pts, explanation: qData.explanation });
             document.querySelectorAll('#report-builder-container .choice-btn').forEach(b => { 
@@ -663,6 +644,7 @@
             updateLiveScore(); setupNextButton();
         }
 
+        /* --- NAVIGATION --- */
         function setupNextButton() {
             const nextBtn = document.getElementById('next-btn');
             nextBtn.classList.add('active');
@@ -677,10 +659,18 @@
         function nextQuestion() {
             currentQuestionIndex++;
             if (currentQuestionIndex < db[currentModuleId].questions.length) loadQuestion();
-            else showResults();
+            else showResults(false);
         }
 
-        function showResults() {
+        function quitEarly() {
+            if (userAnswers.length === 0) {
+                goHome(); // Quitte sans débriefing s'il n'y a eu aucune action
+            } else {
+                showResults(true); // Affiche le débriefing des actions déjà menées
+            }
+        }
+
+        function showResults(isEarlyQuit = false) {
             document.getElementById('module').classList.remove('active');
             document.getElementById('result').classList.add('active');
             const total = db[currentModuleId].questions.length;
@@ -688,9 +678,15 @@
             const scoreMessage = document.getElementById('score-message');
             
             scoreDisplay.innerText = `Évaluation finale : ${score.toFixed(1)} / ${total}`;
-            if (score >= total * 0.8) { scoreDisplay.style.color = "#27ae60"; scoreMessage.innerText = "Parfait ! Rigueur professionnelle validée."; }
-            else if (score >= total * 0.6) { scoreDisplay.style.color = "#d35400"; scoreMessage.innerText = "Opérationnel, mais des failles persistent."; }
-            else { scoreDisplay.style.color = "#c0392b"; scoreMessage.innerText = "Échec. Un rapport ou une action mal menée annule votre travail sur le terrain. Reprenez le manuel."; }
+            
+            if (isEarlyQuit) {
+                scoreDisplay.style.color = "#e67e22";
+                scoreMessage.innerText = "Mission interrompue. Voici le débriefing de vos actions jusqu'à votre abandon.";
+            } else {
+                if (score >= total * 0.8) { scoreDisplay.style.color = "#27ae60"; scoreMessage.innerText = "Parfait ! Rigueur professionnelle validée."; }
+                else if (score >= total * 0.6) { scoreDisplay.style.color = "#d35400"; scoreMessage.innerText = "Opérationnel, mais des failles persistent."; }
+                else { scoreDisplay.style.color = "#c0392b"; scoreMessage.innerText = "Échec. Un rapport ou une action mal menée annule votre travail sur le terrain. Reprenez le manuel."; }
+            }
 
             const debriefContainer = document.getElementById('debriefing-container');
             debriefContainer.innerHTML = '';
@@ -746,6 +742,16 @@
                 debriefContainer.innerHTML = html; debriefContainer.style.display = 'block';
             } else if (currentModuleId === 'rapport') {
                 let html = "<h4 style='font-size: 1.3em; color: #2c3e50; border-bottom: 2px solid #34495e; padding-bottom: 10px;'>Débriefing de l'Instructeur :</h4>";
+                
+                // Optionnel : Afficher le détail des erreurs sur chaque rapport si besoin.
+                userAnswers.forEach((ans, idx) => {
+                    html += `
+                    <div class="debrief-item">
+                        <p><strong>Rapport ${idx + 1} :</strong> Résultat ${ans.score} / 1 point</p>
+                        <p style="background-color: #f4f6f7; padding: 10px; border-radius: 4px;"><em>Rappel de correction : ${ans.explanation}</em></p>
+                    </div>`;
+                });
+
                 html += `<div class="debrief-advice"><h4>Conseil de Rédaction Obligatoire :</h4><p>N'oubliez jamais la structure des 8 piliers théoriques. Un compte rendu brouillon ou contenant des suppositions subjectives (« je pense que », « il avait l'air », « le voleur ») détruit la validité juridique de votre travail sur le terrain devant un juge. L'écrit doit être neutre, factuel et précis.</p></div>`;
                 debriefContainer.innerHTML = html; debriefContainer.style.display = 'block';
             }
