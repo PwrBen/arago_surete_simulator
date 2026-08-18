@@ -154,6 +154,10 @@
         .choice-btn.correct { background-color: var(--correct-bg); border-color: var(--bar-green); color: var(--correct-text); }
         .choice-btn.wrong { background-color: var(--wrong-bg); border-color: var(--bar-red); color: var(--wrong-text); text-decoration: line-through;}
         
+        /* SAUVEGARDE BUTTONS */
+        .save-btn { background-color: var(--article-num-bg); color: var(--white); display: block; width: 100%; text-align: center; margin-top: 10px; border: 1px solid var(--border); font-size: 0.95em;}
+        .save-btn:hover { background-color: var(--module-hover); border-color: var(--accent); color: var(--accent);}
+
         /* ECRAN DE PRESENTATION (INTRO) */
         .intro-section { margin-bottom: 25px; }
         .intro-section h4 { color: var(--accent); border-bottom: 1px solid var(--border); padding-bottom: 8px; font-size: 1.2em; margin-bottom: 10px;}
@@ -186,7 +190,7 @@
         .live-score-badge { background-color: var(--article-num-bg); color: var(--accent); padding: 6px 14px; border-radius: 20px; font-size: 1em; font-family:'Barlow Condensed', sans-serif; letter-spacing:1px; font-weight: bold; border: 1px solid var(--article-num-bd); }
         .dashboard-container { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; padding: 15px; background: var(--info-bg); border-radius: 8px; border: 1px solid var(--border); justify-content: center; }
         
-        /* SIT-BLOCK : Design clair pour non-joué, solid pour joué */
+        /* SIT-BLOCK */
         .sit-block { 
             width: 40px; height: 40px; 
             display: flex; align-items: center; justify-content: center; 
@@ -231,12 +235,7 @@
         .progress-wrapper { background-color: var(--article-num-bg); border-radius: 12px; height: 16px; width: 100%; overflow: hidden; position: relative; margin-bottom: 10px; border: 1px solid var(--border);}
         .progress-inner-bar { height: 100%; width: 0%; text-align: center; color: white; font-size: 10px; font-weight: bold; line-height: 16px; transition: width 0.4s ease, background-color 0.4s ease; }
         .mini-dots-row { display: flex; gap: 5px; flex-wrap: wrap;}
-        .mini-dot { 
-            width: 14px; height: 14px; 
-            border-radius: 50%; 
-            background-color: var(--card); 
-            border: 2px solid var(--border);
-        }
+        .mini-dot { width: 14px; height: 14px; border-radius: 50%; background-color: var(--card); border: 2px solid var(--border);}
 
         /* TOGGLE SWITCH */
         #theme-toggle-wrap { position: fixed; bottom: 24px; left: 24px; z-index: 3001; display: flex; align-items: center; gap: 10px; }
@@ -268,6 +267,14 @@
         <div id="left-sidebar" class="container-box">
             <h3 style="margin-top: 0; color: var(--white); border-bottom: 2px solid var(--accent); padding-bottom: 8px;">Tableau de Bord</h3>
             <div id="sidebar-progress-list"></div>
+            
+            <!-- EXPORT ET IMPORT DE LA PROGRESSION -->
+            <div style="margin-top: 25px; border-top: 1px solid var(--border); padding-top: 15px;">
+                <p style="font-size: 0.9em; color: var(--gray); margin-bottom: 10px; text-align: center;">Sauvegardez votre avancée pour la reprendre plus tard sur n'importe quel appareil.</p>
+                <button class="save-btn choice-btn" onclick="exportProgress()">💾 Sauvegarder ma progression</button>
+                <button class="save-btn choice-btn" onclick="document.getElementById('import-file').click()">📂 Charger une progression</button>
+                <input type="file" id="import-file" style="display: none;" accept=".json" onchange="importProgress(event)">
+            </div>
         </div>
 
         <!-- ESPACE CENTRAL CONTENU DIRECT -->
@@ -377,7 +384,7 @@
             localStorage.setItem('arago-theme', next);
             var lbl = document.getElementById('toggle-label');
             if (lbl) lbl.textContent = next === 'dark' ? 'Mode sombre' : 'Mode clair';
-            // Update UI elements dependent on theme variables
+            // Mettre à jour l'interface si besoin
             renderGlobalSidebar();
             if (currentModuleId && document.getElementById('module').classList.contains('active')) {
                 renderModuleDashboard();
@@ -629,6 +636,48 @@
                 [arr[i], arr[j]] = [arr[j], arr[i]];
             }
             return arr;
+        }
+
+        // ── SAUVEGARDE ET CHARGEMENT (JSON) ─────────────────────────
+        function exportProgress() {
+            try {
+                const dataStr = JSON.stringify(globalModuleTracking);
+                const dataBlob = new Blob([dataStr], { type: 'application/json' });
+                const url = URL.createObjectURL(dataBlob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = 'progression_arago_surete.json';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+            } catch(e) {
+                alert("Erreur lors de la sauvegarde.");
+            }
+        }
+
+        function importProgress(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    // Basic validation to ensure the file is correct
+                    if(importedData && importedData.vidocq && importedData.desc) {
+                        globalModuleTracking = importedData;
+                        renderGlobalSidebar();
+                        alert("Progression chargée avec succès !");
+                    } else {
+                        alert("Erreur : Le fichier de sauvegarde n'est pas valide ou est corrompu.");
+                    }
+                } catch (error) {
+                    alert("Erreur de lecture du fichier. Assurez-vous qu'il s'agit bien de votre fichier JSON de sauvegarde.");
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = ''; // Reset input to allow reloading the same file if needed
         }
 
         function renderGlobalSidebar() {
