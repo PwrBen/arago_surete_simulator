@@ -32,6 +32,7 @@
           --desc-card-bg:   rgba(30,91,220,0.06);
           --btn-ghost-brd:  rgba(255,255,255,0.2);
           
+          /* Backgrounds transparents pour messages de retour */
           --correct-bg:     rgba(39, 174, 96, 0.15);
           --correct-text:   #2ecc71;
           --wrong-bg:       rgba(192, 57, 43, 0.15);
@@ -39,6 +40,7 @@
           --partial-bg:     rgba(241, 196, 15, 0.15);
           --partial-text:   #f1c40f;
           
+          /* Couleurs pleines pour les indicateurs */
           --bar-red:        #e74c3c;
           --bar-orange:     #e67e22;
           --bar-yellow:     #f1c40f;
@@ -67,6 +69,7 @@
           --desc-card-bg:   rgba(26,26,26,0.04);
           --btn-ghost-brd:  rgba(26,26,26,0.25);
           
+          /* Backgrounds transparents pour messages de retour */
           --correct-bg:     rgba(39, 174, 96, 0.1);
           --correct-text:   #27ae60;
           --wrong-bg:       rgba(192, 57, 43, 0.1);
@@ -74,6 +77,7 @@
           --partial-bg:     rgba(241, 196, 15, 0.1);
           --partial-text:   #b7950b;
 
+          /* Couleurs pleines pour les indicateurs */
           --bar-red:        #c0392b;
           --bar-orange:     #d35400;
           --bar-yellow:     #f39c12;
@@ -214,11 +218,6 @@
         .sit-block:hover:not(.played) { background-color: var(--module-hover); color: var(--accent); border-color: var(--accent); }
         .sit-block.active { border-color: var(--accent); color: var(--white); background-color: var(--accent); transform: scale(1.05); }
         .sit-block.played { opacity: 0.95; cursor: not-allowed; border-color: transparent; }
-        
-        /* COULEURS STATUTS INDICATEURS (Plein / Solid) */
-        .color-green { background-color: var(--bar-green) !important; color: white !important; }
-        .color-yellow { background-color: var(--bar-yellow) !important; color: #1a1a1a !important; }
-        .color-red { background-color: var(--bar-red) !important; color: white !important; }
 
         .feedback { margin-top: 15px; padding: 15px; border-radius: 5px; display: none; font-size: 1.05em; line-height: 1.4; background: var(--card); border: 1px solid var(--border);}
         .feedback.active { display: block; }
@@ -256,6 +255,22 @@
         [data-theme="light"] #theme-toggle { background: #e8e4de; border-color: rgba(0,0,0,0.18); }
         [data-theme="light"] #theme-toggle::after { transform: translateX(0); background: #fff; }
         .toggle-label { font-family: 'Barlow Condensed', sans-serif; font-size: 12px; font-weight: bold; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gray); background: var(--card); padding: 5px 10px; border-radius: 4px; border: 1px solid var(--border); pointer-events: none; white-space: nowrap; transition: color 0.3s, background 0.3s; }
+
+        /* ══ CSS DE L'ATTESTATION ══ */
+        @media print {
+            body * { visibility: hidden; }
+            #certificate-screen, #certificate-screen * { visibility: visible; }
+            #certificate-screen { position: absolute; left: 0; top: 0; width: 100%; height: 100%; margin: 0; padding: 0; background: white; }
+            .no-print { display: none !important; }
+            #left-sidebar { display: none !important; }
+            .container-box { box-shadow: none; border: none; }
+        }
+        .cert-box { border: 10px double var(--accent); padding: 50px; text-align: center; background: white; color: black; max-width: 800px; margin: 0 auto; box-shadow: 0 10px 30px rgba(0,0,0,0.1);}
+        .cert-title { font-family: 'Bebas Neue', sans-serif; font-size: 4em; color: var(--accent); margin-bottom: 10px; }
+        .cert-subtitle { font-family: 'Barlow Condensed', sans-serif; font-size: 2em; color: #333; margin-bottom: 30px; letter-spacing: 2px;}
+        .cert-name { font-family: 'Bebas Neue', sans-serif; font-size: 3.5em; color: #c0392b; margin: 20px 0; letter-spacing: 2px;}
+        .cert-text { font-size: 1.3em; margin-bottom: 40px; color: #555; }
+        .cert-footer { display: flex; justify-content: space-between; margin-top: 50px; font-weight: bold; font-size: 1.2em; color: #333;}
     </style>
 </head>
 <body>
@@ -317,7 +332,7 @@
                 </div>
                 <button class="login-btn" onclick="loginAgent()">Connexion au Simulateur</button>
                 <div class="warning-text">
-                    <strong>Attention :</strong> Votre progression est sauvegardée localement. Pour exporter et importer vos résultats sur une autre session, vos Nom et Prénom devront être strictement identiques. Dans le cas contraire, votre fichier sera rejeté et la progression sera réinitialisée.
+                    <strong>Attention :</strong> Votre progression est sauvegardée localement. Pour exporter et importer vos résultats sur une autre session, votre Nom et Prénom devront être strictement identiques. Dans le cas contraire, votre fichier sera rejeté et la progression sera réinitialisée.
                 </div>
             </div>
         </div>
@@ -340,6 +355,12 @@
                     <button class="save-btn choice-btn" onclick="exportProgress()">💾 Sauvegarder ma progression</button>
                     <button class="save-btn choice-btn" onclick="document.getElementById('import-file').click()">📂 Charger une progression</button>
                     <input type="file" id="import-file" style="display: none;" accept=".json" onchange="importProgress(event)">
+                </div>
+
+                <!-- BOUTON ATTESTATION (Masqué par défaut) -->
+                <div id="cert-trigger-container" style="display: none; margin-top: 25px; border-top: 1px solid var(--border); padding-top: 15px; text-align: center;">
+                    <p style="color: var(--bar-green); font-weight: bold; font-size: 1.1em; margin-bottom: 10px;">🏆 Perfection atteinte !</p>
+                    <button class="save-btn choice-btn" style="background: var(--bar-green); border-color: var(--bar-green); color: white;" onclick="openCertificate()">🎓 Obtenir mon Attestation</button>
                 </div>
             </div>
 
@@ -437,6 +458,26 @@
                     <div id="debriefing-container"></div>
                     <button class="module-btn" style="margin-top: 30px; text-align:center;" onclick="goHome()">Retour au Menu Principal</button>
                 </div>
+                
+                <!-- ECRAN ATTESTATION -->
+                <div id="certificate-screen" class="screen">
+                    <div class="cert-box">
+                        <div style="font-size: 1.5em; font-weight: bold; color: #c0392b; margin-bottom: 20px; font-family: 'Bebas Neue', sans-serif; letter-spacing: 2px;">Section Métiers de la Sécurité - Lycée François Arago</div>
+                        <div class="cert-title">ATTESTATION D'EXCELLENCE</div>
+                        <div class="cert-subtitle">OPÉRATION VIDOCQ - SÛRETÉ</div>
+                        <div class="cert-text">Cette attestation certifie que l'agent :</div>
+                        <div class="cert-name" id="cert-agent-name">NOM PRENOM</div>
+                        <div class="cert-text">A validé avec un score parfait de <strong>100% (50/50)</strong> l'ensemble des modules de simulation tactique, juridique et de communication opérationnelle.</div>
+                        <div class="cert-footer">
+                            <div>Date : <span id="cert-date"></span></div>
+                            <div>L'Instructeur : @BDOL</div>
+                        </div>
+                    </div>
+                    <div class="no-print" style="text-align: center; margin-top: 30px;">
+                        <button class="choice-btn" style="display: inline-block; width: auto; padding: 15px 30px; background: var(--accent); color: white; border: none; border-radius: 5px; font-size: 1.1em; font-weight: bold; cursor: pointer;" onclick="window.print()">🖨️ Imprimer / Sauvegarder en PDF</button>
+                        <button class="back-btn" style="display: inline-block; width: auto; padding: 15px 30px; margin-left: 10px; border: none; border-radius: 5px; font-size: 1.1em; font-weight: bold; cursor: pointer;" onclick="closeCertificate()">Retour au menu</button>
+                    </div>
+                </div>
             </div>
         </div>
     </main>
@@ -504,7 +545,7 @@
                     { q: "Un badge 'Visiteur' est oublié sur un comptoir d'accueil.", optionsAction: ["Le jeter.", "Le récupérer et le faire désactiver informatiquement.", "Le laisser à sa place."], correctAction: 1, optionsJustif: ["Faille technique.", "Faille humaine (usurpation d'identité).", "Aucun risque."], correctJustif: 1, explanation: "La faille sociale. Un badge libre donne un accès sans effraction." },
                     { q: "La zone de stockage des palettes extérieures est dans le noir total (lampadaire HS).", optionsAction: ["Continuer avec une torche.", "Signaler la panne au PCS pour intervention.", "Éviter la zone."], correctAction: 1, optionsJustif: ["L'obscurité annule la dissuasion et aveugle la vidéo.", "Économies d'énergie.", "Trop dangereux."], correctJustif: 0, explanation: "L'ombre favorise la phase 'd'approche' et neutralise les caméras." },
                     { q: "Un individu sur le trottoir photographie vos caméras et vos barrières.", optionsAction: ["L'appréhender physiquement.", "L'observer, noter son signalement et alerter.", "Confisquer l'appareil."], correctAction: 1, optionsJustif: ["Flagrant délit.", "Phase de 'Préparation' (repérage) de la malveillance.", "Atteinte à la vie privée."], correctJustif: 1, explanation: "Détecter la préparation permet d'anticiper l'attaque." },
-                    { q: "Un DM a été déclenché de nuit dans un bâtiment vide et isolé.", optionsAction: ["Défoncer la porte.", "Effectuer une levée de doute avec prudence.", "Appeler le 18 sans vérifier."], correctAction: 1, optionsJustif: ["État de nécessité.", "Risque de ruse pour attirer l'agent.", "Procédure automatique."], correctJustif: 1, explanation: "La ruse est classique. La levée de doute doit être tactique." },
+                    { q: "Une alarme incendie se déclenche de nuit dans un bâtiment vide et isolé.", optionsAction: ["Défoncer la porte.", "Effectuer une levée de doute avec prudence.", "Appeler le 18 sans vérifier."], correctAction: 1, optionsJustif: ["État de nécessité.", "Risque de ruse pour attirer l'agent.", "Procédure automatique."], correctJustif: 1, explanation: "La ruse est classique. La levée de doute doit être tactique." },
                     { q: "Un sac de sport volumineux est abandonné sous un banc dans le hall.", optionsAction: ["L'ouvrir.", "Mettre en place un périmètre de sécurité et donner l'alerte.", "Le déplacer aux objets trouvés."], correctAction: 1, optionsJustif: ["Gel des lieux (Colis suspect).", "Vérification d'identité.", "Dégager les voies."], correctJustif: 0, explanation: "Tout objet abandonné sans propriétaire = menace potentielle." },
                     { q: "Une pile de cartons masque totalement un détecteur de mouvement volumétrique.", optionsAction: ["Déplacer les cartons pour libérer le champ.", "Laisser en place.", "Éteindre le détecteur."], correctAction: 0, optionsJustif: ["Esthétisme.", "Un dispositif masqué rend le système aveugle.", "Responsabilité des magasiniers."], correctJustif: 1, explanation: "L'agent doit garantir l'opérabilité de son dispositif de défense." }
                 ]
@@ -541,11 +582,11 @@
                     { q: "Situation 2 : Un individu a été appréhendé sans pièce d'identité. Il dit s'appeler 'KANY'. Vous êtes au 'PCS'.", optionsSuis: ["C'est la salle vidéo.", "Ici l'agent d'accueil au PCS.", "Appel du PCS."], correctSuis: 1, optionsVois: ["Individu appréhendé sans papiers, nom déclaré Kilo Alpha November Yankee.", "Un voleur qui s'appelle Kilo Alpha Novembre Yvettes.", "Le suspect KANY."], correctVois: 0, optionsFais: ["Je le maintiens sous surveillance dans le local de sécurité.", "Je l'interroge de force.", "Je le laisse partir."], correctFais: 0, optionsDemande: ["Appelez la police svp.", "Je demande l'appel immédiat des forces de l'ordre. Parlez.", "Venez vite, terminé."], correctDemande: 1, explanation: "Le nom doit être épelé avec l'alphabet radio international strict." },
                     { q: "Situation 3 : Vitre fracturée détectée sur le bâtiment C, secteur 'T-8'. Vous êtes la patrouille 'Alpha'.", optionsSuis: ["Ici Alpha, au T-8.", "Ici la patrouille Alpha, au bâtiment C, secteur Tango séparatif Deux-fois-Quatre.", "Alpha en position vitre cassée."], correctSuis: 1, optionsVois: ["Une vitre fracturée avec des traces de pesée sur le chambranle.", "Il y a des bris de glace partout.", "Une vitre Tango Huit brisée."], correctVois: 0, optionsFais: ["Je ramasse le verre.", "Je mets en place un périmètre de sécurité pour geler les lieux.", "Je rentre par la fenêtre."], correctFais: 1, optionsDemande: ["Envoyez le chef !", "Je demande la présence du chef de poste pour constatation. Parlez.", "Rien à signaler. Terminé."], correctDemande: 1, explanation: "Le chiffre 8 en radio se prononce '2 fois 4'. L'action prioritaire est le gel des lieux." },
                     { q: "Situation 4 : Trottinette renversant un piéton au parking. Plaque visible : 'F-9-K'. Vous êtes 'Delta 2'.", optionsSuis: ["Ici Delta 2, sur le parking principal.", "Delta 2 à l'appareil.", "C'est moi Delta 2."], correctSuis: 0, optionsVois: ["Une trottinette en fuite après choc, plaque Foxtrot séparatif Cinq-et-Quatre séparatif Kilo.", "Un piéton écrasé par F-9-K.", "Trotinette Foxtrot Neuf Kilo."], correctVois: 0, optionsFais: ["Je cours après la trottinette.", "Je protège la zone et je réalise le bilan d'urgence vitale.", "Je prends des photos."], correctFais: 1, optionsDemande: ["Appelez la police !", "Je demande l'appel immédiat du SAMU et d'un agent SST. Parlez.", "Amenez la trousse de secours. Terminé."], correctDemande: 1, explanation: "Le chiffre 9 se dit 'Cinq et Quatre'. L'action est le secours à personne (bilan vital)." },
-                    { q: "Situation 5 : Un visiteur s'énerve à l'accueil. Son badge indique 'VIP'. Vous êtes 'Accueil 1'.", optionsSuis: ["Ici l'accueil.", "Ici Accueil Unité.", "Accueil 1 en ligne."], correctSuis: 1, optionsVois: ["Un mec VIP très énervé.", "Un visiteur avec un badge Victor India Papa qui se montre agressif verbalement.", "Un VIP qui crie."], correctVois: 1, optionsFais: ["J'applique la méthode DESC pour tenter de le calmer.", "Je le frappe.", "Je fuis."], correctFais: 0, optionsDemande: ["Je demande à un agent de se tenir prêt en retrait. Parlez.", "Au secours, terminé.", "Virez-le !"], correctDemande: 0, explanation: "Le chiffre 1 se dit 'Unité'. VIP s'épelle Victor India Papa." },
+                    { q: "Situation 5 : Un visiteur s'énerve à l'accueil. Son badge indique 'VIP'. Vous êtes 'Accueil 1'.", optionsSuis: ["Ici l'accueil.", "Ici Accueil Unité.", "Accueil 1 en ligne."], correctSuis: 1, optionsVois: ["Un mec VIP très énervé.", "Un visiteur avec un badge Victor India Papa qui se montre agressif verbalement.", "Un VIP qui crie."], correctVois: 1, optionsFais: ["J'applique la méthode DESC pour tenter de le calmer.", "Je le frappe.", "Je fuis."], correctFais: 0, optionsDemande: ["Je demande à un agent de se tenir prêt en retrait. Parlez.", "Au secours, terminé.", "Virez-le !"], correctDemande: 0, explanation: "Le chiffre 1 se dit 'Unité'. VIP s'épelle Victor India Papa. Le DESC est l'action immédiate." },
                     { q: "Situation 6 : Colis suspect repéré (sac noir) en zone 'G-3'. Vous êtes 'Ronde 1'.", optionsSuis: ["Ici Ronde Unité, en zone Golf séparatif Deux-et-Un.", "Ici Ronde 1 en zone G-3.", "Ronde Unité en Golf Trois."], correctSuis: 0, optionsVois: ["Un colis suspect.", "Un sac à dos noir abandonné sous un siège sans propriétaire.", "Un sac Golf Trois."], correctVois: 1, optionsFais: ["Je l'ouvre pour vérifier.", "Je le déplace dehors.", "Je fais évacuer le public à distance de sécurité sans toucher le sac."], correctFais: 2, optionsDemande: ["Appelez les démineurs.", "Je demande l'application de la procédure Vigipirate. Parlez.", "Terminé."], correctDemande: 1, explanation: "Le chiffre 3 se dit 'Deux et Un'. Ne jamais toucher un colis suspect (Gel des lieux)." },
-                    { q: "Situation 7 : Malaise d'une personne dans l'allée 'D-5'. Vous êtes 'Secours 1'.", optionsSuis: ["Ici Secours Unité, dans l'allée Delta séparatif Trois-et-Deux.", "Secours 1 en Delta 5.", "Secours Unité dans le rayon D."], correctSuis: 0, optionsVois: ["Une personne consciente au sol se plaignant de fortes douleurs à la poitrine.", "Quelqu'un qui a mal au cœur.", "Une crise cardiaque."], correctVois: 0, optionsFais: ["Je la mets au repos et la rassure en attendant.", "Je lui donne des médicaments.", "Je lui fais un massage cardiaque."], correctFais: 0, optionsDemande: ["Appelez le 18.", "Je demande l'appel du centre 15 et qu'on m'apporte le défibrillateur. Parlez.", "Terminé, besoin d'aide."], correctDemande: 1, explanation: "Le 5 se dit 'Trois et Deux'. Appel au 15 (SAMU) prioritaire." },
+                    { q: "Situation 7 : Malaise d'une personne dans l'allée 'D-5'. Vous êtes 'Secours 1'.", optionsSuis: ["Ici Secours Unité, dans l'allée Delta séparatif Trois-et-Deux.", "Secours 1 en Delta 5.", "Secours Unité dans le rayon D."], correctSuis: 0, optionsVois: ["Une personne consciente au sol se plaignant de fortes douleurs à la poitrine.", "Quelqu'un qui a mal au cœur.", "Une crise cardiaque."], correctVois: 0, optionsFais: ["Je la mets au repos et la rassure en attendant.", "Je lui donne des médicaments.", "Je lui fais un massage cardiaque."], correctFais: 0, optionsDemande: ["Appelez le 18.", "Je demande l'appel du centre 15 et qu'on m'apporte le défibrillateur. Parlez.", "Terminé, besoin d'aide."], correctDemande: 1, explanation: "Le 5 se dit 'Trois et Deux'. On ne donne jamais de médicaments. Appel au 15 (SAMU) prioritaire." },
                     { q: "Situation 8 : Départ de feu dans le local 'TGBT'. Vous êtes 'Delta 1'.", optionsSuis: ["Ici Delta 1, devant le local Tango Golf Bravo Tango.", "Ici Delta 1 au local électrique.", "Delta 1 au TGBT."], correctSuis: 0, optionsVois: ["Il y a le feu !", "Une épaisse fumée noire et des étincelles sortant de la porte.", "Des flammes Tango Golf Bravo Tango."], correctVois: 1, optionsFais: ["Je sécurise les abords sans utiliser d'eau (risque électrique).", "Je jette un seau d'eau.", "J'ouvre la porte en grand."], correctFais: 0, optionsDemande: ["Au feu !", "Je demande l'évacuation de la zone et l'appel aux pompiers. Parlez.", "Appelez les secours. Terminé."], correctDemande: 1, explanation: "TGBT = Tango Golf Bravo Tango. Pas d'eau sur un feu d'origine électrique." },
-                    { q: "Situation 9 : Un camion de livraison bloque la rue, immatriculé 'W-8-Z'. Vous êtes au 'Filtrage'.", optionsSuis: ["Ici le poste de Filtrage.", "C'est la barrière.", "Poste de filtrage en ligne."], correctSuis: 0, optionsVois: ["Un camion bloquant la circulation, plaque Whiskey séparatif Deux-fois-Quatre séparatif Zulu.", "Un camion W-8-Z.", "Un véhicule Whiskey Huit Zulu."], correctVois: 0, optionsFais: ["Je crève les pneus.", "Je recherche le chauffeur dans les environs immédiats.", "J'appelle la fourrière."], correctFais: 1, optionsDemande: ["Faites une annonce.", "Je demande une annonce micro générale pour déplacer le véhicule. Parlez.", "Que quelqu'un vienne. Terminé."], correctDemande: 1, explanation: "Le 8 se dit 'Deux fois Quatre'." },
+                    { q: "Situation 9 : Un camion de livraison bloque la rue, immatriculé 'W-8-Z'. Vous êtes au 'Filtrage'.", optionsSuis: ["Ici le poste de Filtrage.", "C'est la barrière.", "Poste de filtrage en ligne."], correctSuis: 0, optionsVois: ["Un camion bloquant la circulation, plaque Whiskey séparatif Deux-fois-Quatre séparatif Zulu.", "Un camion W-8-Z.", "Un véhicule Whiskey Huit Zulu."], correctVois: 0, optionsFais: ["Je crève les pneus.", "Je recherche le chauffeur dans les environs immédiats.", "J'appelle la fourrière."], correctFais: 1, optionsDemande: ["Faites une annonce.", "Je demande une annonce micro générale pour déplacer le véhicule. Parlez.", "Que quelqu'un vienne. Terminé."], correctDemande: 1, explanation: "Le 8 se dit 'Deux fois Quatre'. On cherche d'abord le conducteur avant l'enlèvement." },
                     { q: "Situation 10 : Intrusion par le portail 'Q-2' visionnée sur les caméras. Vous êtes 'Vidéo 1'.", optionsSuis: ["Ici Vidéo Unité au PCS.", "Caméra 1 en alerte.", "PCS vidéo."], correctSuis: 0, optionsVois: ["Un voleur qui entre.", "Un individu vêtu de sombre vient de franchir le portail Quebec séparatif Deux-fois-Un.", "Un gars en Quebec Deux."], correctVois: 1, optionsFais: ["Je crie dans le micro.", "Je continue le suivi vidéo de l'individu et je verrouille les accès distants.", "Je descends l'arrêter."], correctFais: 1, optionsDemande: ["Allez l'attraper !", "Je demande à Delta 1 et Delta 2 d'intervenir pour l'appréhender. Parlez.", "Intervention demandée. Terminé."], correctDemande: 1, explanation: "Le 2 se dit 'Deux fois Un'. L'agent vidéo (PCS) coordonne l'action des équipes sur le terrain." }
                 ]
             },
@@ -730,7 +771,6 @@
         // ── SAUVEGARDE ET CHARGEMENT (JSON) ─────────────────────────
         function exportProgress() {
             try {
-                // Modification : On sauvegarde les identifiants exactement comme saisis
                 const saveData = {
                     firstName: agentFirstName.trim(),
                     lastName: agentLastName.trim(),
@@ -764,7 +804,6 @@
                         const impFirst = importedData.firstName || "";
                         const impLast = importedData.lastName || "";
                         
-                        // Modification : Comparaison stricte, sans afficher les noms du fichier importé
                         if(impFirst === agentFirstName.trim() && impLast === agentLastName.trim()) {
                             globalModuleTracking = importedData.tracking;
                             renderGlobalSidebar();
@@ -1292,6 +1331,57 @@
             document.getElementById('menu').classList.add('active');
             renderGlobalSidebar();
         }
+
+        // ── GENERATION DE L'ATTESTATION A 100% ─────────────────────────
+        function checkPerfectScore() {
+            let totalQuestions = 0;
+            let perfectScores = 0;
+            
+            Object.keys(globalModuleTracking).forEach(id => {
+                globalModuleTracking[id].array.forEach(q => {
+                    totalQuestions++;
+                    if (q.played && q.score === 1) {
+                        perfectScores++;
+                    }
+                });
+            });
+            
+            return (totalQuestions === 50 && perfectScores === 50);
+        }
+
+        function checkAndShowCertificateButton() {
+            const certTrigger = document.getElementById('cert-trigger-container');
+            if (certTrigger) {
+                if (checkPerfectScore()) {
+                    certTrigger.style.display = 'block';
+                } else {
+                    certTrigger.style.display = 'none';
+                }
+            }
+        }
+
+        function openCertificate() {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById('certificate-screen').classList.add('active');
+            
+            document.getElementById('cert-agent-name').innerText = agentFirstName.toUpperCase() + " " + agentLastName.toUpperCase();
+            
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' });
+            document.getElementById('cert-date').innerText = dateStr;
+        }
+
+        function closeCertificate() {
+            document.getElementById('certificate-screen').classList.remove('active');
+            document.getElementById('menu').classList.add('active');
+        }
+
+        // Modification de renderGlobalSidebar existante pour inclure le check du certificat
+        const originalRenderGlobalSidebar = renderGlobalSidebar;
+        renderGlobalSidebar = function() {
+            originalRenderGlobalSidebar();
+            checkAndShowCertificateButton();
+        };
 
     </script>
 </body>
