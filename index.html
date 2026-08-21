@@ -218,6 +218,11 @@
         .sit-block:hover:not(.played) { background-color: var(--module-hover); color: var(--accent); border-color: var(--accent); }
         .sit-block.active { border-color: var(--accent); color: var(--white); background-color: var(--accent); transform: scale(1.05); }
         .sit-block.played { opacity: 0.95; cursor: not-allowed; border-color: transparent; }
+        
+        /* COULEURS STATUTS INDICATEURS (Correction : Ajout des bordures obligatoires) */
+        .color-green { background-color: var(--bar-green) !important; color: white !important; border-color: var(--bar-green) !important; }
+        .color-yellow { background-color: var(--bar-yellow) !important; color: #1a1a1a !important; border-color: var(--bar-yellow) !important; }
+        .color-red { background-color: var(--bar-red) !important; color: white !important; border-color: var(--bar-red) !important; }
 
         .feedback { margin-top: 15px; padding: 15px; border-radius: 5px; display: none; font-size: 1.05em; line-height: 1.4; background: var(--card); border: 1px solid var(--border);}
         .feedback.active { display: block; }
@@ -586,7 +591,7 @@
                 title: "2. Simulateur DESC (Conflit)", 
                 type: "desc_builder",
                 intro: {
-                    expected: "Votre parole est votre première arme. Vous allez faire face à des individus agressifs, récalcitrants ou en infraction. Vous devez construire votre réponse verbale étape par étape en sélectionnant les phrases exactes qui permettent de désamorcer la tension et de rester maître de la situation.",
+                    expected: "Votre parole est votre première arme. Vous allez faire face à individuals agressifs, récalcitrants ou en infraction. Vous devez construire votre réponse verbale étape par étape en sélectionnant les phrases exactes qui permettent de désamorcer la tension et de rester maître de la situation.",
                     reminders: "<ul><li>Le respect est fondamental : l'usage du vouvoiement est obligatoire et la vulgarité est proscrite.</li><li><strong>D - Décrire :</strong> Présenter la situation de manière factuelle, sans aucun jugement ni provocation.</li><li><strong>E - Exprimer :</strong> Expliquer l'impact des faits sur votre mission de sûreté ou la sécurité du site.</li><li><strong>S - Spécifier :</strong> Proposer une issue concrète ou une alternative à la personne.</li><li><strong>C - Conclure :</strong> Poser le cadre légal ou la sanction finale en cas de refus d'obtempérer.</li></ul>"
                 },
                 questions: [
@@ -803,7 +808,7 @@
         // ── SAUVEGARDE ET CHARGEMENT (JSON) ─────────────────────────
         function exportProgress() {
             try {
-                saveCount++;
+                saveCount++; // Incrémente le compteur de sauvegardes
                 const saveData = {
                     firstName: agentFirstName.trim(),
                     lastName: agentLastName.trim(),
@@ -840,7 +845,7 @@
                         
                         if(impFirst === agentFirstName.trim() && impLast === agentLastName.trim()) {
                             globalModuleTracking = importedData.tracking;
-                            saveCount = importedData.saves || 0;
+                            saveCount = importedData.saves || 0; // Récupère le compteur
                             renderGlobalSidebar();
                             alert("Progression chargée avec succès !");
                         } else {
@@ -860,7 +865,7 @@
         }
 
         function resetTracking() {
-            saveCount = 0;
+            saveCount = 0; // Reset du compteur
             globalModuleTracking = {
                 vidocq: { array: new Array(10).fill(null).map(() => ({played:false, score:0})) },
                 desc: { array: new Array(10).fill(null).map(() => ({played:false, score:0})) },
@@ -902,8 +907,8 @@
                     const dot = document.createElement('div');
                     dot.className = 'mini-dot';
                     if (q.played) {
-                        if (q.score === 1) dot.classList.add('color-green');
-                        else if (q.score >= 0.5) dot.classList.add('color-yellow');
+                        if (q.score >= 0.99) dot.classList.add('color-green');
+                        else if (q.score >= 0.49) dot.classList.add('color-yellow');
                         else dot.classList.add('color-red');
                     }
                     dotsRow.appendChild(dot);
@@ -967,8 +972,8 @@
                 
                 if (status.played) {
                     block.classList.add('played');
-                    if (status.score === 1) block.classList.add('color-green');
-                    else if (status.score >= 0.5) block.classList.add('color-yellow');
+                    if (status.score >= 0.99) block.classList.add('color-green');
+                    else if (status.score >= 0.49) block.classList.add('color-yellow');
                     else block.classList.add('color-red');
                 } else {
                     block.onclick = () => {
@@ -1237,9 +1242,9 @@
             
             const fb = document.getElementById('feedback-area');
             fb.classList.remove('success', 'error', 'partial');
-            if(pts === 1) { fb.classList.add('active', 'success'); fb.innerHTML = `<strong>✓ STYLE ET STRUCTURE EXCELLENTS (1/1)</strong><br>${qData.explanation}`; }
-            else if(pts >= 0.5) { fb.classList.add('active', 'partial'); fb.innerHTML = `<strong>⚠ FORMULATION PARTIELLE (${pts}/1)</strong><br>${qData.explanation}`; }
-            else { fb.classList.add('active', 'error'); fb.innerHTML = `<strong>✗ INEXPLOITABLE JURIDIQUEMENT (${pts}/1)</strong><br>${qData.explanation}`; }
+            if(pts >= 0.99) { fb.classList.add('active', 'success'); fb.innerHTML = `<strong>✓ STYLE ET STRUCTURE EXCELLENTS (1/1)</strong><br>${qData.explanation}`; }
+            else if(pts >= 0.49) { fb.classList.add('active', 'partial'); fb.innerHTML = `<strong>⚠ FORMULATION PARTIELLE (${pts.toFixed(2)}/1)</strong><br>${qData.explanation}`; }
+            else { fb.classList.add('active', 'error'); fb.innerHTML = `<strong>✗ INEXPLOITABLE JURIDIQUEMENT (${pts.toFixed(2)}/1)</strong><br>${qData.explanation}`; }
             
             updateLiveScore(); renderModuleDashboard(); checkCompletion();
         }
@@ -1352,7 +1357,7 @@
                 userAnswers.forEach((ans, idx) => {
                     html += `
                     <div class="debrief-item">
-                        <p><strong>Rapport traité :</strong> Résultat ${ans.score} / 1 point</p>
+                        <p><strong>Rapport traité :</strong> Résultat ${ans.score.toFixed(2)} / 1 point</p>
                         <p style="background-color: var(--info-bg); padding: 10px; border-radius: 4px;"><em>Rappel de correction : ${ans.explanation}</em></p>
                     </div>`;
                 });
@@ -1378,7 +1383,7 @@
             Object.keys(globalModuleTracking).forEach(id => {
                 globalModuleTracking[id].array.forEach(q => {
                     totalQuestions++;
-                    if (q.played && q.score === 1) {
+                    if (q.played && q.score >= 0.99) {
                         perfectScores++;
                     }
                 });
