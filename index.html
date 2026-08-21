@@ -218,11 +218,6 @@
         .sit-block:hover:not(.played) { background-color: var(--module-hover); color: var(--accent); border-color: var(--accent); }
         .sit-block.active { border-color: var(--accent); color: var(--white); background-color: var(--accent); transform: scale(1.05); }
         .sit-block.played { opacity: 0.95; cursor: not-allowed; border-color: transparent; }
-        
-        /* COULEURS STATUTS INDICATEURS (Plein / Solid) */
-        .color-green { background-color: var(--bar-green) !important; color: white !important; }
-        .color-yellow { background-color: var(--bar-yellow) !important; color: #1a1a1a !important; }
-        .color-red { background-color: var(--bar-red) !important; color: white !important; }
 
         .feedback { margin-top: 15px; padding: 15px; border-radius: 5px; display: none; font-size: 1.05em; line-height: 1.4; background: var(--card); border: 1px solid var(--border);}
         .feedback.active { display: block; }
@@ -496,7 +491,7 @@
 
                 <!-- ECRAN ATTESTATION -->
                 <div id="certificate-screen" class="screen">
-                    <div class="cert-box">
+                    <div class="cert-box" style="position: relative;">
                         <div style="font-size: 1.5em; font-weight: bold; color: #c0392b; margin-bottom: 20px; font-family: 'Bebas Neue', sans-serif; letter-spacing: 2px;">Section Métiers de la Sécurité - Lycée François Arago</div>
                         <div class="cert-title">ATTESTATION DE REUSSITE</div>
                         <div class="cert-subtitle">OPÉRATION VIDOCQ - SÛRETÉ</div>
@@ -507,6 +502,7 @@
                             <div>Date : <span id="cert-date"></span></div>
                             <div>L'Instructeur : B.DOL</div>
                         </div>
+                        <div id="cert-save-count" style="position: absolute; bottom: 10px; right: 15px; font-size: 0.8em; color: #bdc3c7; font-family: 'Barlow', sans-serif;"></div>
                     </div>
                     <div class="no-print" style="text-align: center; margin-top: 30px;">
                         <button class="choice-btn" style="display: inline-block; width: auto; padding: 15px 30px; background: var(--accent); color: white; border: none; border-radius: 5px; font-size: 1.1em; font-weight: bold; cursor: pointer;" onclick="window.print()">🖨️ Imprimer / Sauvegarder en PDF</button>
@@ -521,6 +517,7 @@
         // ── VARIABLES AGENT ET LOGIN ──────────────────────────────────
         let agentFirstName = "";
         let agentLastName = "";
+        let saveCount = 0;
 
         function loginAgent() {
             const nom = document.getElementById('agent-nom').value.trim();
@@ -806,9 +803,11 @@
         // ── SAUVEGARDE ET CHARGEMENT (JSON) ─────────────────────────
         function exportProgress() {
             try {
+                saveCount++;
                 const saveData = {
                     firstName: agentFirstName.trim(),
                     lastName: agentLastName.trim(),
+                    saves: saveCount,
                     tracking: globalModuleTracking
                 };
                 const dataStr = JSON.stringify(saveData);
@@ -841,6 +840,7 @@
                         
                         if(impFirst === agentFirstName.trim() && impLast === agentLastName.trim()) {
                             globalModuleTracking = importedData.tracking;
+                            saveCount = importedData.saves || 0;
                             renderGlobalSidebar();
                             alert("Progression chargée avec succès !");
                         } else {
@@ -860,6 +860,7 @@
         }
 
         function resetTracking() {
+            saveCount = 0;
             globalModuleTracking = {
                 vidocq: { array: new Array(10).fill(null).map(() => ({played:false, score:0})) },
                 desc: { array: new Array(10).fill(null).map(() => ({played:false, score:0})) },
@@ -1410,6 +1411,8 @@
             const now = new Date();
             const dateStr = now.toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' });
             document.getElementById('cert-date').innerText = dateStr;
+            
+            document.getElementById('cert-save-count').innerText = saveCount;
         }
 
         function closeCertificate() {
